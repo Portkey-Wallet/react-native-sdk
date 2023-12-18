@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { defaultColors } from '.';
+import { defaultColors } from './';
 import fonts from './fonts';
 import { pTd } from 'utils/unit';
 

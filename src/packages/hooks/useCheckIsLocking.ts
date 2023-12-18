@@ -1,4 +1,4 @@
-import { useAppCommonSelector } from '.';
+import { useAppCommonSelector } from './';
 
 export const useCheckIsLocking = (): Boolean => {
   const { leaveTime, autoLockingTime } = useAppCommonSelector(state => state.settings);

@@ -1,6 +1,6 @@
 import AElf from 'aelf-sdk';
 import { Buffer } from 'buffer';
-import { sleep } from '.';
+import { sleep } from './';
 const { wallet: Wallet } = AElf;
 const wallet = Wallet.getWalletByPrivateKey('28805dd286a972f0ff268ba42646d5d952d770141bfec55c98e10619c268ecea');
 const instance = new AElf(new AElf.providers.HttpProvider('http://192.168.67.47:8000'));
