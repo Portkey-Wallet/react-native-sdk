@@ -157,4 +157,4 @@ function exitWallet(): Promise<boolean>();
 Q: Why does Google login always prompt "login fail"?<br>
 A: Make sure the applicationId, keystore, .env file correspond correctly<br><br>
 Q: problem occurred evaluating project ':portkey_react-native-sdk'.<br> > Project with path ':expo-modules-core' could not be found in project ':portkey_react-native-sdk'. <br>
-A: make sure you have set the expo autolink config in android/settings.gradle file.br><br>
+A: make sure you have set the expo autolink config in android/settings.gradle file.<br><br>
