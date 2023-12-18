@@ -2,6 +2,7 @@
   "extends": "@portkey/react-native-sdk/tsconfig.json",
   "compilerOptions": {},
   "include": [
-    "index.ts",
+    "App.tsx",
+    "index.js"
   ]
 }

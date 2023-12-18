@@ -12,7 +12,6 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
 
-import io.aelf.core.PortkeyEntries;
 import java.util.List;
 
 
@@ -65,7 +64,6 @@ public class MainApplication extends Application implements ReactApplication {
       // If you opted-in for the New Architecture, we load the native entry point for this app.
       DefaultNewArchitectureEntryPoint.load();
     }
-      Log.i(TAG, "Portkey: "+ PortkeyEntries.ACCOUNT_SETTING_ENTRY.getEntryName());
     ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }
 }
