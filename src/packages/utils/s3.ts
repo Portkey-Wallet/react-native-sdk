@@ -1,6 +1,6 @@
 import S3 from 'aws-sdk/clients/s3';
 import AWS from 'aws-sdk';
-import { randomId } from '.';
+import { randomId } from './';
 import { File } from 'aws-sdk/clients/codecommit';
 
 export interface IAWSConfig {

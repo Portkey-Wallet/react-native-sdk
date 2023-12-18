@@ -1,7 +1,7 @@
 import { getChainListAsync } from 'packages/store/store-ca/wallet/actions';
 import { ChainItemType } from 'packages/types/chain';
 import { useEffect, useMemo } from 'react';
-import { useAppCommonSelector, useAppCommonDispatch } from '.';
+import { useAppCommonSelector, useAppCommonDispatch } from './';
 
 export function useNetwork() {
   return useAppCommonSelector(state => state.chain);
