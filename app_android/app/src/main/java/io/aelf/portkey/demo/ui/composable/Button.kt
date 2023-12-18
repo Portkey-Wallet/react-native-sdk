@@ -162,7 +162,7 @@ fun PreviewButton() {
                 Toast.makeText(context, "Huge", Toast.LENGTH_SHORT).show()
             }
         }, icon = IconConfig().apply {
-            iconResId = io.aelf.portkey.R.drawable.js_assets_image_pngs_qrcode
+//            iconResId = io.aelf.portkey.R.drawable.js_assets_image_pngs_qrcode
             size = 16
             paddingLeft = 12
         })
