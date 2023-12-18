@@ -2,18 +2,14 @@ import React, { useState } from 'react';
 import { Modal, View, Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import { portkey } from '@portkey/react-native-sdk';
 import 'react-native-get-random-values';
-import Config from 'react-native-config';
 
-function MyButton({ title, onPress }) {
+function MyButton({ title, onPress }: { title: string; onPress: () => void }) {
   return (
     <TouchableOpacity style={styles.button} onPress={onPress}>
       <Text style={styles.buttonText}>{title}</Text>
     </TouchableOpacity>
   );
 }
-console.log('GOOGLE_IOS_CLIENT_ID', Config.GOOGLE_IOS_CLIENT_ID);
-console.log('GOOGLE_IOS_CLIENT_ID', Config.GOOGLE_IOS_CLIENT_ID);
-console.log('GOOGLE_ANDROID_CLIENT_ID', Config.GOOGLE_ANDROID_CLIENT_ID);
 const PortkeyUIManagerService = [
   ['login'],
   ['openAssetsDashboard'],
