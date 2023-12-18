@@ -87,6 +87,6 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
-    "index.ts",
+    "index.js",
   ]
 }
