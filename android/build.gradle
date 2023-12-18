@@ -31,7 +31,7 @@ def _androidTestRunnerVersion = _ext.has('androidTestRunnerVersion') ? _ext.andr
 //}
 
 android {
-     namespace 'io.aelf.portkey'
+     namespace 'finance.portkey'
     // compileSdk 33
     compileSdkVersion _compileSdkVersion
     buildToolsVersion _buildToolsVersion
