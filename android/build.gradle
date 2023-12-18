@@ -31,7 +31,7 @@ def _androidTestRunnerVersion = _ext.has('androidTestRunnerVersion') ? _ext.andr
 //}
 
 android {
-     namespace 'finance.portkey'
+     namespace 'finance.portkey.lib'
     // compileSdk 33
     compileSdkVersion _compileSdkVersion
     buildToolsVersion _buildToolsVersion
@@ -109,4 +109,4 @@ dependencies {
 }
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 //rootProject.findProject()
-// apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+ apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
