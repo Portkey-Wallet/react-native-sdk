@@ -19,11 +19,11 @@ android {
             keyAlias 'my-key-alias'
         }
     }
-    namespace 'io.aelf.portkey.demo'
+    namespace 'finance.portkey'
     compileSdk rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        applicationId "io.aelf.portkey.demo"
+        applicationId "finance.portkey.demo"
         minSdk rootProject.ext.minSdkVersion
         targetSdk rootProject.ext.targetSdkVersion
         versionCode 1

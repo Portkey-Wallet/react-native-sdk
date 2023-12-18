@@ -1,8 +1,8 @@
 apply plugin: 'maven-publish'
 
 
-def GroupId = 'io.aelf.portkey'
-def ArtifactId = 'core'
+def GroupId = 'finance.portkey'
+def ArtifactId = 'portkey-rn-sdk'
 def Version = android.defaultConfig.versionName
 
 Properties properties = new Properties()
