@@ -40,3 +40,4 @@ packages/rn-sdk/app_ios/build/
 .env
 output/
 dist/
+postinstall.log
