@@ -179,13 +179,6 @@ class MainActivity : ComponentActivity() {
                             Loading.showLoading("Running Test Cases...")
                         }
                         TitleLine(text = "Environment Settings")
-//                        ChoiceMaker(
-//                            title = "Choose Chain",
-//                            choicesList = mutableListOf("AELF", "tDVV", "tDVW"),
-//                            defaultChoice = cachedChainId
-//                        ) {
-//                            changeChain(it)
-//                        }
                         ChoiceMaker(
                             title = "Choose EndPointUrl",
                             choicesList = environment.keys.toList(),
@@ -205,7 +198,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-//        AssetHelper.copyAssetsToFiles(this)   // copy bundle to memory，Simulate the process of loading bundle remotely
     }
 
     private fun gotoPage(it: String) {
