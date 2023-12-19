@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import com.airbnb.lottie.LottieAnimationView
-import finance.portkey.R
+import finance.portkey.demo.R
 import finance.portkey.demo.ui.composable.Loading.loadingState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
