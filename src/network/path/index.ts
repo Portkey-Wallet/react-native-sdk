@@ -33,4 +33,7 @@ export enum APIPaths {
 
   // security service
   CHECK_TRANSFER_LIMIT = '/api/app/user/security/transferLimit',
+
+  // Token/NFT activities
+  GET_ACTIVITY_LIST = '/api/app/user/activities/activities',
 }

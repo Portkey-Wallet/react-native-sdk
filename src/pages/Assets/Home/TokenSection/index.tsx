@@ -8,6 +8,8 @@ import TokenListItem from 'components/TokenListItem';
 import { REFRESH_TIME } from 'packages/constants/constants-ca/assets';
 import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
 import AssetsContext, { AssetsContextType } from 'global/context/assets/AssetsContext';
+import useBaseContainer from 'model/container/UseBaseContainer';
+import { PortkeyEntries } from 'config/entries';
 
 export interface TokenSectionProps {
   getAccountBalance?: () => void;
@@ -55,15 +57,24 @@ export default function TokenSection() {
       });
   }, [allOfTokensList, balanceList, tokenPrices]);
 
-  // const onNavigate = useCallback((_: TokenItemShowType) => {
-  //   // item's onclick function is not used by now
-  // }, []);
+  const { navigateTo } = useBaseContainer({});
+
+  const onNavigateToTokenDetail = useCallback(
+    (item: TokenItemShowType) => {
+      navigateTo(PortkeyEntries.TOKEN_DETAIL_ENTRY, {
+        params: {
+          tokenInfo: item,
+        },
+      });
+    },
+    [navigateTo],
+  );
 
   const renderItem = useCallback(
     ({ item }: { item: TokenItemShowType }) => {
-      return <TokenListItem key={item.symbol} item={item} onPress={undefined} commonInfo={commonInfo} />;
+      return <TokenListItem key={item.symbol} item={item} onPress={onNavigateToTokenDetail} commonInfo={commonInfo} />;
     },
-    [commonInfo],
+    [commonInfo, onNavigateToTokenDetail],
   );
 
   const onRefresh = useCallback(async () => {
