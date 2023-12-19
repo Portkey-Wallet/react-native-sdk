@@ -3,14 +3,13 @@ import { Modal, View, Text, StyleSheet, TouchableWithoutFeedback, TouchableOpaci
 import { portkey } from '@portkey/react-native-sdk';
 import 'react-native-get-random-values';
 
-function MyButton({ title, onPress }) {
+function MyButton({ title, onPress }: { title: string; onPress: () => void }) {
   return (
     <TouchableOpacity style={styles.button} onPress={onPress}>
       <Text style={styles.buttonText}>{title}</Text>
     </TouchableOpacity>
   );
 }
-
 const PortkeyUIManagerService = [
   ['login'],
   ['openAssetsDashboard'],

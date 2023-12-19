@@ -3,7 +3,7 @@ package finance.portkey.core
 import android.app.Application
 import android.widget.Toast
 import com.tencent.mmkv.MMKV
-import finance.portkey.BuildConfig
+import finance.portkey.lib.BuildConfig
 import finance.portkey.lib.components.logic.PortkeyReactNativeHost
 
 object PortKeySDKHolder {

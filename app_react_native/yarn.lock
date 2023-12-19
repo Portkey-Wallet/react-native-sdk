@@ -2220,10 +2220,10 @@
     lodash "^4.17.21"
     readable-stream "^4.4.0"
 
-"@portkey/react-native-sdk@1.0.0-alpha.0":
-  version "1.0.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@portkey/react-native-sdk/-/react-native-sdk-1.0.0-alpha.0.tgz#e828b48ab2c9c034696a8a5fd80e9ccbc17ebe71"
-  integrity sha512-lh2JcIjdYjFIwM1+1o3uzUWPtsyX4ZA0+SrnWwyF4TDIcGF59dieWKkdSOT+Hd670NxZHjIzc7XRba9lMuSfnw==
+"@portkey/react-native-sdk@1.0.0-alpha.2":
+  version "1.0.0-alpha.2"
+  resolved "https://registry.yarnpkg.com/@portkey/react-native-sdk/-/react-native-sdk-1.0.0-alpha.2.tgz#501fb72a26000d6cc5cb69d49e6b9620ca75b515"
+  integrity sha512-l/Djc5wUHIgETYq78iOHI+uIEJE7j5Fn1aW4fbiNw3AG5XNcjoK5FY8sPi2hQ7bK9K7gaojkOU89MtZ8C5Sb6g==
   dependencies:
     "@apollo/client" "^3.7.3"
     "@babel/compat-data" "^7.22.20"
