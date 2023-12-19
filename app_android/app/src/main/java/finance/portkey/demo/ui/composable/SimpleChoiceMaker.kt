@@ -31,7 +31,7 @@ internal fun SimpleChoiceMaker(
     choicesList: List<String>,
     afterChosen: (String) -> Unit = {}
 ) {
-    val context = LocalContext.current
+    LocalContext.current
     var expand by remember {
         mutableStateOf(false)
     }
