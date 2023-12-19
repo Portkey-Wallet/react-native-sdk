@@ -9,5 +9,5 @@ enum class PortkeyEntries {
     PAYMENT_SECURITY_HOME_ENTRY;
 
     val entryName: String
-        get() = name.lowercase()
+        get() = "portkey_"+name.lowercase()
 }
