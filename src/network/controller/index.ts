@@ -43,6 +43,7 @@ import {
 } from 'network/dto/query';
 import { selectCurrentBackendConfig } from 'utils/commonUtil';
 import { CheckPaymentSecurityRuleParams, CheckPaymentSecurityRuleResult } from 'network/dto/security';
+import { TokenPriceResult } from 'network/dto/token';
 
 const DEFAULT_MAX_POLLING_TIMES = 50;
 
@@ -392,6 +393,15 @@ export class NetworkControllerEntity {
         maxResultCount,
       },
     );
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  fetchTokenPrices = async (symbols: string[]) => {
+    const res = await this.realExecute<TokenPriceResult>(await this.parseUrl(APIPaths.GET_TOKEN_PRICES), 'GET', {
+      symbols,
+    });
+    console.log('fetchTokenPrices', JSON.stringify(res));
     if (!res?.result) throw new Error('network failure');
     return res.result;
   };
