@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import com.google.gson.JsonElement
-import finance.portkey.BuildConfig
+import finance.portkey.lib.BuildConfig
 import finance.portkey.core.PortKeySDKHolder
 import finance.portkey.lib.components.logic.JSEventBus
 import finance.portkey.lib.components.services.GeneralJSMethodService
