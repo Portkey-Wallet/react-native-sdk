@@ -1,3 +1,6 @@
+import { AddressItem, BaseListResponse, RecentContactItemType } from '@portkey/services';
+import { CaHolderInfo, IImInfo } from 'packages/im';
+import { ITokenInfoType, INftInfoType } from 'packages/store/store-ca/assets/type';
 import { ChainId } from 'packages/types';
 
 export interface SearchTokenListParams {
@@ -96,3 +99,59 @@ export type INftCollectionItem = {
   tokenId: string;
   totalSupply: string;
 };
+
+export type GetAccountAssetsByKeywordsParams = {
+  maxResultCount: number;
+  skipCount: number;
+  keyword?: string;
+  caAddressInfos: CaAddressInfosType;
+  width?: number;
+  height?: number;
+};
+
+export type GetAccountAssetsByKeywordsResult = {
+  data: IAssetItemType[];
+  totalRecordCount: number;
+};
+
+export interface IAssetItemType {
+  chainId: string;
+  symbol: string;
+  address: string;
+  tokenInfo?: ITokenInfoType;
+  nftInfo?: INftInfoType;
+}
+
+export type GetRecentTransactionParams = {
+  caAddressInfos: CaAddressInfosType;
+  skipCount?: number;
+  maxResultCount?: number;
+};
+
+export type RecentTransactionResponse = BaseListResponse<RecentContactItemType>;
+
+export interface GetContractAddressesParams {
+  keyword?: string;
+  page?: number;
+  size?: number;
+  modificationTime?: number; // default is Date.now()
+}
+
+export type GetContractListApiType = {
+  totalCount: number;
+  items: Array<ContactItemType>;
+};
+
+export interface ContactItemType {
+  id: string;
+  index: string;
+  name: string;
+  avatar?: string;
+  addresses: AddressItem[];
+  modificationTime: number;
+  isDeleted: boolean;
+  userId: string;
+  caHolderInfo?: Partial<CaHolderInfo>;
+  imInfo?: Partial<IImInfo>;
+  isImputation?: boolean;
+}

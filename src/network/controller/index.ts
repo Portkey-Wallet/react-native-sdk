@@ -40,6 +40,12 @@ import {
   FetchAccountNftCollectionListResult,
   FetchAccountNftCollectionItemListParams,
   FetchAccountNftCollectionItemListResult,
+  GetAccountAssetsByKeywordsParams,
+  GetAccountAssetsByKeywordsResult,
+  GetRecentTransactionParams,
+  RecentTransactionResponse,
+  GetContractAddressesParams,
+  GetContractListApiType,
 } from 'network/dto/query';
 import { selectCurrentBackendConfig } from 'utils/commonUtil';
 import { CheckPaymentSecurityRuleParams, CheckPaymentSecurityRuleResult } from 'network/dto/security';
@@ -375,6 +381,66 @@ export class NetworkControllerEntity {
         maxResultCount,
         width: 16,
         height: 16,
+      },
+    );
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  /**
+   * Fetch all the user assets including NFTs and tokens.
+   */
+  searchUserAssets = async (config: GetAccountAssetsByKeywordsParams) => {
+    const { caAddressInfos, skipCount = 0, maxResultCount = 100, keyword } = config;
+    const res = await this.realExecute<GetAccountAssetsByKeywordsResult>(
+      await this.parseUrl(APIPaths.SEARCH_USER_ASSETS),
+      'POST',
+      {
+        caAddressInfos,
+        skipCount,
+        keyword,
+        maxResultCount,
+        width: 16,
+        height: 16,
+      },
+    );
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  /**
+   * Get the addresses from recent transactions.
+   */
+  getRecentTransactionAddresses = async (config: GetRecentTransactionParams) => {
+    const { caAddressInfos, skipCount = 0, maxResultCount = 100 } = config;
+    const res = await this.realExecute<RecentTransactionResponse>(
+      await this.parseUrl(APIPaths.GET_RECENT_ADDRESS),
+      'POST',
+      {
+        caAddressInfos,
+        skipCount,
+        maxResultCount,
+      },
+    );
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  /**
+   * Read addresses from user's contract info.
+   */
+  getContractAddresses = async (config?: GetContractAddressesParams) => {
+    const { keyword = '', page = 1, size = 500, modificationTime = Date.now() } = config || {};
+    const res = await this.realExecute<GetContractListApiType>(
+      await this.parseUrl(APIPaths.READ_CONTRACTS_ADDRESS),
+      'GET',
+      {
+        filter: `modificationTime: [* TO ${modificationTime}] AND isDeleted: false`,
+        sort: 'modificationTime',
+        sortType: 0,
+        skipCount: (page - 1) * size,
+        maxResultCount: size,
+        keyword,
       },
     );
     if (!res?.result) throw new Error('network failure');
