@@ -36,6 +36,7 @@ export enum APIPaths {
   GET_RECENT_ADDRESS = '/api/app/user/assets/recentTransactionUsers',
   READ_CONTRACTS_ADDRESS = '/api/app/contacts/list',
   GET_RECENT_ACTIVITIES = '/api/app/user/activities/activities',
+  GET_ACTIVITY_INFO = '/api/app/user/activities/activity',
 
   // security service
   CHECK_TRANSFER_LIMIT = '/api/app/user/security/transferLimit',

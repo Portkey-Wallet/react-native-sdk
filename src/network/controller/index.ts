@@ -48,6 +48,8 @@ import {
   GetContractListApiType,
   IActivitiesApiResponse,
   IActivitiesApiParams,
+  IActivityApiParams,
+  ActivityItemType,
 } from 'network/dto/query';
 import { selectCurrentBackendConfig } from 'utils/commonUtil';
 import { CheckPaymentSecurityRuleParams, CheckPaymentSecurityRuleResult } from 'network/dto/security';
@@ -488,6 +490,20 @@ export class NetworkControllerEntity {
         height,
       },
     );
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  /**
+   * check one particular activity item info
+   */
+  getActivityInfo = async (config: IActivityApiParams) => {
+    const { transactionId, blockHash, caAddresses } = config;
+    const res = await this.realExecute<ActivityItemType>(await this.parseUrl(APIPaths.GET_ACTIVITY_INFO), 'POST', {
+      transactionId,
+      blockHash,
+      caAddresses,
+    });
     if (!res?.result) throw new Error('network failure');
     return res.result;
   };

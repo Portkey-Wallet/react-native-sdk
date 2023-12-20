@@ -3,7 +3,7 @@ import { TransactionTypes } from 'packages/constants/constants-ca/activity';
 import { CaHolderInfo, IImInfo } from 'packages/im';
 import { ITokenInfoType, INftInfoType } from 'packages/store/store-ca/assets/type';
 import { ChainId } from 'packages/types';
-import { ActivityItemType } from 'packages/types/types-ca/activity';
+import { NftInfo, TransactionFees } from 'packages/types/types-ca/activity';
 
 export interface SearchTokenListParams {
   keyword?: string; // used to filter token list, can be empty
@@ -165,7 +165,7 @@ export interface IActivitiesApiParams {
   transactionTypes?: TransactionTypes[]; // if not provided, it's all types
   maxResultCount?: number;
   skipCount?: number;
-  // symbol?: string;
+  // symbol?: string; // for some reason, this field is not recommended to be used
   width?: number;
   height?: number;
 }
@@ -174,3 +174,34 @@ export interface IActivitiesApiResponse {
   data: ActivityItemType[];
   totalRecordCount: number;
 }
+
+export interface IActivityApiParams {
+  transactionId: string;
+  blockHash: string;
+  caAddresses: string[];
+}
+
+export type ActivityItemType = {
+  chainId: string;
+  transactionType: TransactionTypes;
+  transactionName?: string; // item title
+  from: string; // wallet name
+  to: string; // to user nick name
+  fromAddress: string;
+  toAddress: string;
+  fromChainId: ChainId;
+  toChainId: ChainId;
+  status: string;
+  transactionId: string;
+  blockHash: string; // The chain may have forks, use transactionId and blockHash to uniquely determine the transaction
+  timestamp: string;
+  isReceived: boolean; // Is it a received transaction
+  amount: string;
+  symbol: string;
+  decimals?: string;
+  priceInUsd?: string;
+  nftInfo?: NftInfo;
+  transactionFees: TransactionFees[];
+  listIcon?: string;
+  isDelegated?: boolean;
+};
