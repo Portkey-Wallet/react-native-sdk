@@ -41,4 +41,5 @@ export enum APIPaths {
 
   // security service
   CHECK_TRANSFER_LIMIT = '/api/app/user/security/transferLimit',
+  CHECK_TRANSFER_SECURITY = '/api/app/user/security/balanceCheck',
 }

@@ -161,6 +161,21 @@ export const NetworkTestCases: Array<TestCase> = [
       testContext.assert(!!it, 'it should not be falsy');
       testContext.log(it, 'checkTransactionFee result');
     },
+  },
+  {
+    describe: 'check transfer security well',
+    run: async testContext => {
+      const {
+        caInfo: { caHash },
+        originChainId,
+      } = await getUnlockedWallet();
+      const it = await NetworkController.checkTransferSecurity({
+        caHash,
+        targetChainId: originChainId,
+      });
+      testContext.assert(!!it, 'it should not be falsy');
+      testContext.log(it, 'checkTransferSecurity result');
+    },
     useDetailsReport: true,
   },
 ];
