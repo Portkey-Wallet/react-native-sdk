@@ -24,6 +24,5 @@ export const ContractMethodTestCases: Array<TestCase> = [
         testContext.log(it, 'contract result');
       });
     },
-    useDetailsReport: true,
   },
 ];

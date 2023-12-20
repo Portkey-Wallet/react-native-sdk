@@ -54,7 +54,12 @@ import {
 import { selectCurrentBackendConfig } from 'utils/commonUtil';
 import { CheckPaymentSecurityRuleParams, CheckPaymentSecurityRuleResult } from 'network/dto/security';
 import { TransactionTypes } from 'packages/constants/constants-ca/activity';
-import { CheckTransactionFeeParams, CheckTransactionFeeResult } from 'network/dto/transaction';
+import {
+  CheckSecurityResult,
+  CheckTransactionFeeParams,
+  CheckTransactionFeeResult,
+  CheckTransferSecurityParams,
+} from 'network/dto/transaction';
 
 const DEFAULT_MAX_POLLING_TIMES = 50;
 const MAX_PAGE_LIMIT = 100;
@@ -519,6 +524,20 @@ export class NetworkControllerEntity {
       'GET',
       {
         chainIds,
+      },
+    );
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  checkTransferSecurity = async (config: CheckTransferSecurityParams) => {
+    const { caHash, targetChainId } = config;
+    const res = await this.realExecute<CheckSecurityResult>(
+      await this.parseUrl(APIPaths.CHECK_TRANSFER_SECURITY),
+      'GET',
+      {
+        caHash,
+        checkTransferSafeChainId: targetChainId,
       },
     );
     if (!res?.result) throw new Error('network failure');

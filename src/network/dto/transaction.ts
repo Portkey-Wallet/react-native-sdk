@@ -1,3 +1,5 @@
+import { IAccelerateGuardian } from '@portkey/services';
+
 export interface CheckTransactionFeeParams {
   chainIds: string[];
 }
@@ -10,3 +12,15 @@ export interface TransactionFeeItem {
   max: string;
   redPackage: string;
 }
+
+export interface CheckTransferSecurityParams {
+  caHash: string;
+  targetChainId: string;
+}
+
+export type CheckSecurityResult = {
+  isTransferSafe: boolean;
+  isSynchronizing: boolean;
+  isOriginChainSafe: boolean;
+  accelerateGuardians: IAccelerateGuardian[];
+};
