@@ -165,7 +165,7 @@ export interface IActivitiesApiParams {
   transactionTypes?: TransactionTypes[]; // if not provided, it's all types
   maxResultCount?: number;
   skipCount?: number;
-  // symbol?: string; // for some reason, this field is not recommended to be used
+  symbol?: string; // if you want to filter by symbol, provide it
   width?: number;
   height?: number;
 }
