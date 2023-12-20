@@ -151,6 +151,16 @@ export const NetworkTestCases: Array<TestCase> = [
         testContext.log(them, 'getActivityInfo result');
       }
     },
+  },
+  {
+    describe: 'check transaction fee',
+    run: async testContext => {
+      const it = await NetworkController.getTransactionFee({
+        chainIds: ['AELF'],
+      });
+      testContext.assert(!!it, 'it should not be falsy');
+      testContext.log(it, 'checkTransactionFee result');
+    },
     useDetailsReport: true,
   },
 ];

@@ -54,6 +54,7 @@ import {
 import { selectCurrentBackendConfig } from 'utils/commonUtil';
 import { CheckPaymentSecurityRuleParams, CheckPaymentSecurityRuleResult } from 'network/dto/security';
 import { TransactionTypes } from 'packages/constants/constants-ca/activity';
+import { CheckTransactionFeeParams, CheckTransactionFeeResult } from 'network/dto/transaction';
 
 const DEFAULT_MAX_POLLING_TIMES = 50;
 const MAX_PAGE_LIMIT = 100;
@@ -470,7 +471,7 @@ export class NetworkControllerEntity {
         TransactionTypes.TRANSFER_RED_PACKET,
       ],
       chainId,
-      // symbol,
+      symbol,
       width = DEFAULT_IMAGE_SIZE,
       height = -1,
     } = config;
@@ -485,7 +486,7 @@ export class NetworkControllerEntity {
         managerAddresses,
         transactionTypes,
         chainId,
-        // symbol,
+        symbol,
         width,
         height,
       },
@@ -504,6 +505,22 @@ export class NetworkControllerEntity {
       blockHash,
       caAddresses,
     });
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  /**
+   * get transaction fee on chains
+   */
+  getTransactionFee = async (config: CheckTransactionFeeParams) => {
+    const { chainIds } = config;
+    const res = await this.realExecute<CheckTransactionFeeResult>(
+      await this.parseUrl(APIPaths.CHECK_TRANSACTION_FEE),
+      'GET',
+      {
+        chainIds,
+      },
+    );
     if (!res?.result) throw new Error('network failure');
     return res.result;
   };
