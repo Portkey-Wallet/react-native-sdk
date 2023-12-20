@@ -127,7 +127,7 @@ export const NetworkTestCases: Array<TestCase> = [
     },
   },
   {
-    describe: 'get account recent activities',
+    describe: 'get account recent activities and check one activity info',
     run: async testContext => {
       const { multiCaAddresses, address, originChainId } = await getUnlockedWallet({ getMultiCaAddresses: true });
       const it = await NetworkController.getRecentActivities({
@@ -140,6 +140,16 @@ export const NetworkTestCases: Array<TestCase> = [
       });
       testContext.assert(!!it, 'it should not be falsy');
       testContext.log(it, 'getRecentActivities result');
+      const activity = it.data[0];
+      if (activity) {
+        const them = await NetworkController.getActivityInfo({
+          transactionId: activity.transactionId,
+          blockHash: activity.blockHash,
+          caAddresses: Object.values(multiCaAddresses),
+        });
+        testContext.assert(!!them, 'activity info should not be falsy');
+        testContext.log(them, 'getActivityInfo result');
+      }
     },
     useDetailsReport: true,
   },
