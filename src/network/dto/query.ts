@@ -1,7 +1,9 @@
 import { AddressItem, BaseListResponse, RecentContactItemType } from '@portkey/services';
+import { TransactionTypes } from 'packages/constants/constants-ca/activity';
 import { CaHolderInfo, IImInfo } from 'packages/im';
 import { ITokenInfoType, INftInfoType } from 'packages/store/store-ca/assets/type';
 import { ChainId } from 'packages/types';
+import { ActivityItemType } from 'packages/types/types-ca/activity';
 
 export interface SearchTokenListParams {
   keyword?: string; // used to filter token list, can be empty
@@ -154,4 +156,21 @@ export interface ContactItemType {
   caHolderInfo?: Partial<CaHolderInfo>;
   imInfo?: Partial<IImInfo>;
   isImputation?: boolean;
+}
+
+export interface IActivitiesApiParams {
+  caAddressInfos: { chainId: string; caAddress: string }[];
+  managerAddresses: string[];
+  chainId: string;
+  transactionTypes?: TransactionTypes[]; // if not provided, it's all types
+  maxResultCount?: number;
+  skipCount?: number;
+  // symbol?: string;
+  width?: number;
+  height?: number;
+}
+
+export interface IActivitiesApiResponse {
+  data: ActivityItemType[];
+  totalRecordCount: number;
 }

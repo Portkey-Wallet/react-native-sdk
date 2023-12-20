@@ -46,11 +46,16 @@ import {
   RecentTransactionResponse,
   GetContractAddressesParams,
   GetContractListApiType,
+  IActivitiesApiResponse,
+  IActivitiesApiParams,
 } from 'network/dto/query';
 import { selectCurrentBackendConfig } from 'utils/commonUtil';
 import { CheckPaymentSecurityRuleParams, CheckPaymentSecurityRuleResult } from 'network/dto/security';
+import { TransactionTypes } from 'packages/constants/constants-ca/activity';
 
 const DEFAULT_MAX_POLLING_TIMES = 50;
+const MAX_PAGE_LIMIT = 100;
+const DEFAULT_IMAGE_SIZE = 294;
 
 const {
   CHECK_REGISTER_STATUS,
@@ -295,14 +300,14 @@ export class NetworkControllerEntity {
       filter: `${filterKeywords} AND (${chainIdSearchLanguage})`,
       sort: 'sortWeight desc,isDisplay  desc,token.symbol  acs,token.chainId acs',
       skipCount: 0,
-      maxResultCount: 1000,
+      maxResultCount: MAX_PAGE_LIMIT,
     });
     if (!res?.result) throw new Error('network failure');
     return res.result;
   };
 
   fetchUserTokenBalance = async (config: FetchBalanceConfig): Promise<FetchBalanceResult> => {
-    const { caAddressInfos, skipCount = 0, maxResultCount = 100 } = config;
+    const { caAddressInfos, skipCount = 0, maxResultCount = MAX_PAGE_LIMIT } = config;
     const res = await this.realExecute<FetchBalanceResult>(
       await this.parseUrl(APIPaths.GET_USER_TOKEN_STATUS),
       'POST',
@@ -353,7 +358,7 @@ export class NetworkControllerEntity {
   };
 
   fetchNetCollections = async (config: FetchAccountNftCollectionListParams) => {
-    const { caAddressInfos, skipCount = 0, maxResultCount = 100 } = config;
+    const { caAddressInfos, skipCount = 0, maxResultCount = MAX_PAGE_LIMIT } = config;
     const res = await this.realExecute<FetchAccountNftCollectionListResult>(
       await this.parseUrl(APIPaths.FETCH_NFT_COLLECTIONS),
       'POST',
@@ -361,8 +366,8 @@ export class NetworkControllerEntity {
         caAddressInfos,
         skipCount,
         maxResultCount,
-        width: 16,
-        height: 16,
+        width: DEFAULT_IMAGE_SIZE,
+        height: DEFAULT_IMAGE_SIZE,
       },
     );
     if (!res?.result) throw new Error('network failure');
@@ -370,7 +375,7 @@ export class NetworkControllerEntity {
   };
 
   fetchParticularNftItemList = async (config: FetchAccountNftCollectionItemListParams) => {
-    const { caAddressInfos, skipCount = 0, maxResultCount = 100, symbol } = config;
+    const { caAddressInfos, skipCount = 0, maxResultCount = MAX_PAGE_LIMIT, symbol } = config;
     const res = await this.realExecute<FetchAccountNftCollectionItemListResult>(
       await this.parseUrl(APIPaths.FETCH_NFT_COLLECTIONS_ITEM),
       'POST',
@@ -379,8 +384,8 @@ export class NetworkControllerEntity {
         skipCount,
         symbol,
         maxResultCount,
-        width: 16,
-        height: 16,
+        width: DEFAULT_IMAGE_SIZE,
+        height: DEFAULT_IMAGE_SIZE,
       },
     );
     if (!res?.result) throw new Error('network failure');
@@ -391,7 +396,7 @@ export class NetworkControllerEntity {
    * Fetch all the user assets including NFTs and tokens.
    */
   searchUserAssets = async (config: GetAccountAssetsByKeywordsParams) => {
-    const { caAddressInfos, skipCount = 0, maxResultCount = 100, keyword } = config;
+    const { caAddressInfos, skipCount = 0, maxResultCount = MAX_PAGE_LIMIT, keyword } = config;
     const res = await this.realExecute<GetAccountAssetsByKeywordsResult>(
       await this.parseUrl(APIPaths.SEARCH_USER_ASSETS),
       'POST',
@@ -412,7 +417,7 @@ export class NetworkControllerEntity {
    * Get the addresses from recent transactions.
    */
   getRecentTransactionAddresses = async (config: GetRecentTransactionParams) => {
-    const { caAddressInfos, skipCount = 0, maxResultCount = 100 } = config;
+    const { caAddressInfos, skipCount = 0, maxResultCount = MAX_PAGE_LIMIT } = config;
     const res = await this.realExecute<RecentTransactionResponse>(
       await this.parseUrl(APIPaths.GET_RECENT_ADDRESS),
       'POST',
@@ -430,7 +435,7 @@ export class NetworkControllerEntity {
    * Read addresses from user's contract info.
    */
   getContractAddresses = async (config?: GetContractAddressesParams) => {
-    const { keyword = '', page = 1, size = 500, modificationTime = Date.now() } = config || {};
+    const { keyword = '', page = 1, size = MAX_PAGE_LIMIT, modificationTime = Date.now() } = config || {};
     const res = await this.realExecute<GetContractListApiType>(
       await this.parseUrl(APIPaths.READ_CONTRACTS_ADDRESS),
       'GET',
@@ -441,6 +446,46 @@ export class NetworkControllerEntity {
         skipCount: (page - 1) * size,
         maxResultCount: size,
         keyword,
+      },
+    );
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  /**
+   * get account's recent action info
+   */
+  getRecentActivities = async (config: IActivitiesApiParams): Promise<IActivitiesApiResponse> => {
+    const {
+      maxResultCount = MAX_PAGE_LIMIT,
+      skipCount = 0,
+      caAddressInfos,
+      managerAddresses,
+      transactionTypes = [
+        TransactionTypes.TRANSFER,
+        TransactionTypes.CROSS_CHAIN_TRANSFER,
+        TransactionTypes.CLAIM_TOKEN,
+        TransactionTypes.TRANSFER_RED_PACKET,
+      ],
+      chainId,
+      // symbol,
+      width = DEFAULT_IMAGE_SIZE,
+      height = -1,
+    } = config;
+    const res = await this.realExecute<IActivitiesApiResponse>(
+      await this.parseUrl(APIPaths.GET_RECENT_ACTIVITIES),
+      'POST',
+      {
+        maxResultCount,
+        skipCount,
+        caAddresses: caAddressInfos.map(it => it.caAddress),
+        caAddressInfos,
+        managerAddresses,
+        transactionTypes,
+        chainId,
+        // symbol,
+        width,
+        height,
       },
     );
     if (!res?.result) throw new Error('network failure');

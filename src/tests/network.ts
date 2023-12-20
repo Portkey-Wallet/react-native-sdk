@@ -126,4 +126,21 @@ export const NetworkTestCases: Array<TestCase> = [
       testContext.log(it, 'readContractsAddress result');
     },
   },
+  {
+    describe: 'get account recent activities',
+    run: async testContext => {
+      const { multiCaAddresses, address, originChainId } = await getUnlockedWallet({ getMultiCaAddresses: true });
+      const it = await NetworkController.getRecentActivities({
+        caAddressInfos: Object.entries(multiCaAddresses).map(([chainId, caAddress]) => ({
+          chainId,
+          caAddress,
+        })),
+        managerAddresses: [address],
+        chainId: originChainId,
+      });
+      testContext.assert(!!it, 'it should not be falsy');
+      testContext.log(it, 'getRecentActivities result');
+    },
+    useDetailsReport: true,
+  },
 ];
