@@ -3,7 +3,7 @@ import { BaseConfig } from '../../types';
 const BASE_URL = `/api/app/contacts`;
 const KeyList = ['addContact', 'editContact', 'deleteContact', 'checkContactName', 'readImputation'] as const;
 
-const ApiObject: Record<typeof KeyList[number], BaseConfig> = {
+const ApiObject: Record<(typeof KeyList)[number], BaseConfig> = {
   addContact: {
     target: `${BASE_URL}`,
     config: { method: 'POST' },

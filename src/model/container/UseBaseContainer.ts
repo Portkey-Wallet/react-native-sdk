@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
-import { DeviceEventEmitter, EmitterSubscription } from 'react-native';
+import { EmitterSubscription } from 'react-native';
 import { EntryResult, PortkeyDeviceEventEmitter, RouterOptions, PortkeyModulesEntity } from 'service/native-modules';
 import { AcceptableValueType } from './BaseContainer';
 import BaseContainerContext from './BaseContainerContext';
