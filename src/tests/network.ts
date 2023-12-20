@@ -89,6 +89,41 @@ export const NetworkTestCases: Array<TestCase> = [
         testContext.log(them, 'getNftItems result');
       }
     },
-    useDetailsReport: true,
+  },
+  {
+    describe: 'check user assets well',
+    run: async testContext => {
+      const wallet = await getUnlockedWallet({ getMultiCaAddresses: true });
+      const it = await NetworkController.searchUserAssets({
+        caAddressInfos: Object.entries(wallet.multiCaAddresses).map(([chainId, caAddress]) => ({
+          chainId,
+          caAddress,
+        })),
+      });
+      testContext.assert(!!it, 'it should not be falsy');
+      testContext.log(it, 'checkUserAssets result');
+    },
+  },
+  {
+    describe: 'get recent transaction address',
+    run: async testContext => {
+      const wallet = await getUnlockedWallet({ getMultiCaAddresses: true });
+      const it = await NetworkController.getRecentTransactionAddresses({
+        caAddressInfos: Object.entries(wallet.multiCaAddresses).map(([chainId, caAddress]) => ({
+          chainId,
+          caAddress,
+        })),
+      });
+      testContext.assert(!!it, 'it should not be falsy');
+      testContext.log(it, 'getRecentTransactionUsers result');
+    },
+  },
+  {
+    describe: 'get contracts address',
+    run: async testContext => {
+      const it = await NetworkController.getContractAddresses();
+      testContext.assert(!!it, 'it should not be falsy');
+      testContext.log(it, 'readContractsAddress result');
+    },
   },
 ];

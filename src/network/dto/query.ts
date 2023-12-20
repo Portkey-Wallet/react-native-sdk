@@ -101,8 +101,8 @@ export type INftCollectionItem = {
 };
 
 export type GetAccountAssetsByKeywordsParams = {
-  maxResultCount: number;
-  skipCount: number;
+  maxResultCount?: number;
+  skipCount?: number;
   keyword?: string;
   caAddressInfos: CaAddressInfosType;
   width?: number;
