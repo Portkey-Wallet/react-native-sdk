@@ -33,10 +33,10 @@ const useBaseContainer = (props: BaseContainerHookedProps): BaseContainerHooks =
     };
   }, [onShow, containerId, onNewIntent]);
 
-  const getEntryName = useCallback(
-    () => entryName ?? baseContainerContext.entryName,
-    [entryName, baseContainerContext.entryName],
-  );
+  const getEntryName = useCallback(() => {
+    const name = entryName ?? baseContainerContext.entryName;
+    return wrapEntry(name);
+  }, [entryName, baseContainerContext.entryName]);
 
   const navigateTo = useCallback(
     <T = { [x: string]: AcceptableValueType }>(
