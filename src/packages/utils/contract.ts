@@ -19,7 +19,7 @@ export interface ContractProps {
   rpcUrl: string;
 }
 
-interface ErrorMsg {
+export interface ErrorMsg {
   error: {
     name?: string;
     code: number;
