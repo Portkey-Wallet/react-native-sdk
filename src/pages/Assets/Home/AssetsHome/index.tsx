@@ -91,7 +91,7 @@ const AssetsHome: React.FC = () => {
             </>
           )}
           <View style={styles.spacerStyle} />
-          <ActivityButton themeType="dashBoard" />
+          <ActivityButton themeType="dashBoard" entryName={PortkeyEntries.ASSETS_HOME_ENTRY} />
         </View>
       </View>
       <DashBoardTab />
