@@ -151,9 +151,9 @@ const ActivityDetail = ({ item, caAddresses }: ActivityDetailPropsType) => {
                   <TextM style={[styles.blackFontColor, styles.fontBold]}>{`${divDecimalsStr(
                     it?.fee ?? 0,
                     ELF_DECIMAL,
-                  )} ${item.symbol}`}</TextM>
+                  )} ${it.symbol}`}</TextM>
                   {!isTestnet && (
-                    <TextS style={[styles.lightGrayFontColor, styles.marginTop4]}>{`$ ${formatAmountUSDShow(
+                    <TextS style={[styles.lightGrayFontColor, styles.marginTop4]}>{`${formatAmountUSDShow(
                       it?.feeInUsd ?? 0,
                     )}`}</TextS>
                   )}
@@ -164,7 +164,7 @@ const ActivityDetail = ({ item, caAddresses }: ActivityDetailPropsType) => {
         </View>
       </View>
     );
-  }, [activityItem?.isDelegated, activityItem?.transactionFees, defaultToken.symbol, isTestnet, item.symbol, t]);
+  }, [activityItem?.isDelegated, activityItem?.transactionFees, defaultToken.symbol, isTestnet, t]);
 
   const amountShow = useMemo(() => {
     return `${activityItem?.isReceived ? '+' : '-'} ${divDecimalsStr(activityItem?.amount, activityItem?.decimals)} ${
