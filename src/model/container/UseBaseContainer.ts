@@ -49,7 +49,7 @@ const useBaseContainer = (props: BaseContainerHookedProps): BaseContainerHooks =
         params?: T;
         targetScene?: string;
         closeCurrentScreen?: boolean;
-      },
+      } = {},
     ) => {
       PortkeyModulesEntity.RouterModule.navigateTo(
         wrapEntry(entry),
@@ -130,7 +130,7 @@ export interface BaseContainerHooks {
   getEntryName: () => string;
   navigateTo: <T = { [x: string]: AcceptableValueType }>(
     entry: string,
-    option: {
+    option?: {
       params?: T;
       targetScene?: string;
       closeCurrentScreen?: boolean;

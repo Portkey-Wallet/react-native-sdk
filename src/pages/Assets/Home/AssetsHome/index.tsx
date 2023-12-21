@@ -15,6 +15,7 @@ import AssetsContext, { AssetsContextType } from 'global/context/assets/AssetsCo
 import { divDecimals } from 'packages/utils/converter';
 import { ZERO } from 'packages/constants/misc';
 import { PortkeyEntries } from 'config/entries';
+import ActivityButton from '../ActivityButton';
 
 const AssetsHome: React.FC = () => {
   const { wallet } = useUnlockedWallet();
@@ -89,7 +90,8 @@ const AssetsHome: React.FC = () => {
               <FaucetButton themeType="dashBoard" />
             </>
           )}
-          {/* <ActivityButton themeType="dashBoard" /> */}
+          <View style={styles.spacerStyle} />
+          <ActivityButton themeType="dashBoard" />
         </View>
       </View>
       <DashBoardTab />
