@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
 import { StyleSheet, FlatList } from 'react-native';
 import PageContainer from 'components/PageContainer';
 import { pTd } from 'utils/unit';
@@ -8,14 +8,19 @@ import NoData from 'components/NoData';
 import { ActivityItemType } from 'network/dto/query';
 import { ON_END_REACHED_THRESHOLD } from 'packages/constants/constants-ca/activity';
 import TransferItem from 'components/TransferList/components/TransferItem';
-import { useUnlockedWallet } from 'model/wallet';
+import { getUnlockedWallet, useUnlockedWallet } from 'model/wallet';
 import useBaseContainer from 'model/container/UseBaseContainer';
 import { PortkeyEntries } from 'config/entries';
 import { NetworkController } from 'network/controller';
+import { ActivityDetailPropsType } from '../ActivityDetail';
 
 const ActivityListPage = () => {
   const { t } = useLanguage();
   const { wallet } = useUnlockedWallet({ getMultiCaAddresses: true });
+  const caAddresses = useMemo(() => {
+    if (!wallet) return {};
+    return Object.entries(wallet.multiCaAddresses).map(it => it[1]);
+  }, [wallet]);
   const { navigateTo } = useBaseContainer({
     entryName: PortkeyEntries.ACTIVITY_LIST_ENTRY,
   });
@@ -27,10 +32,11 @@ const ActivityListPage = () => {
 
   const isLoadingRef = useRef(false);
   const getActivityList = async (isInit: boolean) => {
-    if (!wallet || !wallet.address) return;
+    const instantWallet = await getUnlockedWallet({ getMultiCaAddresses: true });
+    if (!instantWallet || !instantWallet.address) return;
     const { activityList = [], skipCount = 0 } = currentActivity;
     const maxResultCount = 30;
-    const { originChainId, multiCaAddresses, address } = wallet;
+    const { originChainId, multiCaAddresses, address } = instantWallet;
     if (!isInit && activityList?.length >= currentActivity.totalRecordCount) return;
     if (isLoadingRef.current) return;
     isLoadingRef.current = true;
@@ -62,11 +68,15 @@ const ActivityListPage = () => {
       return (
         <TransferItem
           item={item}
-          onPress={() => navigateTo(PortkeyEntries.ACTIVITY_DETAIL_ENTRY, { params: { item } })}
+          onPress={() =>
+            navigateTo(PortkeyEntries.ACTIVITY_DETAIL_ENTRY, {
+              params: { item, caAddresses } as Partial<ActivityDetailPropsType>,
+            })
+          }
         />
       );
     },
-    [navigateTo],
+    [caAddresses, navigateTo],
   );
 
   const [refreshing, setRefreshing] = useState(false);

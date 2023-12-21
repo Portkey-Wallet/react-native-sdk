@@ -16,7 +16,6 @@ import { pTd } from 'utils/unit';
 import CommonAvatar from 'components/CommonAvatar';
 import { ActivityItemType } from 'network/dto/query';
 import { SHOW_FROM_TRANSACTION_TYPES, ELF_DECIMAL, TransactionTypes } from 'packages/constants/constants-ca/activity';
-import { fetchActivity } from 'packages/store/store-ca/activity/api';
 import { TransactionStatus } from 'packages/types/types-ca/activity';
 import {
   formatChainInfoToShow,
@@ -30,6 +29,7 @@ import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
 import useBaseContainer from 'model/container/UseBaseContainer';
 import { PortkeyEntries } from 'config/entries';
 import { useTokenPrices } from 'model/hooks/balance';
+import { NetworkController } from 'network/controller';
 
 export interface ActivityDetailPropsType {
   item: ActivityItemType;
@@ -39,7 +39,7 @@ export interface ActivityDetailPropsType {
 const ActivityDetail = ({ item, caAddresses }: ActivityDetailPropsType) => {
   const { t } = useLanguage();
   const { defaultToken, currentNetwork, explorerUrl } = useCommonNetworkInfo();
-  const { transactionId = '', blockHash = '', isReceived: isReceivedParams } = item;
+  const { transactionId = '', blockHash = '' } = item;
   const [activityItem, setActivityItem] = useState<ActivityItemType>();
   const isTestnet = useMemo(() => currentNetwork === 'TESTNET', [currentNetwork]);
   const { tokenPrices } = useTokenPrices();
@@ -51,22 +51,13 @@ const ActivityDetail = ({ item, caAddresses }: ActivityDetailPropsType) => {
     [item.symbol, tokenPrices],
   );
 
-  useEffectOnce(() => {
-    const params = {
+  useEffectOnce(async () => {
+    const fetchActivityItem = await NetworkController.getActivityInfo({
       caAddresses,
       transactionId,
       blockHash,
-    };
-    fetchActivity(params)
-      .then(res => {
-        if (isReceivedParams !== undefined) {
-          res.isReceived = isReceivedParams;
-        }
-        setActivityItem(res);
-      })
-      .catch(error => {
-        throw Error(JSON.stringify(error));
-      });
+    });
+    setActivityItem(fetchActivityItem);
   });
 
   const isNft = useMemo(() => !!activityItem?.nftInfo?.nftId, [activityItem?.nftInfo?.nftId]);

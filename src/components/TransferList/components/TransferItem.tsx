@@ -2,24 +2,20 @@ import { defaultColors } from 'assets/theme';
 import { FontStyles } from 'assets/theme/styles';
 import GStyles from 'assets/theme/GStyles';
 import { useLanguage } from 'i18n/hooks';
-import React, { memo, useCallback, useMemo, useRef } from 'react';
+import React, { memo, useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { pTd } from 'utils/unit';
-import { fonts } from '@rneui/base';
-import ActionSheet from 'components/ActionSheet';
+import fonts from 'assets/theme/fonts';
 import CommonAvatar from 'components/CommonAvatar';
-import CommonButton from 'components/CommonButton';
-import CommonToast from 'components/CommonToast';
-import Loading from 'components/Loading';
 import { ActivityItemType } from 'network/dto/query';
 import { SHOW_FROM_TRANSACTION_TYPES, TransactionTypes } from 'packages/constants/constants-ca/activity';
 import { ZERO } from 'packages/constants/misc';
-import { getContractBasic } from 'packages/contracts/utils';
-import { removeFailedActivity } from 'packages/store/store-ca/activity/slice';
-import { formatStr2EllipsisStr, addressFormat, formatChainInfoToShow } from 'packages/utils';
-import { ContractBasic } from 'packages/utils/contract';
+import { formatStr2EllipsisStr, addressFormat, formatChainInfoToShow, formatTransferTime } from 'packages/utils';
 import { AmountSign, divDecimalsStr, formatAmountShow, divDecimals } from 'packages/utils/converter';
+import { getEllipsisTokenShow } from 'utils/commonUtil';
+import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
+import { useTokenPrices } from 'model/hooks/balance';
 
 interface ActivityItemPropsType {
   item?: ActivityItemType;
@@ -28,15 +24,12 @@ interface ActivityItemPropsType {
 
 const ActivityItem: React.FC<ActivityItemPropsType> = ({ item, onPress }) => {
   const { t } = useLanguage();
-  const activity = useAppCASelector(state => state.activity);
-  const tokenContractRef = useRef<ContractBasic>();
-  const currentChainList = useCurrentChainList();
-  const [tokenPriceObject] = useGetCurrentAccountTokenPrice();
-  const isMainnet = useIsMainnet();
-  const isTokenHasPrice = useIsTokenHasPrice(item?.symbol);
-
-  const pin = usePin();
-  const dispatch = useAppDispatch();
+  const { currentNetwork } = useCommonNetworkInfo();
+  const isMainnet = useMemo(() => currentNetwork === 'MAIN', [currentNetwork]);
+  const { tokenPrices = [] } = useTokenPrices();
+  const isTokenHasPrice = useMemo(() => {
+    return tokenPrices.find(token => token.symbol === item?.symbol) ? true : false;
+  }, [item?.symbol, tokenPrices]);
 
   const amountString = useMemo(() => {
     const { amount = '', isReceived, decimals = 8, symbol } = item || {};
@@ -48,58 +41,55 @@ const ActivityItem: React.FC<ActivityItemPropsType> = ({ item, onPress }) => {
     return `${prefix} ${tmpAmount}`;
   }, [item]);
 
-  const showRetry = useCallback(
-    (retryFunc: () => void) => {
-      ActionSheet.alert({
-        title: t('Transaction failed ！'),
-        buttons: [
-          {
-            title: t('Resend'),
-            type: 'solid',
-            onPress: () => {
-              retryFunc();
-            },
-          },
-        ],
-      });
-    },
-    [t],
-  );
+  // const showRetry = useCallback(
+  //   (retryFunc: () => void) => {
+  //     ActionSheet.alert({
+  //       title: t('Transaction failed !'),
+  //       buttons: [
+  //         {
+  //           title: t('Resend'),
+  //           type: 'solid',
+  //           onPress: () => {
+  //             retryFunc();
+  //           },
+  //         },
+  //       ],
+  //     });
+  //   },
+  //   [t],
+  // );
 
-  const retryCrossChain = useCallback(
-    async (managerTransferTxId: string, data: CrossChainTransferParamsType) => {
-      const chainInfo = currentChainList?.find(chain => chain.chainId === data.tokenInfo.chainId);
-      if (!chainInfo || !pin) return;
-      const account = getManagerAccount(pin);
-      if (!account) return;
+  // const retryCrossChain = useCallback(
+  //   async (managerTransferTxId: string, data: CrossChainTransferParamsType) => {
+  //     const { privateKey } = wallet || {};
+  //     if (!peerUrl || !privateKey) return;
+  //     Loading.show();
+  //     try {
+  //       if (!tokenContractRef.current) {
+  //         tokenContractRef.current = await getContractBasic({
+  //           contractAddress: data.tokenInfo.address,
+  //           rpcUrl: peerUrl,
+  //           account: AElfWeb3SDK.getWalletByPrivateKey(privateKey),
+  //         });
+  //       }
+  //       const tokenContract = tokenContractRef.current;
+  //       await intervalCrossChainTransfer(tokenContract, data);
+  //       dispatch(removeFailedActivity(managerTransferTxId));
+  //       CommonToast.success('success');
+  //     } catch (error) {
+  //       showRetry(() => {
+  //         retryCrossChain(managerTransferTxId, data);
+  //       });
+  //     }
+  //     Loading.hide();
+  //   },
+  //   [peerUrl, showRetry, wallet],
+  // );
 
-      Loading.show();
-      try {
-        if (!tokenContractRef.current) {
-          tokenContractRef.current = await getContractBasic({
-            contractAddress: data.tokenInfo.address,
-            rpcUrl: chainInfo.endPoint,
-            account,
-          });
-        }
-        const tokenContract = tokenContractRef.current;
-        await intervalCrossChainTransfer(tokenContract, data);
-        dispatch(removeFailedActivity(managerTransferTxId));
-        CommonToast.success('success');
-      } catch (error) {
-        showRetry(() => {
-          retryCrossChain(managerTransferTxId, data);
-        });
-      }
-      Loading.hide();
-    },
-    [currentChainList, dispatch, pin, showRetry],
-  );
-
-  const onResend = useCallback(() => {
-    const { params } = activity.failedActivityMap[item?.transactionId || ''];
-    retryCrossChain(item?.transactionId || '', params);
-  }, [activity.failedActivityMap, item?.transactionId, retryCrossChain]);
+  // const onResend = useCallback(() => {
+  //   const { params } = activity.failedActivityMap[item?.transactionId || ''];
+  //   retryCrossChain(item?.transactionId || '', params);
+  // }, [activity.failedActivityMap, item?.transactionId, retryCrossChain]);
 
   const RightDom = useMemo(() => {
     return SHOW_FROM_TRANSACTION_TYPES.includes(item?.transactionType as TransactionTypes) ? (
@@ -111,7 +101,7 @@ const ActivityItem: React.FC<ActivityItemPropsType> = ({ item, onPress }) => {
           {isMainnet && !item?.nftInfo && (isTokenHasPrice || item?.symbol === null)
             ? `$ ${formatAmountShow(
                 divDecimals(item?.amount, Number(item?.decimals)).multipliedBy(
-                  item ? tokenPriceObject[item?.symbol] : 0,
+                  item ? tokenPrices.find(token => token.symbol === item?.symbol)?.priceInUsd || 0 : 0,
                 ),
                 2,
               )}`
@@ -126,13 +116,15 @@ const ActivityItem: React.FC<ActivityItemPropsType> = ({ item, onPress }) => {
         </Text>
         {isMainnet && !item?.nftInfo && (isTokenHasPrice || item?.symbol === null) && (
           <Text style={itemStyle.usdtBalance}>{`$ ${formatAmountShow(
-            divDecimals(item?.amount, Number(item?.decimals)).multipliedBy(item ? tokenPriceObject[item?.symbol] : 0),
+            divDecimals(item?.amount, Number(item?.decimals)).multipliedBy(
+              item ? tokenPrices.find(token => token.symbol === item?.symbol)?.priceInUsd || 0 : 0,
+            ),
             2,
           )}`}</Text>
         )}
       </View>
     );
-  }, [amountString, isMainnet, isTokenHasPrice, item, tokenPriceObject]);
+  }, [amountString, isMainnet, isTokenHasPrice, item, tokenPrices]);
 
   return (
     <TouchableOpacity style={itemStyle.itemWrap} onPress={() => onPress?.(item)}>
@@ -163,7 +155,7 @@ const ActivityItem: React.FC<ActivityItemPropsType> = ({ item, onPress }) => {
         </View>
         {RightDom}
       </View>
-      {activity.failedActivityMap[item?.transactionId || ''] && (
+      {/* {activity.failedActivityMap[item?.transactionId || ''] && (
         <View style={itemStyle.btnWrap}>
           <CommonButton
             title="Resend"
@@ -173,7 +165,7 @@ const ActivityItem: React.FC<ActivityItemPropsType> = ({ item, onPress }) => {
             onPress={onResend}
           />
         </View>
-      )}
+      )} */}
     </TouchableOpacity>
   );
 };
