@@ -21,6 +21,7 @@ export default abstract class BaseContainer<
 
   private onShowEventListener: any = null;
   private onNewIntentEventListener: any = null;
+  private entryName = wrapEntry(this.getEntryName());
 
   componentDidMount(): void {
     this.onShow();
@@ -48,7 +49,7 @@ export default abstract class BaseContainer<
     PortkeyModulesEntity.RouterModule.navigateTo(
       wrapEntry(entry),
       LaunchModeSet.get(entry) || LaunchMode.STANDARD,
-      this.getEntryName(),
+      this.entryName,
       targetScene ?? 'none',
       closeCurrentScreen ?? false,
       params,
@@ -64,7 +65,7 @@ export default abstract class BaseContainer<
     PortkeyModulesEntity.RouterModule.navigateToWithOptions(
       wrapEntry(entry),
       LaunchModeSet.get(entry) || LaunchMode.STANDARD,
-      this.getEntryName(),
+      this.entryName,
       {
         params: params ?? ({} as any),
         closeCurrentScreen: closeCurrentScreen ?? false,
@@ -87,15 +88,15 @@ export default abstract class BaseContainer<
   };
 
   onError = (err: Error) => {
-    PortkeyModulesEntity.NativeWrapperModule.onError(this.getEntryName(), err.message, { stack: err.stack });
+    PortkeyModulesEntity.NativeWrapperModule.onError(this.entryName, err.message, { stack: err.stack });
   };
 
   onFatal = (err: Error) => {
-    PortkeyModulesEntity.NativeWrapperModule.onFatalError(this.getEntryName(), err.message, { stack: err.stack });
+    PortkeyModulesEntity.NativeWrapperModule.onFatalError(this.entryName, err.message, { stack: err.stack });
   };
 
   onWarn = (msg: string) => {
-    PortkeyModulesEntity.NativeWrapperModule.onWarning(this.getEntryName(), msg);
+    PortkeyModulesEntity.NativeWrapperModule.onWarning(this.entryName, msg);
   };
 
   abstract getEntryName(): string;
