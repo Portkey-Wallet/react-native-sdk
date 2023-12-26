@@ -3,6 +3,7 @@
 app_android/
 app_ios/
 app_react_native/
+app_expo/
 backup/
 js/
 node_modules/
