@@ -18,20 +18,7 @@ yarn add @portkey/react-native-sdk
 
 ### Step 2: Configure your project
 
-1. Create .env file
-
-    In order to use Google login, You need to create an __.env__ file in the same directory as __package.json__, which must contain __GOOGLE_WEB_CLIENT_ID__, __GOOGLE_IOS_CLIENT_ID__ and __GOOGLE_ANDROID_CLIENT_ID__.
-
-    See [Configure Google Login For Portkey SDK](https://github.com/Portkey-Wallet/react-native-sdk/blob/master/docs/google-login.md) for details.
-
-    ``` properties
-    # .env file like this
-    GOOGLE_WEB_CLIENT_ID = "your google web client id"
-    GOOGLE_IOS_CLIENT_ID = "your google ios client id"
-    GOOGLE_ANDROID_CLIENT_ID = "your google android client id"
-    ```
-
-2. Change your expo's generated project to bare workflow
+1. Change your expo's generated project to bare workflow
 
     Our SDK contains `NativeModules` code which is written in native language, so it will not work properly on Expo Go since if will only compile js/ts codes.
 
@@ -45,7 +32,7 @@ yarn add @portkey/react-native-sdk
 
     After that, you can find a new directory named `ios` and `android` in your project directory.
 
-3. Install the ```expo-dev-client```
+2. Install the ```expo-dev-client```
 
     ```expo-dev-client``` is a package that allows you to use Expo Go to run your bare workflow project. See [Expo Dev Client](https://docs.expo.dev/clients/introduction/) for details.
 
@@ -53,13 +40,11 @@ yarn add @portkey/react-native-sdk
     yarn add expo-dev-client
     ```
 
-    The next step is to generate your bare workflow apps. If you have the experience to support native projects Configuration, you can use ```XCode``` and ```Android Studio``` to open the ```android``` and ```ios``` directories and compile your project. If not, you should follow the instructions in the [Expo Dev Build](https://docs.expo.dev/develop/development-builds/create-a-build/#prerequisites) to configure your project.
+    The next step is to generate your bare workflow apps. If you have the experience to support native projects Configuration, you can use ```XCode``` and ```Android Studio``` to open the ```android``` and ```ios``` directories and compile your project. If not, you should follow the instructions in the [Expo Dev Build](https://docs.expo.dev/develop/development-builds/create-a-build/#prerequisites) to finish development builds.
 
-    Once you finish installing the APPs compiled by those generated projects, open it on your device and run ```yarn start``` to start the metro bundler, and press ```R``` button to start reloading bundles.
+3. Ensure you are using the correct version of required dependencies
 
-4. Ensure you are using the correct version of required dependencies
-
-    You should provide the ```resolution``` field in your package.json file to make sure we are using the same version of ```react-native```.
+    You should provide the ```resolution``` field in your package.json file to make sure we are using the same version of important dependencies.
 
     For example, if you are using react-native v0.72.4 and expo v49.0.0, you should add the following code to your package.json file:
 
@@ -77,6 +62,21 @@ yarn add @portkey/react-native-sdk
       }
     }
     ```
+
+4. Create .env file
+
+    In order to use Google login, You need to create an __.env__ file in the same directory as __package.json__, which must contain __GOOGLE_WEB_CLIENT_ID__, __GOOGLE_IOS_CLIENT_ID__ and __GOOGLE_ANDROID_CLIENT_ID__.
+
+    See [Configure Google Login For Portkey SDK](https://github.com/Portkey-Wallet/react-native-sdk/blob/master/docs/google-login.md) for details.
+
+    ``` properties
+    # .env file like this
+    GOOGLE_WEB_CLIENT_ID = "your google web client id"
+    GOOGLE_IOS_CLIENT_ID = "your google ios client id"
+    GOOGLE_ANDROID_CLIENT_ID = "your google android client id"
+    ```
+
+Once you finish installing the APPs compiled by those generated projects, open it on your device and run ```yarn start``` to start the metro bundler, and press ```R``` button to start reloading bundles.
 
 Now, all configuration is complete and you can use the portkey service freely.
 
