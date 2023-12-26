@@ -6,7 +6,7 @@ This readme.md doc is presented for pure expo-cli project. If you are using reac
 
 ## Installation
 
-__Note: react-native's version should be less than v0.73.0 !__
+__Note that: we recommend that your react-native's version should be v0.72.X, and expo's version should be v49.X.X.__
 
 ### Step 1: Install npm package
 
@@ -43,9 +43,7 @@ yarn add @portkey/react-native-sdk
     expo prebuild
     ```
 
-    after that, you can find a new directory named `ios` and `android` in your project directory. You should use ```XCode``` and ```Android Studio``` to open them and compile your project.
-
-    Once you finish installing the APPs compiled by those generated projects, open it on your device and run ```yarn start``` to start the metro bundler, and press ```R``` button to start reloading bundles.
+    After that, you can find a new directory named `ios` and `android` in your project directory.
 
 3. Install the ```expo-dev-client```
 
@@ -55,22 +53,26 @@ yarn add @portkey/react-native-sdk
     yarn add expo-dev-client
     ```
 
-    Then you should follow the instructions in the [Expo Dev Build](https://docs.expo.dev/develop/development-builds/create-a-build/#prerequisites) to configure your project.
+    The next step is to generate your bare workflow apps. If you have the experience to support native projects Configuration, you can use ```XCode``` and ```Android Studio``` to open the ```android``` and ```ios``` directories and compile your project. If not, you should follow the instructions in the [Expo Dev Build](https://docs.expo.dev/develop/development-builds/create-a-build/#prerequisites) to configure your project.
+
+    Once you finish installing the APPs compiled by those generated projects, open it on your device and run ```yarn start``` to start the metro bundler, and press ```R``` button to start reloading bundles.
 
 4. Ensure you are using the correct version of required dependencies
 
     You should provide the ```resolution``` field in your package.json file to make sure we are using the same version of ```react-native```.
 
-    For example, if you are using react-native v0.72.4, you should add the following code to your package.json file:
+    For example, if you are using react-native v0.72.4 and expo v49.0.0, you should add the following code to your package.json file:
 
     ``` json
     {
         "dependencies":{
             "react-native": "0.72.4",
+            "expo": "49.0.0",
             ...
        },
         "resolutions": {
             "react-native": "0.72.4",
+            "expo": "49.0.0",
             ...
       }
     }
