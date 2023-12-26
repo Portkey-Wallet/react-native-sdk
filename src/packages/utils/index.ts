@@ -1,6 +1,5 @@
 import { ChainId, ChainType, NetworkType } from 'packages/types';
-import { isAddress as web3IsAddress } from 'web3-utils';
-import { isAelfAddress, isDIDAelfAddress } from './aelf';
+import { isAelfAddress } from './aelf';
 import * as uuid from 'uuid';
 import dayjs from 'dayjs';
 
@@ -22,16 +21,6 @@ export const addressFormat = (
   if (address.includes('_')) return `ELF_${arr[1]}_${chainId}`;
   return `ELF_${address}_${chainId}`;
 };
-
-export function isAddress(address: string, chainType: ChainType = 'aelf') {
-  if (chainType === 'aelf') return isAelfAddress(address);
-  return web3IsAddress(address);
-}
-
-export function isDIDAddress(address: string, chainType: ChainType = 'aelf') {
-  if (chainType === 'aelf') return isDIDAelfAddress(address);
-  return web3IsAddress(address);
-}
 
 export const getChainIdByAddress = (address: string, chainType: ChainType = 'aelf') => {
   // if (!isAddress(address)) throw Error(`${address} is not address`);

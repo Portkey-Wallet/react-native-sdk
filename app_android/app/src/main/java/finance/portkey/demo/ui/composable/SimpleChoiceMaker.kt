@@ -31,7 +31,6 @@ internal fun SimpleChoiceMaker(
     choicesList: List<String>,
     afterChosen: (String) -> Unit = {}
 ) {
-    LocalContext.current
     var expand by remember {
         mutableStateOf(false)
     }
