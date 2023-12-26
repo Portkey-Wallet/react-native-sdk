@@ -3,7 +3,6 @@ package finance.portkey.lib.components.logic
 import android.annotation.SuppressLint
 import android.app.Application
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory
-import com.facebook.react.PackageList
 import com.facebook.react.ReactNativeHost
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.Arguments
@@ -25,18 +24,14 @@ class PortkeyReactNativeHost(
 
     override fun getUseDeveloperSupport(): Boolean = isDebug
     override fun getPackages(): MutableList<ReactPackage> {
-
-//        return mutableListOf(PortkeyNativePackages())
-        return PackageList(application).packages.apply {
-            add(PortkeyNativePackages())
-        }
+        return mutableListOf(PortkeyNativePackages())
     }
 
     override fun getJSMainModuleName(): String {
         return "index"
     }
 
-//    override fun getJSBundleFile(): String? {
+    //    override fun getJSBundleFile(): String? {
 //        return "${application.filesDir}${File.separator}index.android.bundle"
 //    }
     override fun getBundleAssetName(): String {
