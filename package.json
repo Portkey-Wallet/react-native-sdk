@@ -76,9 +76,9 @@
     "lottie-react-native": "^5.1.5",
     "moment": "^2.29.4",
     "query-string": "^7.1.1",
-    "react": "^18.2.0",
+    "react": "~18.2.0",
     "react-i18next": "^11.16.9",
-    "react-native": "^0.72.4",
+    "react-native": "~0.72.4",
     "react-native-background-timer": "^2.4.1",
     "react-native-config": "^1.4.6",
     "react-native-fast-image": "^8.6.3",
@@ -101,7 +101,6 @@
     "react-native-webview": "^13.6.0",
     "react-redux": "^8.0.2",
     "react-universal-interface": "^0.6.2",
-    "react-use": "^17.4.0",
     "redux-flipper": "^2.0.2",
     "redux-persist": "^6.0.0",
     "reflect-metadata": "^0.1.9",
@@ -109,9 +108,7 @@
     "rn-teaset": "0.1.2-alpha.1",
     "stream": "^0.0.2",
     "subscriptions-transport-ws": "^0.11.0",
-    "tslib": "^2.6.2",
-    "web3": "^4.3.0",
-    "web3-utils": "^4.1.0"
+    "tslib": "^2.6.2"
   },
   "scripts": {
     "start": "react-native start",

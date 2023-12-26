@@ -1,5 +1,4 @@
 import { DependencyList, useRef, useCallback, useMemo } from 'react';
-import { useDeepCompareEffect } from 'react-use';
 import { useLatestRef } from './';
 
 const useInterval = (callback: () => void, delay?: number | null, deps?: DependencyList) => {
@@ -12,13 +11,6 @@ const useInterval = (callback: () => void, delay?: number | null, deps?: Depende
     intervalRef.current = setInterval(() => savedCallback.current?.(), delay || 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [delay, ...(deps || [])]);
-
-  useDeepCompareEffect(() => {
-    if (delay !== null) startInterval();
-    return () => {
-      intervalRef.current && clearInterval(intervalRef.current as unknown as number);
-    };
-  }, [delay, deps, startInterval]);
 
   return useMemo(
     () => ({
