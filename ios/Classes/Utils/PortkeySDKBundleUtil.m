@@ -7,6 +7,7 @@
 
 #import "PortkeySDKBundleUtil.h"
 #import <React/RCTBundleURLProvider.h>
+#import <React/RCTBridgeDelegate.h>
 #import <PortkeySDK/PortkeySDKMMKVStorage.h>
 
 const static NSString *kUseLocalBundleKey = @"UseLocalBundleKey";
@@ -31,11 +32,17 @@ const static NSString *kUseLocalBundleKey = @"UseLocalBundleKey";
 
 + (NSURL *)sourceURL
 {
+    id<UIApplicationDelegate> appDelegate = [[UIApplication sharedApplication] delegate];
+    if ([appDelegate conformsToProtocol:@protocol(RCTBridgeDelegate)]
+        && [appDelegate respondsToSelector:@selector(sourceURLForBridge:)]) {
+        return [(id<RCTBridgeDelegate>)appDelegate sourceURLForBridge:nil];
+    } else {
 #if DEBUG
-    return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
+        return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
 #else
-    return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+        return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
+    }
     /*
 #if DEBUG
     if ([self useLocalBundle]) {

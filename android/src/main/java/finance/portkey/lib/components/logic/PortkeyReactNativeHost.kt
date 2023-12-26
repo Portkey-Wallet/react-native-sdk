@@ -24,7 +24,6 @@ class PortkeyReactNativeHost(
 
     override fun getUseDeveloperSupport(): Boolean = isDebug
     override fun getPackages(): MutableList<ReactPackage> {
-
         return mutableListOf(PortkeyNativePackages())
     }
 
@@ -32,7 +31,7 @@ class PortkeyReactNativeHost(
         return "index"
     }
 
-//    override fun getJSBundleFile(): String? {
+    //    override fun getJSBundleFile(): String? {
 //        return "${application.filesDir}${File.separator}index.android.bundle"
 //    }
     override fun getBundleAssetName(): String {
