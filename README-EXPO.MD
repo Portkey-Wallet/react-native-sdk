@@ -2,7 +2,7 @@
 
 ## Read this first
 
-This readme.md doc is presented for pure expo-cli project. If you are using react-native, please refer to [react-native-sdk-doc](./README.MD).
+This readme.md doc is presented for pure expo-cli project. If you are using react-native, please refer to [react-native-sdk-doc](https://github.com/Portkey-Wallet/react-native-sdk/blob/master/README.MD).
 
 ## Installation
 
