@@ -2,23 +2,7 @@
 
 ## Read this first
 
-This readme.md doc is presented for pure react-native project. If you are using expo, please refer to [expo-sdk-doc](./README-EXPO.MD).
-
-Don't know whether you are an expo project user? If one of the following conditions is met, you are an expo project user:
-
-1. you created your project with expo-cli-like command, such as `expo init my-project` or `npx create-expo-app XXX`
-2. you can find `.expo` dictionary in your project root path
-3. you can find those expo's commands in your package.json file that look like:
-
-```JSON
-  "scripts": {
-    "start": "expo start",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
-    "web": "expo start --web"
-  },
-  ...
-```
+This readme.md doc is presented for pure expo-cli project. If you are using react-native, please refer to [react-native-sdk-doc](./README.MD).
 
 ## Installation
 
@@ -34,46 +18,7 @@ yarn add @portkey/react-native-sdk
 
 ### Step 2: Configure your project
 
-1. Configure the expo autolinking plugin
-
-    ``` groovy
-    //in android/settings.gradle file
-    dependencyResolutionManagement {
-        repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
-        repositories {
-            google()
-            mavenCentral()
-            maven { url "https://jitpack.io" }
-            // add this maven path for expo-camera dependencies
-            maven {
-                url "../node_modules/expo-camera/android/maven"
-            }
-        }
-    }
-
-    // add the follow code for autolink
-    apply from: new File(["node", "--print", "require.resolve('expo/package.json')"].execute(null, rootDir).text.trim(), "../scripts/autolinking.gradle");
-    useExpoModules()
-    ```
-
-    ``` podspec
-    # in iOS Podfile, add the follow code
-
-    platform :ios, '13.0'
-
-    require File.join(File.dirname(`node --print "require.resolve('expo/package.json')"`), "scripts/autolinking")
-
-    use_expo_modules!
-    post_integrate do |installer|
-      begin
-        expo_patch_react_imports!(installer)
-      rescue => e
-        Pod::UI.warn e
-      end
-    end
-    ```
-
-2. Create .env file
+1. Create .env file
 
     In order to use Google login, You need to create an __.env__ file in the same directory as __package.json__, which must contain __GOOGLE_WEB_CLIENT_ID__, __GOOGLE_IOS_CLIENT_ID__ and __GOOGLE_ANDROID_CLIENT_ID__.
 
@@ -86,41 +31,50 @@ yarn add @portkey/react-native-sdk
     GOOGLE_ANDROID_CLIENT_ID = "your google android client id"
     ```
 
-3. extends tsconfig.json
+2. Change your expo's generated project to bare workflow
 
-    In your tsconfig.json, add  "extends" key-value.
+    Our SDK contains `NativeModules` code which is written in native language, so it will not work properly on Expo Go since if will only compile js/ts codes.
 
-    ``` JSON
+    Luckily, Expo provides a way to convert your project to bare workflow, providing you with the ability to compile native code. See [Expo Bare Workflow](https://docs.expo.dev/archive/managed-vs-bare/) for details.
+
+    You can accomplish this by running the following command in your project directory:
+
+    ``` shell
+    expo prebuild
+    ```
+
+    after that, you can find a new directory named `ios` and `android` in your project directory. You should use ```XCode``` and ```Android Studio``` to open them and compile your project.
+
+    Once you finish installing the APPs compiled by those generated projects, open it on your device and run ```yarn start``` to start the metro bundler, and press ```R``` button to start reloading bundles.
+
+3. Install the ```expo-dev-client```
+
+    ```expo-dev-client``` is a package that allows you to use Expo Go to run your bare workflow project. See [Expo Dev Client](https://docs.expo.dev/clients/introduction/) for details.
+
+    ``` shell
+    yarn add expo-dev-client
+    ```
+
+    Then you should follow the instructions in the [Expo Dev Build](https://docs.expo.dev/develop/development-builds/create-a-build/#prerequisites) to configure your project.
+
+4. Ensure you are using the correct version of required dependencies
+
+    You should provide the ```resolution``` field in your package.json file to make sure we are using the same version of ```react-native```.
+
+    For example, if you are using react-native v0.72.4, you should add the following code to your package.json file:
+
+    ``` json
     {
-      "extends": "@portkey/react-native-sdk/tsconfig.json",
-      "compilerOptions": {
-        ...
+        "dependencies":{
+            "react-native": "0.72.4",
+            ...
+       },
+        "resolutions": {
+            "react-native": "0.72.4",
+            ...
       }
     }
     ```
-
-    if you already extends other tsconfig.json, you can config like this:
-
-    ``` JSON
-    {
-      "compilerOptions": {
-          // add this code
-          "types": ["reflect-metadata"],
-          "experimentalDecorators": true,
-          "emitDecoratorMetadata": true,
-      }
-
-    }
-    ```
-
-### Step 3: Init
-
-``` TS
-// Please import the following statement in your entry file
-import '@portkey/react-native-sdk';
-```
-
-> Note: We use autolink, you don't need to configure Android/iOS dependencies. But you need to recompile your Android/iOS project so that the autolink takes effect.
 
 Now, all configuration is complete and you can use the portkey service freely.
 
@@ -181,7 +135,9 @@ function exitWallet(): Promise<boolean>();
 ## Q&A
 
 __Q: Why does Google login always prompt "login fail"?__
+
 A: Make sure the applicationId, keystore, .env file correspond correctly.
 
 __Q: problem occurred evaluating project ':portkey_react-native-sdk'. > Project with path ':expo-modules-core' could not be found in project ':portkey_react-native-sdk'.__
+
 A: make sure you have set the expo autolink config in android/settings.gradle file.
