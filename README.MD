@@ -2,7 +2,7 @@
 
 ## Installation
 
-__Note: We should use react-native version less than v0.73__
+__Note: react-native's version should be less than v0.73.0 !__
 
 ### Step 1: Install npm package
 
@@ -12,86 +12,86 @@ npm install @portkey/react-native-sdk --save
 yarn add @portkey/react-native-sdk
 ```
 
-**Step 2: Config** <br>
+### Step 2: Config
 
 1. We are using expo-related libraries, so you need to configure the expo autolinking plugin
 
-``` groovy
-//in android/settings.gradle file
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
-    repositories {
-        google()
-        mavenCentral()
-        maven { url "https://jitpack.io" }
-        // add this maven path for expo-camera dependencies
-        maven {
-            url "../node_modules/expo-camera/android/maven"
+    ``` groovy
+    //in android/settings.gradle file
+    dependencyResolutionManagement {
+        repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+        repositories {
+            google()
+            mavenCentral()
+            maven { url "https://jitpack.io" }
+            // add this maven path for expo-camera dependencies
+            maven {
+                url "../node_modules/expo-camera/android/maven"
+            }
         }
     }
-}
 
-// add the follow code for autolink
-apply from: new File(["node", "--print", "require.resolve('expo/package.json')"].execute(null, rootDir).text.trim(), "../scripts/autolinking.gradle");
-useExpoModules()
-```
+    // add the follow code for autolink
+    apply from: new File(["node", "--print", "require.resolve('expo/package.json')"].execute(null, rootDir).text.trim(), "../scripts/autolinking.gradle");
+    useExpoModules()
+    ```
 
-``` podspec
-# in iOS Podfile, add the follow code
+    ``` podspec
+    # in iOS Podfile, add the follow code
 
-platform :ios, '13.0'
+    platform :ios, '13.0'
 
-require File.join(File.dirname(`node --print "require.resolve('expo/package.json')"`), "scripts/autolinking")
+    require File.join(File.dirname(`node --print "require.resolve('expo/package.json')"`), "scripts/autolinking")
 
-use_expo_modules!
-post_integrate do |installer|
-  begin
-    expo_patch_react_imports!(installer)
-  rescue => e
-    Pod::UI.warn e
-  end
-end
-```
+    use_expo_modules!
+    post_integrate do |installer|
+      begin
+        expo_patch_react_imports!(installer)
+      rescue => e
+        Pod::UI.warn e
+      end
+    end
+    ```
 
 2. Create .env file
 
-In order to use Google login, You need to create an __.env__ file in the same directory as __package.json__, which must contain __GOOGLE_WEB_CLIENT_ID__, __GOOGLE_IOS_CLIENT_ID__ and __GOOGLE_ANDROID_CLIENT_ID__.
+    In order to use Google login, You need to create an __.env__ file in the same directory as __package.json__, which must contain __GOOGLE_WEB_CLIENT_ID__, __GOOGLE_IOS_CLIENT_ID__ and __GOOGLE_ANDROID_CLIENT_ID__.
 
-See [Configure Google Login For Portkey SDK](https://github.com/Portkey-Wallet/react-native-sdk/blob/master/docs/google-login.md) for details.
+    See [Configure Google Login For Portkey SDK](https://github.com/Portkey-Wallet/react-native-sdk/blob/master/docs/google-login.md) for details.
 
-``` properties
-# .env file like this
-GOOGLE_WEB_CLIENT_ID = "your google web client id"
-GOOGLE_IOS_CLIENT_ID = "your google ios client id"
-GOOGLE_ANDROID_CLIENT_ID = "your google android client id"
-```
+    ``` properties
+    # .env file like this
+    GOOGLE_WEB_CLIENT_ID = "your google web client id"
+    GOOGLE_IOS_CLIENT_ID = "your google ios client id"
+    GOOGLE_ANDROID_CLIENT_ID = "your google android client id"
+    ```
 
 3. extends tsconfig.json
 
-In your tsconfig.json, add  "extends" key-value.
+    In your tsconfig.json, add  "extends" key-value.
 
-``` JSON
-{
-  "extends": "@portkey/react-native-sdk/tsconfig.json",
-  "compilerOptions": {
-    ...
-  }
-}
-```
+    ``` JSON
+    {
+      "extends": "@portkey/react-native-sdk/tsconfig.json",
+      "compilerOptions": {
+        ...
+      }
+    }
+    ```
 
-if you already extends other tsconfig.json, you can config like this:
+    if you already extends other tsconfig.json, you can config like this:
 
-``` JSON
-{
-  "compilerOptions": {
-      // add this code
-      "types": ["reflect-metadata"],
-      "experimentalDecorators": true,
-      "emitDecoratorMetadata": true,
-  }
+    ``` JSON
+    {
+      "compilerOptions": {
+          // add this code
+          "types": ["reflect-metadata"],
+          "experimentalDecorators": true,
+          "emitDecoratorMetadata": true,
+      }
 
-}
-```
+    }
+    ```
 
 ### Step 3: Init
 
@@ -160,7 +160,7 @@ function exitWallet(): Promise<boolean>();
 
 ## Q&A
 
-Q: Why does Google login always prompt "login fail"?<br>
-A: Make sure the applicationId, keystore, .env file correspond correctly<br><br>
-Q: problem occurred evaluating project ':portkey_react-native-sdk'.<br> > Project with path ':expo-modules-core' could not be found in project ':portkey_react-native-sdk'. <br>
-A: make sure you have set the expo autolink config in android/settings.gradle file.<br><br>
+__Q: Why does Google login always prompt "login fail"?__
+A: Make sure the applicationId, keystore, .env file correspond correctly.
+__Q: problem occurred evaluating project ':portkey_react-native-sdk'. > Project with path ':expo-modules-core' could not be found in project ':portkey_react-native-sdk'.__
+A: make sure you have set the expo autolink config in android/settings.gradle file.
