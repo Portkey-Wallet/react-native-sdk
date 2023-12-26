@@ -2,7 +2,7 @@
 
 ## Read this first
 
-This readme.md doc is presented for pure react-native project. If you are using expo, please refer to [expo-sdk-doc](./README-EXPO.MD).
+This readme.md doc is presented for pure react-native project. If you are using expo, please refer to [expo-sdk-doc](https://github.com/Portkey-Wallet/react-native-sdk/blob/master/README-EXPO.MD).
 
 Don't know whether you are an expo project user? If one of the following conditions is met, you are an expo project user:
 
