@@ -21,7 +21,7 @@ export default abstract class BaseContainer<
 
   private onShowEventListener: any = null;
   private onNewIntentEventListener: any = null;
-  private entryName = wrapEntry(this.getEntryName());
+  private entryName = this.getEntryName();
 
   componentDidMount(): void {
     this.onShow();
