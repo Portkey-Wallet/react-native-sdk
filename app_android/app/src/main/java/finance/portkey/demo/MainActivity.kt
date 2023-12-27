@@ -38,9 +38,9 @@ import finance.portkey.demo.ui.theme.Purple40
 import finance.portkey.lib.components.logic.PORTKEY_CONFIG_ENDPOINT_URL
 import finance.portkey.lib.components.logic.PortkeyMMKVStorage
 import finance.portkey.lib.entry.usePortkeyEntryWithParams
-import finance.portkey.lib.tools.callCaContractMethodTest
-import finance.portkey.lib.tools.runTestCases
-import finance.portkey.lib.wallet.PortkeyWallet
+import finance.portkey.aar.wallet.callCaContractMethodTest
+import finance.portkey.aar.wallet.runTestCases
+import finance.portkey.aar.wallet.PortkeyWallet
 import java.security.InvalidKeyException
 
 
