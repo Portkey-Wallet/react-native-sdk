@@ -1,7 +1,8 @@
-package finance.portkey.lib.components.logic
+package finance.portkey.aar
 
 import android.app.Application
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory
+import com.facebook.react.PackageList
 import com.facebook.react.ReactNativeHost
 import com.facebook.react.ReactPackage
 import finance.portkey.lib.PortkeyNativePackages
@@ -18,7 +19,9 @@ class PortkeyReactNativeHost(
 
     override fun getUseDeveloperSupport(): Boolean = isDebug
     override fun getPackages(): MutableList<ReactPackage> {
-        return mutableListOf(PortkeyNativePackages())
+        return PackageList(application).packages.apply {
+            add(PortkeyNativePackages())
+        }
     }
 
     override fun getJSMainModuleName(): String {
