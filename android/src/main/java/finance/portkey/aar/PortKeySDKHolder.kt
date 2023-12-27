@@ -1,10 +1,11 @@
-package finance.portkey.core
+package finance.portkey.aar
 
 import android.app.Application
 import android.widget.Toast
 import com.tencent.mmkv.MMKV
 import finance.portkey.lib.BuildConfig
-import finance.portkey.lib.components.logic.PortkeyReactNativeHost
+//import finance.portkey.lib.components.logic.PortkeyReactNativeHost
+import finance.portkey.aar.PortkeyReactNativeHost
 
 object PortKeySDKHolder {
     var initialized = false
