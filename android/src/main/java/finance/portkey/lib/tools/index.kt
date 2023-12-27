@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import com.google.gson.JsonElement
-import finance.portkey.lib.BuildConfig
 import finance.portkey.core.PortKeySDKHolder
+import finance.portkey.lib.BuildConfig
 import finance.portkey.lib.components.logic.JSEventBus
 import finance.portkey.lib.components.services.GeneralJSMethodService
 
@@ -33,13 +33,15 @@ internal fun callJsMethod(
     bundle: Bundle = Bundle(),
     callback: (JSMethodData) -> Unit = {}
 ) {
-    if(!PortKeySDKHolder.initialized){
-        if(BuildConfig.DEBUG)
+    if (!PortKeySDKHolder.initialized) {
+        if (BuildConfig.DEBUG) {
             Toast.makeText(
                 applicationContext,
                 "sdk is initializing...",
                 Toast.LENGTH_LONG
             ).show()
+        }
+        return
     }
     bundle.putString("taskName", taskName)
     val callbackId = generateUniqueID()
