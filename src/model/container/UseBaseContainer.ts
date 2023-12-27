@@ -34,8 +34,7 @@ const useBaseContainer = (props: BaseContainerHookedProps): BaseContainerHooks =
   }, [onShow, containerId, onNewIntent]);
 
   const getEntryName = useCallback(() => {
-    const name = entryName ?? baseContainerContext.entryName;
-    return wrapEntry(name);
+    return entryName ?? baseContainerContext.entryName;
   }, [entryName, baseContainerContext.entryName]);
 
   const navigateTo = useCallback(
