@@ -24,7 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import finance.portkey.demo.ui.theme.Purple40
-import finance.portkey.lib.wallet.PortkeyWallet
+import finance.portkey.aar.wallet.PortkeyWallet
 
 @Composable
 internal fun ChoiceMaker(

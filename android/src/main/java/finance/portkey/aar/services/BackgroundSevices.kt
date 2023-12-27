@@ -1,4 +1,4 @@
-package finance.portkey.lib.components.services
+package finance.portkey.aar.services
 
 import android.content.Intent
 import com.facebook.react.HeadlessJsTaskService
