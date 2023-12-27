@@ -1,4 +1,6 @@
 import { PortkeyConfig } from 'global/constants';
+import { isWalletUnlocked } from 'model/verify/core';
+import { getUnlockedWallet } from 'model/wallet';
 import { NetworkController } from 'network/controller';
 import { AElfChainStatusItemDTO } from 'network/dto/wallet';
 import { handleCachedValue } from 'service/storage/cache';
@@ -14,7 +16,11 @@ export interface Token {
 export const getCachedNetworkConfig = async (
   targetChainId?: string,
 ): Promise<{ peerUrl: string; caContractAddress: string; defaultToken: Token; explorerUrl: string }> => {
-  const chain = targetChainId || (await PortkeyConfig.currChainId());
+  let originChainId;
+  if (await isWalletUnlocked()) {
+    originChainId = (await getUnlockedWallet()).originChainId;
+  }
+  const chain = targetChainId || originChainId || (await PortkeyConfig.currChainId());
   return await handleCachedValue({
     target: 'TEMP',
     getIdentifier: async () => {

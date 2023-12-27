@@ -104,16 +104,19 @@ export const getVerifierData = async (): Promise<{
  * add a ```Guardian``` to the CA holder info on target chain.
  * @param particularGuardian the ```Guardian``` info that is about to be added.
  * @param guardianList the ```Guardian``` list that has been approved.
+ * @param targetChainId the target chain's chain id, like ```AELF```. Using this parameter for cross chain operation.
  */
 export const callAddGuardianMethod = async (
   particularGuardian: GuardianConfig,
   guardianList: Array<ApprovedGuardianInfo>,
+  targetChainId?: string,
 ) => {
-  const contractInstance = await getContractInstance();
   const {
     address,
     caInfo: { caHash },
+    originChainId,
   } = (await getUnlockedWallet()) || {};
+  const contractInstance = await getContractInstanceOnParticularChain(targetChainId || originChainId);
   return await contractInstance.callSendMethod('AddGuardian', address, {
     caHash,
     guardianToAdd: parseGuardianConfigInfoToCaType(particularGuardian),
