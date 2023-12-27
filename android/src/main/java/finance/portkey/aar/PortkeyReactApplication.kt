@@ -1,9 +1,8 @@
-package finance.portkey.lib
+package finance.portkey.aar
 
 import android.app.Application
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactNativeHost
-import finance.portkey.core.PortKeySDKHolder
 
 open class PortkeyReactApplication : Application(), ReactApplication {
     override fun onCreate() {
