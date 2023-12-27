@@ -1,10 +1,9 @@
-package finance.portkey.lib.wallet
+package finance.portkey.aar.wallet
 
 import android.content.Context
 import finance.portkey.lib.components.logic.PortkeyMMKVStorage
 import finance.portkey.lib.components.logic.TEMP
 import finance.portkey.lib.components.logic.but
-import finance.portkey.lib.tools.callJsMethod
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
