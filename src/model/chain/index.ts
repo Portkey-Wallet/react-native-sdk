@@ -13,7 +13,7 @@ export interface Token {
 }
 export const getCachedNetworkConfig = async (
   targetChainId?: string,
-): Promise<{ peerUrl: string; caContractAddress: string; defaultToken: Token }> => {
+): Promise<{ peerUrl: string; caContractAddress: string; defaultToken: Token; explorerUrl: string }> => {
   const chain = targetChainId || (await PortkeyConfig.currChainId());
   return await handleCachedValue({
     target: 'TEMP',
@@ -25,10 +25,12 @@ export const getCachedNetworkConfig = async (
       const networkInfo = await NetworkController.getNetworkInfo();
       const chainInfo = networkInfo.items.find(it => it.chainId === chain);
       if (!chainInfo) throw new Error('network failure');
+      const { endPoint: peerUrl, caContractAddress, defaultToken, explorerUrl } = chainInfo;
       const config = {
-        peerUrl: chainInfo.endPoint,
-        caContractAddress: chainInfo.caContractAddress,
-        defaultToken: chainInfo.defaultToken,
+        peerUrl,
+        caContractAddress,
+        defaultToken,
+        explorerUrl,
       };
       return config;
     },

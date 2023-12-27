@@ -32,6 +32,8 @@ export enum PortkeyEntries {
   // assets service
   ASSETS_HOME_ENTRY = 'assets_home_entry',
   RECEIVE_TOKEN_ENTRY = 'receive_token_entry',
+  ACTIVITY_LIST_ENTRY = 'activity_list_entry',
+  ACTIVITY_DETAIL_ENTRY = 'activity_detail_entry',
 
   // payment security service
   PAYMENT_SECURITY_HOME_ENTRY = 'payment_security_home_entry',
