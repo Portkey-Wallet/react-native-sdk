@@ -14,6 +14,8 @@ import useBaseContainer from 'model/container/UseBaseContainer';
 import AssetsContext, { AssetsContextType } from 'global/context/assets/AssetsContext';
 import { divDecimals } from 'packages/utils/converter';
 import { ZERO } from 'packages/constants/misc';
+import { PortkeyEntries } from 'config/entries';
+import ActivityButton from '../ActivityButton';
 
 const AssetsHome: React.FC = () => {
   const { wallet } = useUnlockedWallet();
@@ -46,7 +48,9 @@ const AssetsHome: React.FC = () => {
 
   const isMainnet = networkType === 'MAIN';
 
-  const { onFinish } = useBaseContainer({});
+  const { onFinish } = useBaseContainer({
+    entryName: PortkeyEntries.ASSETS_HOME_ENTRY,
+  });
 
   return (
     <AssetsContext.Provider value={assetsContext}>
@@ -86,7 +90,8 @@ const AssetsHome: React.FC = () => {
               <FaucetButton themeType="dashBoard" />
             </>
           )}
-          {/* <ActivityButton themeType="dashBoard" /> */}
+          <View style={styles.spacerStyle} />
+          <ActivityButton themeType="dashBoard" entryName={PortkeyEntries.ASSETS_HOME_ENTRY} />
         </View>
       </View>
       <DashBoardTab />

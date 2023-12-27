@@ -223,6 +223,22 @@ export const callGetTransferLimitMethod = async (chainId: string, symbol: string
 };
 
 /**
+ * query the default transfer limit on target chain, which is set by the contract policy.
+ * @param chainId the target chain's chain id, like ```AELF```
+ * @param symbol the token symbol, like ```ELF```
+ */
+export const callGetDefaultTransferLimitMethod = async (chainId: string, symbol: string) => {
+  const contractInstance = await getContractInstanceOnParticularChain(chainId);
+  const {
+    caInfo: { caHash },
+  } = (await getUnlockedWallet()) || {};
+  return await contractInstance.callViewMethod('GetDefaultTokenTransferLimit', {
+    caHash,
+    symbol,
+  });
+};
+
+/**
  * update the transfer limit on target chain.
  * @param guardianList the ```Guardian``` list that has been approved.
  * @param transferLimitDetail the transfer limit detail that is about to be updated.
