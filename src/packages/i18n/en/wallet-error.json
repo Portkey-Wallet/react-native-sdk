@@ -7,8 +7,8 @@
   "Created Accounts cannot be Deleted": "Created Accounts cannot be Deleted",
   "Decryption Failed!": "Decryption Failed!",
   "Invalid Private Key": "Invalid Private Key",
-  "Please Enter a Name":"Please Enter a Name",
-  "Name does not meet specifications":"Name does not meet specifications",
-  "Invalid Password":"Invalid Password",
-  "Password not long enough (Must be at least 8 characters)":"Password not long enough (Must be at least 8 characters)"
+  "Please Enter a Name": "Please Enter a Name",
+  "Name does not meet specifications": "Name does not meet specifications",
+  "Invalid Password": "Invalid Password",
+  "Password not long enough (Must be at least 8 characters)": "Password not long enough (Must be at least 8 characters)"
 }
