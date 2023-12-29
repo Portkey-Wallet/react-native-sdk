@@ -1,7 +1,7 @@
 import { ChainId, ChainType, NetworkType } from 'packages/types';
-import { isAddress as web3IsAddress } from 'web3-utils';
-import { isAelfAddress, isDIDAelfAddress } from './aelf';
+import { isAelfAddress } from './aelf';
 import * as uuid from 'uuid';
+import dayjs from 'dayjs';
 
 /**
  * format address like "aaa...bbb" to "ELF_aaa...bbb_AELF"
@@ -22,16 +22,6 @@ export const addressFormat = (
   return `ELF_${address}_${chainId}`;
 };
 
-export function isAddress(address: string, chainType: ChainType = 'aelf') {
-  if (chainType === 'aelf') return isAelfAddress(address);
-  return web3IsAddress(address);
-}
-
-export function isDIDAddress(address: string, chainType: ChainType = 'aelf') {
-  if (chainType === 'aelf') return isDIDAelfAddress(address);
-  return web3IsAddress(address);
-}
-
 export const getChainIdByAddress = (address: string, chainType: ChainType = 'aelf') => {
   // if (!isAddress(address)) throw Error(`${address} is not address`);
 
@@ -44,6 +34,20 @@ export const getChainIdByAddress = (address: string, chainType: ChainType = 'ael
     }
   }
   throw Error('Not support');
+};
+
+/**
+ * timestamp to formatted time like 'Nov 10 at 1:09 pm', if last year format to "2020 Nov 10 at 1:09 pm "
+ * @param time
+ * @returns
+ */
+
+export const formatTransferTime = (time: string | number) => {
+  if (dayjs(time).isBefore(dayjs(), 'year')) {
+    return dayjs(time).format('YYYY MMM D , h:mm a').replace(',', 'at');
+  }
+
+  return dayjs(time).format('MMM D , h:mm a').replace(',', 'at');
 };
 
 const protocolAndDomainRE = /^(?:\w+:)?\/\/(\S+)$/;

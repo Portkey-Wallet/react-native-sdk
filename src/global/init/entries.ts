@@ -26,6 +26,8 @@ import PaymentSecurityDetail from 'pages/My/WalletSecurity/PaymentSecurity/Payme
 import PaymentSecurityEdit from 'pages/My/WalletSecurity/PaymentSecurity/PaymentSecurityEdit';
 import TokenDetail from 'pages/Token/TokenDetail';
 import { wrapEntry } from 'utils/commonUtil';
+import ActivityListPage from 'pages/Activity/ActivityListPage';
+import ActivityDetail from 'pages/Activity/ActivityDetail';
 
 type AcceptableComponentType = ComponentProvider;
 
@@ -68,7 +70,10 @@ const initEntries = () => {
   // assets module
   entryConfig.set(PortkeyEntries.ASSETS_HOME_ENTRY, () => AssetsHome);
   entryConfig.set(PortkeyEntries.RECEIVE_TOKEN_ENTRY, () => ReceiveTokenPage);
+  entryConfig.set(PortkeyEntries.ACTIVITY_LIST_ENTRY, () => ActivityListPage);
+  entryConfig.set(PortkeyEntries.ACTIVITY_DETAIL_ENTRY, () => ActivityDetail);
 
+  // payment security module
   entryConfig.set(PortkeyEntries.PAYMENT_SECURITY_HOME_ENTRY, () => PaymentSecurityList);
   entryConfig.set(PortkeyEntries.PAYMENT_SECURITY_DETAIL_ENTRY, () => PaymentSecurityDetail);
   entryConfig.set(PortkeyEntries.PAYMENT_SECURITY_EDIT_ENTRY, () => PaymentSecurityEdit);

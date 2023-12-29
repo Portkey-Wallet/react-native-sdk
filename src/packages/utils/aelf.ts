@@ -3,6 +3,7 @@ import { COMMON_PRIVATE } from 'packages/constants';
 import { AElfInterface } from 'packages/types/aelf';
 import { ChainId } from 'packages/types';
 import { isValidBase58 } from './reg';
+import { getTxResult } from 'packages/contracts/utils';
 const Wallet = AElf.wallet;
 
 export function isEqAddress(a1?: string, a2?: string) {
@@ -93,7 +94,10 @@ export function getWallet(privateKey = COMMON_PRIVATE) {
 export const getAelfInstance = (rpcUrl: string) => {
   return new AElf(new AElf.providers.HttpProvider(rpcUrl, 20000));
 };
-
+export const getAelfTxResult = (rpcUrl: string, txId: string) => {
+  const aelf = getAelfInstance(rpcUrl);
+  return getTxResult(aelf, txId);
+};
 export const getELFContract = async (rpcUrl: string, tokenAddress: string, privateKey?: string) => {
   const aelf = getAelfInstance(rpcUrl);
   const wallet = privateKey ? Wallet.getWalletByPrivateKey(privateKey) : getWallet();

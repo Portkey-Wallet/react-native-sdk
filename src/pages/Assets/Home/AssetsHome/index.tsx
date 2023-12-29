@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { styles } from './style';
 import ReceiveButton from 'components/ReceiveButton';
 import { TextM } from 'components/CommonText';
@@ -14,6 +14,16 @@ import useBaseContainer from 'model/container/UseBaseContainer';
 import AssetsContext, { AssetsContextType } from 'global/context/assets/AssetsContext';
 import { divDecimals } from 'packages/utils/converter';
 import { ZERO } from 'packages/constants/misc';
+import { PortkeyEntries } from 'config/entries';
+import ActivityButton from '../ActivityButton';
+import { defaultColors } from 'assets/theme';
+import Svg from 'components/Svg';
+
+const style = StyleSheet.create({
+  scanQrCode: {
+    // paddingBottom: 0,
+  },
+});
 
 const AssetsHome: React.FC = () => {
   const { wallet } = useUnlockedWallet();
@@ -46,7 +56,9 @@ const AssetsHome: React.FC = () => {
 
   const isMainnet = networkType === 'MAIN';
 
-  const { onFinish } = useBaseContainer({});
+  const { onFinish, navigateTo } = useBaseContainer({
+    entryName: PortkeyEntries.ASSETS_HOME_ENTRY,
+  });
 
   return (
     <AssetsContext.Provider value={assetsContext}>
@@ -54,6 +66,15 @@ const AssetsHome: React.FC = () => {
         <CustomHeader
           themeType={'blue'}
           titleDom={''}
+          rightDom={
+            <TouchableOpacity
+              style={[styles.svgWrap, style.scanQrCode]}
+              onPress={() => {
+                navigateTo(PortkeyEntries.SCAN_QR_CODE);
+              }}>
+              <Svg icon="scan" size={22} color={defaultColors.font2} />
+            </TouchableOpacity>
+          }
           leftCallback={() => {
             onFinish({
               status: 'success',
@@ -79,14 +100,14 @@ const AssetsHome: React.FC = () => {
           <SendButton themeType="dashBoard" />
           <View style={styles.spacerStyle} />
           <ReceiveButton themeType="dashBoard" />
-          {/* currently we do not support ramp */}
           {!isMainnet && (
             <>
               <View style={styles.spacerStyle} />
               <FaucetButton themeType="dashBoard" />
             </>
           )}
-          {/* <ActivityButton themeType="dashBoard" /> */}
+          <View style={styles.spacerStyle} />
+          <ActivityButton themeType="dashBoard" entryName={PortkeyEntries.ASSETS_HOME_ENTRY} />
         </View>
       </View>
       <DashBoardTab />

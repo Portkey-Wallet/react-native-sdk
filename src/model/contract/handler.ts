@@ -104,23 +104,44 @@ export const getVerifierData = async (): Promise<{
  * add a ```Guardian``` to the CA holder info on target chain.
  * @param particularGuardian the ```Guardian``` info that is about to be added.
  * @param guardianList the ```Guardian``` list that has been approved.
+ * @param targetChainId the target chain's chain id, like ```AELF```. Using this parameter for cross chain operation.
  */
 export const callAddGuardianMethod = async (
   particularGuardian: GuardianConfig,
   guardianList: Array<ApprovedGuardianInfo>,
+  targetChainId?: string,
 ) => {
-  const contractInstance = await getContractInstance();
   const {
     address,
     caInfo: { caHash },
+    originChainId,
   } = (await getUnlockedWallet()) || {};
-  return await contractInstance.callSendMethod('AddGuardian', address, {
+  return await callAddGuardianMethodPure(targetChainId || originChainId, address, {
     caHash,
     guardianToAdd: parseGuardianConfigInfoToCaType(particularGuardian),
     guardiansApproved: guardianList.map(item => parseVerifiedGuardianInfoToCaType(item)),
   });
 };
-
+export const callAddGuardianMethodPure = async (
+  targetChainId: string,
+  managerAddress: string,
+  {
+    caHash,
+    guardianToAdd,
+    guardiansApproved,
+  }: {
+    caHash: string;
+    guardianToAdd: any;
+    guardiansApproved: any;
+  },
+) => {
+  const contractInstance = await getContractInstanceOnParticularChain(targetChainId);
+  return await contractInstance.callSendMethod('AddGuardian', managerAddress, {
+    caHash,
+    guardianToAdd,
+    guardiansApproved,
+  });
+};
 /**
  * get the CA holder info on target chain.
  * @param caHash the CA holder info's identifier hash
@@ -217,6 +238,22 @@ export const callGetTransferLimitMethod = async (chainId: string, symbol: string
     caInfo: { caHash },
   } = (await getUnlockedWallet()) || {};
   return await contractInstance.callViewMethod('GetTransferLimit', {
+    caHash,
+    symbol,
+  });
+};
+
+/**
+ * query the default transfer limit on target chain, which is set by the contract policy.
+ * @param chainId the target chain's chain id, like ```AELF```
+ * @param symbol the token symbol, like ```ELF```
+ */
+export const callGetDefaultTransferLimitMethod = async (chainId: string, symbol: string) => {
+  const contractInstance = await getContractInstanceOnParticularChain(chainId);
+  const {
+    caInfo: { caHash },
+  } = (await getUnlockedWallet()) || {};
+  return await contractInstance.callViewMethod('GetDefaultTokenTransferLimit', {
     caHash,
     symbol,
   });

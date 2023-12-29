@@ -9,6 +9,13 @@
 #import <React/RCTBridge.h>
 #import <PortkeySDK/PortkeySDKBundleUtil.h>
 
+#if __has_include(<React-RCTAppDelegate/RCTAppDelegate.h>)
+#import <React-RCTAppDelegate/RCTAppDelegate.h>
+#elif __has_include(<React_RCTAppDelegate/RCTAppDelegate.h>)
+// for importing the header from framework, the dash will be transformed to underscore
+#import <React_RCTAppDelegate/RCTAppDelegate.h>
+#endif
+
 @interface PortkeySDKJSCallModule () <RCTBridgeDelegate>
 
 @property (nonatomic, strong, readwrite) RCTBridge *bridge;
@@ -23,7 +30,13 @@
     static dispatch_once_t token;
     dispatch_once(&token, ^{
         instance = [PortkeySDKJSCallModule new];
-        instance.bridge = [[RCTBridge alloc] initWithDelegate:instance launchOptions:nil];
+        id<UIApplicationDelegate> appDelagete = [UIApplication sharedApplication].delegate;
+        if ([appDelagete isKindOfClass:RCTAppDelegate.class]
+            && ((RCTAppDelegate *)appDelagete).bridge != NULL) {
+            instance.bridge = ((RCTAppDelegate *)appDelagete).bridge;
+        } else {
+            instance.bridge = [[RCTBridge alloc] initWithDelegate:instance launchOptions:nil];
+        }
     });
     return instance;
 }
