@@ -17,7 +17,7 @@ import { checkIsUrl } from 'packages/utils/dapp/browser';
 import Loading from 'components/Loading';
 import CommonToast from 'components/CommonToast';
 import { QRData, isLoginQRData } from 'packages/types/types-ca/qrcode';
-import { isAddress } from 'packages/utils';
+import { isAelfAddress } from 'packages/utils/aelf';
 import useBaseContainer, { VoidResult } from 'model/container/UseBaseContainer';
 import { PortkeyEntries, isPortkeyEntries } from 'config/entries';
 import { EntryResult, PermissionType, chooseImageAndroid, PortkeyModulesEntity } from 'service/native-modules';
@@ -60,8 +60,8 @@ const QrScanner: React.FC = () => {
   };
 
   const handleQRCodeData = async (data: QRData) => {
-    const { address, chainType } = data;
-    if (!isAddress(address, chainType)) return invalidQRCode(InvalidQRCodeText.INVALID_QR_CODE);
+    const { address } = data;
+    if (!isAelfAddress(address)) return invalidQRCode(InvalidQRCodeText.INVALID_QR_CODE);
     if (isLoginQRData(data)) {
       if (!(await isWalletUnlocked())) return invalidQRCode(InvalidQRCodeText.DID_NOT_UNLOCK);
       navigateForResult<VoidResult, ScanToLoginProps>(

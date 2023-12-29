@@ -3,7 +3,14 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'com.facebook.react'
 }
-
+preBuild.doFirst {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def isNpmProduct = Boolean.parseBoolean(properties.getProperty('isPortkeyNpmProduct', 'true'))
+    if(isNpmProduct){
+        throw new Exception("Please set isPortkeyNpmProduct=false in local.properties file. ")
+    }
+}
 android {
     signingConfigs {
         debug {
@@ -19,7 +26,7 @@ android {
             keyAlias 'my-key-alias'
         }
     }
-    namespace 'finance.portkey'
+    namespace 'finance.portkey.demo'
     compileSdk rootProject.ext.compileSdkVersion
 
     defaultConfig {
@@ -94,5 +101,5 @@ dependencies {
     implementation (project(":library"))
 }
 
-apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+//apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 

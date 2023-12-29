@@ -22,11 +22,19 @@ export function useCommonNetworkInfo() {
   const [currentNetwork, setCurrentNetwork] = useState<NetworkType>('MAIN');
   const [defaultToken, setDefaultToken] = useState<Token>(DEFAULT_TOKEN);
   const [currentCaAddress, setCurrentCaAddress] = useState<string>();
+  const [explorerUrl, setExplorerUrl] = useState<string>();
+  const [peerUrl, setPeerUrl] = useState<string>();
   useEffectOnce(async () => {
     const n = await getCurrentNetworkType();
     setCurrentNetwork(n);
-    const { defaultToken: cachedDefaultToken } = await getCachedNetworkConfig();
+    const {
+      defaultToken: cachedDefaultToken,
+      explorerUrl: cachedExplorerUrl,
+      peerUrl: cachedPeerUrl,
+    } = await getCachedNetworkConfig();
+    setPeerUrl(cachedPeerUrl);
     setDefaultToken(cachedDefaultToken);
+    setExplorerUrl(cachedExplorerUrl);
     const wallet = await getTempWalletConfig();
     setCurrentCaAddress(wallet.caInfo?.caAddress ?? '');
   });
@@ -35,6 +43,8 @@ export function useCommonNetworkInfo() {
     currentNetwork,
     defaultToken,
     currentCaAddress,
+    explorerUrl,
+    peerUrl,
   };
 }
 export interface CommonInfo {

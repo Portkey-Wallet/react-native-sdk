@@ -29,7 +29,6 @@ export const getUnlockedWallet = async ({
   }
   const endPointUrl = await PortkeyConfig.endPointUrl();
   setCurrChainId(checkedOriginalChainId as any);
-  PortkeyConfig;
   const caInfo =
     originalCaInfo ??
     (await getCaInfoByAccountIdentifierOrSessionId(originalChainId, accountIdentifier, fromRecovery, sessionId));
@@ -101,10 +100,22 @@ const DefaultConfig: GetWalletConfig = {
 };
 
 export type UnlockedWallet = {
+  /**
+   * the ca info on the origin chain marked by originChainId.
+   */
   caInfo: {
+    /**
+     * caHash is account's unique identifier, which is shared by all chains.
+     */
     caHash: string;
+    /**
+     * the caAddress on the origin chain.
+     */
     caAddress: string;
   };
+  /**
+   * If getMultiCaAddresses===true, the multiCaAddresses will be returned, containing all caAddresses on all existing chains.
+   */
   multiCaAddresses: {
     [key: string]: string;
   };

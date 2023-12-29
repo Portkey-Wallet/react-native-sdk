@@ -8,8 +8,8 @@ import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.TextView
 import com.facebook.react.ReactActivity
+import finance.portkey.aar.PortkeyReactApplication
 import finance.portkey.demo.DemoStorage
-import finance.portkey.lib.PortkeyReactApplication
 import finance.portkey.lib.config.StorageIdentifiers
 
 class DemoApplication : PortkeyReactApplication() {

@@ -1,6 +1,14 @@
 apply plugin: 'maven-publish'
 
-
+def checkIsAarMode(){
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def isNpmProduct = Boolean.parseBoolean(properties.getProperty('isPortkeyNpmProduct', 'true'))
+    if(isNpmProduct){
+        throw new Exception("Please set isPortkeyNpmProduct=false in local.properties file. ")
+    }
+}
+checkIsAarMode()
 def GroupId = 'finance.portkey'
 def ArtifactId = 'portkey-rn-sdk'
 def Version = android.defaultConfig.versionName

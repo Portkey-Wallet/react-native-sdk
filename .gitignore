@@ -35,8 +35,10 @@ packages/rn-sdk/app_ios/build/
 /**/output-metadata.json
 
 /**/*.bundle
+/**/.expo
 
 
 .env
 output/
 dist/
+postinstall.log
