@@ -53,7 +53,7 @@ function AlertBody({ accelerateChainId }: { accelerateChainId: ChainId }) {
         },
       },
     ];
-  }, [accelerateChainId]);
+  }, [navigateTo]);
 
   return (
     <View style={styles.alertBox}>
