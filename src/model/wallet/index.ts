@@ -29,7 +29,6 @@ export const getUnlockedWallet = async ({
   }
   const endPointUrl = await PortkeyConfig.endPointUrl();
   setCurrChainId(checkedOriginalChainId as any);
-  PortkeyConfig;
   const caInfo =
     originalCaInfo ??
     (await getCaInfoByAccountIdentifierOrSessionId(originalChainId, accountIdentifier, fromRecovery, sessionId));

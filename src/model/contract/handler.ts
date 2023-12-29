@@ -116,14 +116,32 @@ export const callAddGuardianMethod = async (
     caInfo: { caHash },
     originChainId,
   } = (await getUnlockedWallet()) || {};
-  const contractInstance = await getContractInstanceOnParticularChain(targetChainId || originChainId);
-  return await contractInstance.callSendMethod('AddGuardian', address, {
+  return await callAddGuardianMethodPure(targetChainId || originChainId, address, {
     caHash,
     guardianToAdd: parseGuardianConfigInfoToCaType(particularGuardian),
     guardiansApproved: guardianList.map(item => parseVerifiedGuardianInfoToCaType(item)),
   });
 };
-
+export const callAddGuardianMethodPure = async (
+  targetChainId: string,
+  managerAddress: string,
+  {
+    caHash,
+    guardianToAdd,
+    guardiansApproved,
+  }: {
+    caHash: string;
+    guardianToAdd: any,
+    guardiansApproved: any,
+  },
+) => {
+  const contractInstance = await getContractInstanceOnParticularChain(targetChainId);
+  return await contractInstance.callSendMethod('AddGuardian', managerAddress, {
+    caHash,
+    guardianToAdd,
+    guardiansApproved,
+  });
+};
 /**
  * get the CA holder info on target chain.
  * @param caHash the CA holder info's identifier hash
