@@ -16,7 +16,7 @@ const useCustomCompareEffect = <TDeps extends DependencyList>(
 
     if (deps.every(isPrimitive)) {
       console.warn(
-        '`useCustomCompareEffect` should not be used with dependencies that are all primitive values. Use React.useEffect instead.'
+        '`useCustomCompareEffect` should not be used with dependencies that are all primitive values. Use React.useEffect instead.',
       );
     }
 
@@ -31,7 +31,7 @@ const useCustomCompareEffect = <TDeps extends DependencyList>(
     ref.current = deps;
   }
 
-  useEffect(effect, ref.current);
+  useEffect(effect, [effect]);
 };
 
 export default useCustomCompareEffect;
