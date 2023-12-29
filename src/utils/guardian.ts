@@ -137,25 +137,26 @@ export function cancelLoginAccount(
   });
 }
 
-export function removeManager(contract: ContractBasic, address: string, caHash: string) {
-  return contract?.callSendMethod('RemoveManagerInfo', address, {
-    caHash,
-    managerInfo: {
-      address,
-      extraData: Date.now(),
-    },
-  });
-}
+// no call
+// export function removeManager(contract: ContractBasic, address: string, caHash: string) {
+//   return contract?.callSendMethod('RemoveManagerInfo', address, {
+//     caHash,
+//     managerInfo: {
+//       address,
+//       extraData: Date.now(),
+//     },
+//   });
+// }
 
-export function encodedDeletionManager(contract: ContractBasic, address: string, caHash: string) {
-  return contract?.encodedTx('RemoveManagerInfo', {
-    caHash,
-    managerInfo: {
-      address,
-      extraData: Date.now(),
-    },
-  });
-}
+// export function encodedDeletionManager(contract: ContractBasic, address: string, caHash: string) {
+//   return contract?.encodedTx('RemoveManagerInfo', {
+//     caHash,
+//     managerInfo: {
+//       address,
+//       extraData: Date.now(),
+//     },
+//   });
+// }
 
 export function removeOtherManager(
   contract: ContractBasic,

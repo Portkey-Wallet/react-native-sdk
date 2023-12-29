@@ -13,6 +13,7 @@
     "script/postinstall.js",
     "android/src/main/java/finance/portkey/core",
     "android/src/main/java/finance/portkey/lib",
+    "android/src/main/java/finance/portkey/npm",
     "android/src/main/res",
     "android/src/main/AndroidManifest.xml",
     "android/build.gradle",
