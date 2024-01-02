@@ -138,7 +138,7 @@ export const callAddGuardianMethodAccelerate = async (
       guardiansApproved: guardianList.map(innerItem => parseVerifiedGuardianInfoToCaType(innerItem)),
     }),
   );
-  // use race is ok，we cannot ensure  accelerate guardian will success
+  // use race is ok，we cannot ensure that the accelerate guardian will be successful
   return await Promise.race(promises);
 };
 export const callAddGuardianMethodPure = async (

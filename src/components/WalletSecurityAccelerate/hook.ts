@@ -13,6 +13,7 @@ import BigNumber from 'bignumber.js';
 import useBaseContainer from 'model/container/UseBaseContainer';
 import { PaymentSecurityEditProps } from 'pages/My/WalletSecurity/PaymentSecurity/PaymentSecurityEdit';
 import { PortkeyEntries } from 'config/entries';
+import { callGetDefaultTransferLimitMethod, callGetTransferLimitMethod } from 'model/contract/handler';
 
 interface WalletInfo {
   caHash?: string;
@@ -126,55 +127,46 @@ export const useCheckTransferLimitWithJump = () => {
 };
 
 function useCheckTransferLimit() {
-  const { caHash } = useCurrentWalletInfo();
-  return useCallback(
-    async (params: CheckTransferLimitParams): Promise<CheckTransferLimitResult | undefined> => {
-      const { caContract, symbol, decimals, amount } = params;
-      const [limitReq, defaultLimitReq] = await Promise.all([
-        caContract.callViewMethod('GetTransferLimit', {
-          caHash: caHash,
-          symbol: symbol,
-        }),
-        caContract.callViewMethod('GetDefaultTokenTransferLimit', {
-          caHash: caHash,
-          symbol: symbol,
-        }),
-      ]);
-      const bigAmount = timesDecimals(amount, decimals);
-      let dailyBalance, singleBalance, dailyLimit, defaultDailyLimit, defaultSingleLimit;
-      if (!limitReq?.error) {
-        const { singleLimit, dailyLimit: contractDailyLimit, dailyTransferredAmount } = limitReq.data || {};
-        dailyLimit = ZERO.plus(contractDailyLimit);
-        dailyBalance = dailyLimit.minus(dailyTransferredAmount);
-        singleBalance = ZERO.plus(singleLimit);
-      }
-      if (!defaultLimitReq?.error) {
-        const { transferLimit } = defaultLimitReq.data || {};
-        const { dayLimit, singleLimit } = transferLimit || {};
-        defaultDailyLimit = ZERO.plus(dayLimit);
-        defaultSingleLimit = ZERO.plus(singleLimit);
-      }
+  return useCallback(async (params: CheckTransferLimitParams): Promise<CheckTransferLimitResult | undefined> => {
+    const { chainId, symbol, decimals, amount } = params;
+    const [limitReq, defaultLimitReq] = await Promise.all([
+      callGetTransferLimitMethod(chainId, symbol),
+      callGetDefaultTransferLimitMethod(chainId, symbol),
+    ]);
+    const bigAmount = timesDecimals(amount, decimals);
+    let dailyBalance, singleBalance, dailyLimit, defaultDailyLimit, defaultSingleLimit;
+    if (!limitReq?.error) {
+      const { singleLimit, dailyLimit: contractDailyLimit, dailyTransferredAmount } = limitReq.data || {};
+      dailyLimit = ZERO.plus(contractDailyLimit);
+      dailyBalance = dailyLimit.minus(dailyTransferredAmount);
+      singleBalance = ZERO.plus(singleLimit);
+    }
+    if (!defaultLimitReq?.error) {
+      const { transferLimit } = defaultLimitReq.data || {};
+      const { dayLimit, singleLimit } = transferLimit || {};
+      defaultDailyLimit = ZERO.plus(dayLimit);
+      defaultSingleLimit = ZERO.plus(singleLimit);
+    }
 
-      if (!dailyLimit || !dailyBalance || !singleBalance || dailyBalance.isNaN() || singleBalance.isNaN()) return;
-      return {
-        isDailyLimited: !dailyLimit.eq(-1) && bigAmount.gt(dailyBalance),
-        isSingleLimited: !singleBalance.eq(-1) && bigAmount.gt(singleBalance),
-        dailyLimit,
-        showDailyLimit: divDecimals(dailyLimit, decimals),
-        dailyBalance,
-        showDailyBalance: divDecimals(dailyBalance, decimals),
-        singleBalance,
-        showSingleBalance: divDecimals(singleBalance, decimals),
-        defaultDailyLimit,
-        defaultSingleLimit,
-      };
-    },
-    [caHash],
-  );
+    if (!dailyLimit || !dailyBalance || !singleBalance || dailyBalance.isNaN() || singleBalance.isNaN()) return;
+    return {
+      isDailyLimited: !dailyLimit.eq(-1) && bigAmount.gt(dailyBalance),
+      isSingleLimited: !singleBalance.eq(-1) && bigAmount.gt(singleBalance),
+      dailyLimit,
+      showDailyLimit: divDecimals(dailyLimit, decimals),
+      dailyBalance,
+      showDailyBalance: divDecimals(dailyBalance, decimals),
+      singleBalance,
+      showSingleBalance: divDecimals(singleBalance, decimals),
+      defaultDailyLimit,
+      defaultSingleLimit,
+    };
+  }, []);
 }
 // type for  TransferLimit check
 type CheckTransferLimitParams = {
-  caContract: ContractBasic;
+  // caContract: ContractBasic;
+  chainId: ChainId;
   symbol: string;
   decimals: number | string;
   amount: string;
