@@ -38,8 +38,8 @@ export function parseInputNumberChange(value: string, max: number | BigNumber = 
         ? ''
         : ZERO.plus(maxLimit).dp(+decimal, 1).toFixed()
       : (dec?.length || 0) >= +decimal
-      ? pivot.dp(+decimal, 1).toFixed()
-      : value;
+        ? pivot.dp(+decimal, 1).toFixed()
+        : value;
   } else {
     return '';
   }
