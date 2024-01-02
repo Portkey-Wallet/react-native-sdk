@@ -6,6 +6,7 @@ import WalletSecurityAccelerate from 'components/WalletSecurityAccelerate';
 import { NetworkController } from 'network/controller';
 import { LoginKeyType } from 'packages/types/types-ca/wallet';
 import { sleep } from 'packages/utils';
+
 export interface IAccelerateGuardian {
   type: LoginKeyType;
   verifierId: string;
