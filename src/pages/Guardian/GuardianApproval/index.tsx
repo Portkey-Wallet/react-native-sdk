@@ -39,6 +39,7 @@ import { getBottomSpace } from 'utils/screen';
 import {
   Verifier,
   callAddGuardianMethod,
+  callAddGuardianMethodAccelerate,
   callEditGuardianMethod,
   callEditPaymentSecurityMethod,
   callRemoveGuardianMethod,
@@ -71,7 +72,8 @@ export default function GuardianApproval({
 
   let operationType = OperationTypeEnum.communityRecovery;
   switch (guardianVerifyType) {
-    case GuardianVerifyType.ADD_GUARDIAN: {
+    case GuardianVerifyType.ADD_GUARDIAN:
+    case GuardianVerifyType.ADD_GUARDIAN_ACCELERATE: {
       operationType = OperationTypeEnum.addGuardian;
       break;
     }
@@ -228,7 +230,16 @@ export default function GuardianApproval({
         });
         break;
       }
-
+      case GuardianVerifyType.ADD_GUARDIAN_ACCELERATE: {
+        if (!particularGuardian) throw new Error('guardian info is null!');
+        Loading.show();
+        const result = await callAddGuardianMethodAccelerate(particularGuardian, getVerifiedGuardianInfo());
+        Loading.hide();
+        onPageFinish({
+          isVerified: !result?.error,
+        });
+        break;
+      }
       case GuardianVerifyType.REMOVE_GUARDIAN: {
         if (!particularGuardian) throw new Error('guardian info is null!');
         Loading.show();

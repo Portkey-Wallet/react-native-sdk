@@ -3,7 +3,7 @@ import { ContractBasic } from 'packages/contracts/utils/ContractBasic';
 import { timesDecimals } from 'packages/utils/converter';
 import { handleVerificationDoc } from 'packages/utils/guardian';
 import { PortkeyConfig } from 'global/constants';
-import { getCachedNetworkConfig } from 'model/chain';
+import { getCachedAllChainInfo, getCachedNetworkConfig } from 'model/chain';
 import { guardianTypeStrToEnum } from 'model/global';
 import { getCurrentNetworkType } from 'model/hooks/network';
 import { ITransferLimitItem } from 'model/security';
@@ -121,6 +121,25 @@ export const callAddGuardianMethod = async (
     guardianToAdd: parseGuardianConfigInfoToCaType(particularGuardian),
     guardiansApproved: guardianList.map(item => parseVerifiedGuardianInfoToCaType(item)),
   });
+};
+export const callAddGuardianMethodAccelerate = async (
+  particularGuardian: GuardianConfig,
+  guardianList: Array<ApprovedGuardianInfo>,
+) => {
+  const {
+    address,
+    caInfo: { caHash },
+  } = (await getUnlockedWallet()) || {};
+  const chainInfo = await getCachedAllChainInfo();
+  const promises = chainInfo.map(item =>
+    callAddGuardianMethodPure(item.chainId, address, {
+      caHash,
+      guardianToAdd: parseGuardianConfigInfoToCaType(particularGuardian),
+      guardiansApproved: guardianList.map(innerItem => parseVerifiedGuardianInfoToCaType(innerItem)),
+    }),
+  );
+  // use race is ok，we cannot ensure  accelerate guardian will success
+  return await Promise.race(promises);
 };
 export const callAddGuardianMethodPure = async (
   targetChainId: string,
