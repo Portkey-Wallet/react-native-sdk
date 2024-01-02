@@ -125,7 +125,7 @@ export const useCheckTransferLimitWithJump = () => {
   );
 };
 
-export function useCheckTransferLimit() {
+function useCheckTransferLimit() {
   const { caHash } = useCurrentWalletInfo();
   return useCallback(
     async (params: CheckTransferLimitParams): Promise<CheckTransferLimitResult | undefined> => {
