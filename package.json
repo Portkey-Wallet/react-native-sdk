@@ -71,6 +71,7 @@
     "expo-secure-store": "^12.5.0",
     "expo-web-browser": "^12.0.0",
     "graphql": "^16.6.0",
+    "husky": "^8.0.1",
     "i18next": "^21.8.5",
     "inversify": "^6.0.2",
     "is-url": "^1.2.4",
@@ -114,6 +115,7 @@
     "tslib": "^2.6.2"
   },
   "scripts": {
+    "prepare": "husky install",
     "start": "react-native start",
     "build": "rm -rf dist/ && babel index.js --config-file ./babel.npm.config.js --out-file dist/index.js --extensions \".js,.jsx,.ts,.tsx,.json\" && tsc && babel src --config-file ./babel.npm.config.js --out-dir dist --extensions \".js,.jsx,.ts,.tsx\" && cpy \"src/**/*.(json|png|svg|ttf|d.ts)\" dist",
     "postinstall": "node ./script/postinstall.js > postinstall.log",

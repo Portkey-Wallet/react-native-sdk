@@ -36,10 +36,13 @@ export const useChainsNetworkInfo = () => {
   const [chainsNetworkInfo, setChainsNetworkInfo] = useState<Record<string, AElfChainStatusItemDTO>>({});
   useEffectOnce(async () => {
     const networkInfo = await NetworkController.getNetworkInfo();
-    const info = networkInfo.items.reduce((acc, cur) => {
-      acc[cur.chainId] = cur;
-      return acc;
-    }, {} as Record<string, AElfChainStatusItemDTO>);
+    const info = networkInfo.items.reduce(
+      (acc, cur) => {
+        acc[cur.chainId] = cur;
+        return acc;
+      },
+      {} as Record<string, AElfChainStatusItemDTO>,
+    );
     setChainsNetworkInfo(info);
   });
   return {

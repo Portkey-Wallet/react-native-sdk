@@ -131,8 +131,8 @@ export const callAddGuardianMethodPure = async (
     guardiansApproved,
   }: {
     caHash: string;
-    guardianToAdd: any,
-    guardiansApproved: any,
+    guardianToAdd: any;
+    guardiansApproved: any;
   },
 ) => {
   const contractInstance = await getContractInstanceOnParticularChain(targetChainId);
