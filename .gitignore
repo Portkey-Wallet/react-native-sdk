@@ -42,3 +42,5 @@ packages/rn-sdk/app_ios/build/
 output/
 dist/
 postinstall.log
+
+.expo/**
