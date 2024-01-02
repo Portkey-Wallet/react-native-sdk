@@ -118,7 +118,7 @@ export interface AElfChainStatusDTO {
 }
 
 export interface AElfChainStatusItemDTO {
-  chainId: string;
+  chainId: ChainId;
   chainName: string;
   endPoint: string;
   explorerUrl: string;
