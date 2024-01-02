@@ -56,6 +56,7 @@ import { AccountOriginalType } from 'model/verify/core';
 import { GuardianVerifyType, VerifiedGuardianInfo } from 'model/verify/social-recovery';
 import { Buffer } from 'buffer';
 import { sleep } from 'packages/utils';
+import { TargetScene } from './type';
 
 if (!global.Buffer) {
   global.Buffer = Buffer;
@@ -68,7 +69,8 @@ type thirdPartyInfoType = {
 
 type TypeItemType = (typeof LOGIN_TYPE_LIST)[number];
 
-const AddGuardian: React.FC = () => {
+const AddGuardian = (props: { targetScene?: string }) => {
+  const { targetScene = TargetScene.NORMAL } = props;
   const { t } = useLanguage();
   const [userGuardiansList, setUserGuardiansList] = useState<Array<GuardianConfig>>([]);
   const [verifierMap, setVerifierMap] = useState<{
@@ -221,14 +223,17 @@ const AddGuardian: React.FC = () => {
         },
       };
       handleGuardiansApproval({
-        guardianVerifyType: GuardianVerifyType.ADD_GUARDIAN,
+        guardianVerifyType:
+          targetScene === TargetScene.NORMAL
+            ? GuardianVerifyType.ADD_GUARDIAN
+            : GuardianVerifyType.ADD_GUARDIAN_ACCELERATE,
         accountIdentifier: '',
         accountOriginalType: AccountOriginalType.Email,
         guardians: userGuardiansList,
         particularGuardian: thisGuardian,
       });
     },
-    [selectedVerifier, userGuardiansList, verifyToken],
+    [selectedVerifier, targetScene, userGuardiansList, verifyToken],
   );
 
   const onConfirm = useCallback(async () => {
@@ -339,7 +344,10 @@ const AddGuardian: React.FC = () => {
                   Loading.hide();
                   await sleep(200);
                   handleGuardiansApproval({
-                    guardianVerifyType: GuardianVerifyType.ADD_GUARDIAN,
+                    guardianVerifyType:
+                      targetScene === TargetScene.NORMAL
+                        ? GuardianVerifyType.ADD_GUARDIAN
+                        : GuardianVerifyType.ADD_GUARDIAN_ACCELERATE,
                     accountIdentifier,
                     accountOriginalType,
                     guardians: userGuardiansList.map(it => {
@@ -372,6 +380,7 @@ const AddGuardian: React.FC = () => {
     t,
     country?.code,
     thirdPartyConfirm,
+    targetScene,
     userGuardiansList,
   ]);
 
