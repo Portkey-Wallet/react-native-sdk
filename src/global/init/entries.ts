@@ -25,6 +25,7 @@ import PaymentSecurityList from 'pages/My/WalletSecurity/PaymentSecurity/Payment
 import PaymentSecurityDetail from 'pages/My/WalletSecurity/PaymentSecurity/PaymentSecurityDetail';
 import PaymentSecurityEdit from 'pages/My/WalletSecurity/PaymentSecurity/PaymentSecurityEdit';
 import TokenDetail from 'pages/Token/TokenDetail';
+import NFTDetail from 'pages/NFT/NFTDetail';
 import { wrapEntry } from 'utils/commonUtil';
 import ActivityListPage from 'pages/Activity/ActivityListPage';
 import ActivityDetail from 'pages/Activity/ActivityDetail';
@@ -79,6 +80,7 @@ const initEntries = () => {
   entryConfig.set(PortkeyEntries.PAYMENT_SECURITY_EDIT_ENTRY, () => PaymentSecurityEdit);
 
   entryConfig.set(PortkeyEntries.TOKEN_DETAIL_ENTRY, () => TokenDetail);
+  entryConfig.set(PortkeyEntries.NFT_DETAIL_ENTRY, () => NFTDetail);
 
   for (const [key, value] of entryConfig) {
     AppRegistry.registerComponent(wrapEntry(key), value);
