@@ -1,6 +1,6 @@
 import React from 'react';
 import Svg from 'components/Svg';
-import { TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View, StyleProp, ViewProps } from 'react-native';
 import { dashBoardBtnStyle, innerPageStyles } from '../SendButton/style';
 import { TextM } from 'components/CommonText';
 import { useLanguage } from 'i18n/hooks';
@@ -15,10 +15,11 @@ interface SendButtonType {
   currentTokenInfo?: TokenItemShowType;
   themeType?: 'dashBoard' | 'innerPage';
   receiveButton?: any;
+  wrapStyle?: StyleProp<ViewProps>;
 }
 
 export default function ReceiveButton(props: SendButtonType) {
-  const { themeType = 'dashBoard' } = props;
+  const { themeType = 'dashBoard', wrapStyle } = props;
   const { t } = useLanguage();
   const { navigateTo } = useBaseContainer({
     entryName: PortkeyEntries.ASSETS_HOME_ENTRY,
@@ -26,7 +27,7 @@ export default function ReceiveButton(props: SendButtonType) {
   const styles = themeType === 'dashBoard' ? dashBoardBtnStyle : innerPageStyles;
 
   return (
-    <View style={styles.buttonWrap}>
+    <View style={[styles.buttonWrap, wrapStyle]}>
       <TouchableOpacity
         style={[styles.iconWrapStyle, GStyles.alignCenter]}
         onPress={() => {
