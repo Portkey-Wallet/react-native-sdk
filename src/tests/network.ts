@@ -23,7 +23,7 @@ export const NetworkTestCases: Array<TestCase> = [
   {
     describe: 'run GetTokenPrice well',
     run: async testContext => {
-      const it = await NetworkController.checkELFTokenPrice();
+      const it = await NetworkController.checkTokenPrices(['ELF']);
       testContext.assert(!!it, 'it should not be falsy');
       testContext.log(it, 'getTokenPrice result');
     },
