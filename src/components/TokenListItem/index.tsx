@@ -8,6 +8,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { formatChainInfoToShow } from 'packages/utils';
 import { pTd } from 'utils/unit';
 import { CommonInfo } from '../TokenOverlay/hooks';
+import { BigNumber } from 'bignumber.js';
 interface TokenListItemType {
   noBalanceShow?: boolean;
   item?: any;
@@ -20,9 +21,6 @@ const TokenListItem: React.FC<TokenListItemType> = props => {
   const { symbolImages, currentNetwork, defaultToken } = props.commonInfo;
   const symbol = item?.token?.symbol ?? item.symbol;
   const chainId = item?.token?.chainId ?? item.chainId;
-
-  const isTokenHasPrice = true;
-
   return (
     <TouchableOpacity style={itemStyle.wrap} onPress={() => onPress?.(item)} disabled={!onPress}>
       <CommonAvatar
@@ -51,8 +49,7 @@ const TokenListItem: React.FC<TokenListItemType> = props => {
             </TextL>
             <TextS numberOfLines={1} ellipsizeMode={'tail'} style={itemStyle.dollar}>
               {!(currentNetwork === 'TESTNET') &&
-                isTokenHasPrice &&
-                `$ ${formatAmountShow(divDecimals(item?.balance, item.decimals).multipliedBy(item?.priceInUsd), 2)}`}
+                `$ ${(BigNumber(item?.balanceInUsd ?? 0) ?? BigNumber(0)).toFixed(2)}`}
             </TextS>
           </View>
         )}
