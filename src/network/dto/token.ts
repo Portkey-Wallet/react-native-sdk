@@ -1,9 +1,9 @@
-export interface TokenRriceItem {
+export interface TokenPriceItem {
   symbol: string;
   priceInUsd: number;
 }
 
 export interface TokenPriceResult {
-  items: TokenRriceItem[];
+  items: TokenPriceItem[];
   totalRecordCount: number;
 }

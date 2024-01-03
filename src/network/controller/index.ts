@@ -564,7 +564,6 @@ export class NetworkControllerEntity {
     const res = await this.realExecute<TokenPriceResult>(await this.parseUrl(APIPaths.GET_TOKEN_PRICES), 'GET', {
       symbols,
     });
-    console.log('fetchTokenPrices', JSON.stringify(res));
     if (!res?.result) throw new Error('network failure');
     return res.result;
   };
