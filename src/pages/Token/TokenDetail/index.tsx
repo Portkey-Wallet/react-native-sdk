@@ -124,11 +124,8 @@ const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
     [currentToken?.balance, currentToken?.decimals],
   );
 
-  // todo_wade: make sure {isBuyButtonShowStore} usage
-  const isBuyButtonShow = useMemo(
-    () => tokenInfo.symbol === defaultToken.symbol && tokenInfo.chainId === 'AELF',
-    [defaultToken.symbol, tokenInfo.chainId, tokenInfo.symbol],
-  );
+  // not support Buy function
+  const isBuyButtonShow = false;
 
   const isFaucetButtonShow = useMemo(
     () => !isMainnet && tokenInfo.symbol === defaultToken.symbol && tokenInfo.chainId === 'AELF',
@@ -199,7 +196,7 @@ const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
       />
       <View style={styles.pageContainer}>
         <View style={styles.card}>
-          <Text style={styles.tokenBalance}>{`${balanceShow} ${currentToken?.symbol}`}</Text>
+          <Text style={styles.tokenBalance}>{currentToken ? `${balanceShow} ${currentToken?.symbol}` : ''}</Text>
           {isMainnet && isTokenHasPrice && (
             <Text style={styles.dollarBalance}>{`$ ${formatAmountShow(
               divDecimals(currentToken?.balance, currentToken?.decimals).multipliedBy(currentToken ? tokenPrice : 0),
@@ -208,8 +205,8 @@ const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
           )}
           <View style={[styles.buttonGroupWrap, buttonGroupWrapStyle]}>
             {isBuyButtonShow && <BuyButton themeType="innerPage" wrapStyle={buttonWrapStyle} />}
-            <SendButton themeType="innerPage" sentToken={currentToken} wrapStyle={buttonWrapStyle} />
-            <ReceiveButton currentTokenInfo={currentToken} themeType="innerPage" wrapStyle={buttonWrapStyle} />
+            <SendButton themeType="innerPage" sentToken={tokenInfo} wrapStyle={buttonWrapStyle} />
+            <ReceiveButton currentTokenInfo={tokenInfo} themeType="innerPage" wrapStyle={buttonWrapStyle} />
             {isFaucetButtonShow && <FaucetButton themeType="innerPage" />}
           </View>
         </View>

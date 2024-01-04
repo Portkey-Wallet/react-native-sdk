@@ -37,8 +37,6 @@ const BuyButton = (props: SendButtonType) => {
         style={[styles.iconWrapStyle, GStyles.alignCenter]}
         onPress={async () => {
           if (!isMainnet) return;
-          // todo_wade: navigate to buy page
-          // navigationService.navigate('BuyHome');
         }}>
         <Svg icon={themeType === 'dashBoard' ? 'buy' : 'buy1'} size={pTd(46)} />
       </Touchable>
