@@ -32,12 +32,14 @@ import { IToSendHomeParamsType, IToSendPreviewParamsType } from 'packages/types/
 import { getAddressChainId, isSameAddresses } from 'packages/utils';
 import { getEntireDIDAelfAddress, isCrossChain, isAllowAelfAddress, getAelfAddress } from 'packages/utils/aelf';
 import { getELFChainBalance } from 'packages/utils/balance';
-import { ContractBasic } from 'packages/utils/contract';
 import { divDecimals, timesDecimals } from 'packages/utils/converter';
 import { useChainsNetworkInfo } from 'model/hooks/network';
 import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
 import { useTransactionFee } from 'model/hooks/transaction';
 import { useQrScanPermissionAndToast } from 'model/hooks/device';
+import { useGetTransferFee } from 'model/contract/handler';
+import { getUnlockedWallet } from 'model/wallet';
+import { useSecuritySafeCheckAndToast, useCheckTransferLimitWithJump } from 'components/WalletSecurityAccelerate/hook';
 import wallet from 'packages/api/api-did/wallet';
 
 const SendHome = (props: IToSendHomeParamsType) => {
@@ -51,14 +53,17 @@ const SendHome = (props: IToSendHomeParamsType) => {
     },
     [chainsNetworkInfo],
   );
-  const { defaultToken } = useCommonNetworkInfo();
+
+  const fromChainId = useMemo(() => {
+    return assetInfo?.chainId || 'AELF';
+  }, [assetInfo?.chainId]);
+  const currentNetworkInfo = useCommonNetworkInfo(fromChainId);
   const transactionFees = useTransactionFee();
   const { max: maxFee, crossChain: crossFee } = useMemo(() => {
     const chainId = assetInfo?.chainId || 'AELF';
     return transactionFees.find(ele => ele.chainId === chainId)?.transactionFee || { max: '0.00', crossChain: '0.00' };
   }, [assetInfo?.chainId, transactionFees]);
 
-  const chainInfo = useCurrentChain(assetInfo?.chainId);
   const securitySafeCheckAndToast = useSecuritySafeCheckAndToast();
 
   const qrScanPermissionAndToast = useQrScanPermissionAndToast();
@@ -75,34 +80,21 @@ const SendHome = (props: IToSendHomeParamsType) => {
   const [step, setStep] = useState<1 | 2>(1);
   const [isLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<any[]>([]);
+  const getTransferFee = useGetTransferFee();
 
   const checkManagerSyncState = useCheckManagerSyncState();
-  const contractRef = useRef<ContractBasic>();
-  const getCAContract = useGetCAContract();
-
   useEffect(() => {
     setSelectedToContact(toInfo);
   }, [toInfo]);
 
   // get transfer fee
-  const getTransferFee = useGetTransferFee();
   const getTransactionFee = useCallback(
     async (isCross: boolean, sendAmount?: string) => {
-      if (!chainInfo) return;
-      if (!contractRef.current) {
-        try {
-          contractRef.current = await getCAContract(chainInfo.chainId);
-        } catch (error) {
-          return;
-        }
-      }
-
       return getTransferFee({
         isCross,
         sendAmount: sendAmount ?? debounceSendNumber,
         decimals: assetInfo.decimals,
         symbol: assetInfo.symbol,
-        caContract: contractRef.current,
         tokenContractAddress: assetInfo.tokenContractAddress,
         toAddress: getEntireDIDAelfAddress(selectedToContact.address, undefined, assetInfo.chainId),
         chainId: assetInfo.chainId,
@@ -110,9 +102,7 @@ const SendHome = (props: IToSendHomeParamsType) => {
     },
     [
       assetInfo.chainId,
-      chainInfo,
       debounceSendNumber,
-      getCAContract,
       getTransferFee,
       assetInfo.decimals,
       assetInfo.symbol,
@@ -125,14 +115,14 @@ const SendHome = (props: IToSendHomeParamsType) => {
     Loading.show();
     try {
       // check is SYNCHRONIZING
-      const _isManagerSynced = await checkManagerSyncState(chainInfo?.chainId || 'AELF');
+      const _isManagerSynced = await checkManagerSyncState(assetInfo?.chainId || 'AELF');
       if (!_isManagerSynced) return setErrorMessage([TransactionError.SYNCHRONIZING]);
 
       // balance 0
       if (divDecimals(balance, assetInfo.decimals).isEqualTo(0)) return setSendNumber('0');
 
       // other tokens
-      if (assetInfo.symbol !== defaultToken.symbol)
+      if (assetInfo.symbol !== currentNetworkInfo.defaultToken.symbol)
         return setSendNumber(divDecimals(balance, assetInfo.decimals || '0').toString());
 
       // elf <= maxFee
@@ -158,12 +148,10 @@ const SendHome = (props: IToSendHomeParamsType) => {
     }
   }, [
     checkManagerSyncState,
-    chainInfo?.chainId,
     balance,
     assetInfo.decimals,
     assetInfo.symbol,
     assetInfo.chainId,
-    defaultToken.symbol,
     maxFee,
     selectedToContact.chainId,
     getTransactionFee,
@@ -171,7 +159,9 @@ const SendHome = (props: IToSendHomeParamsType) => {
 
   const getTokenViewContract = useGetTokenViewContract();
   const initBalance = useCallback(async () => {
-    const caAddress = wallet?.[assetInfo.chainId]?.caAddress;
+    const {
+      caInfo: { caAddress },
+    } = await getUnlockedWallet();
     if (!assetInfo || !caAddress) return;
     try {
       const tokenContract = await getTokenViewContract(assetInfo.chainId);
@@ -180,7 +170,7 @@ const SendHome = (props: IToSendHomeParamsType) => {
     } catch (error) {
       console.log('initBalance', error);
     }
-  }, [assetInfo, getTokenViewContract, wallet]);
+  }, [assetInfo, getTokenViewContract]);
 
   useEffectOnce(() => {
     initBalance();
@@ -257,7 +247,7 @@ const SendHome = (props: IToSendHomeParamsType) => {
   }, [selectedToContact?.address, sendNumber]);
 
   const checkCanNext = useCallback(() => {
-    const suffix = getAddressChainId(selectedToContact.address, chainInfo?.chainId || 'AELF');
+    const suffix = getAddressChainId(selectedToContact.address, fromChainId || 'AELF');
 
     if (!isAllowAelfAddress(selectedToContact.address)) {
       setErrorMessage([AddressError.INVALID_ADDRESS]);
@@ -287,7 +277,7 @@ const SendHome = (props: IToSendHomeParamsType) => {
     }
 
     return true;
-  }, [chainInfo?.chainId, selectedToContact.address, wallet, assetInfo?.chainId, isValidChainId, showDialog]);
+  }, [fromChainId, selectedToContact.address, assetInfo?.chainId, isValidChainId, showDialog]);
 
   const nextStep = useCallback(() => {
     if (checkCanNext()) {

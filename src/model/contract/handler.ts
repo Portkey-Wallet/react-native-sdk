@@ -1,6 +1,6 @@
 import { getContractBasic } from 'packages/contracts/utils';
 import { ContractBasic } from 'packages/contracts/utils/ContractBasic';
-import { timesDecimals } from 'packages/utils/converter';
+import { divDecimalsStr, timesDecimals } from 'packages/utils/converter';
 import { handleVerificationDoc } from 'packages/utils/guardian';
 import { PortkeyConfig } from 'global/constants';
 import { getCachedAllChainInfo, getCachedNetworkConfig } from 'model/chain';
@@ -13,14 +13,48 @@ import { getUnlockedWallet } from 'model/wallet';
 import { NetworkController } from 'network/controller';
 import { AElfChainStatusItemDTO, AElfWeb3SDK, ApprovedGuardianInfo } from 'network/dto/wallet';
 import { selectCurrentBackendConfig } from 'utils/commonUtil';
-import { addManager } from 'utils/wallet';
+import { addManager, isEqAddress } from 'utils/wallet';
 import { handleCachedValue } from 'service/storage/cache';
+import { ChainId } from '@portkey/provider-types';
+import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
+import { useCurrentWalletInfo } from 'components/WalletSecurityAccelerate/hook';
+import { request } from 'packages/api/api-did';
+import { useCallback } from 'react';
 
 export interface Verifier {
   id: string;
   name: string;
   imageUrl: string;
 }
+
+export type GetTransferFeeParams = {
+  isCross: boolean;
+  sendAmount: string;
+  decimals: string;
+  symbol: string;
+  tokenContractAddress: string;
+  toAddress: string;
+  chainId: ChainId;
+};
+
+export type CalculateTransactionFeeResponse = {
+  Success: boolean;
+  TransactionFee: FeeResponse | null;
+  ResourceFee: FeeResponse | null;
+  TransactionFees: {
+    ChargingAddress: string;
+    Fee: FeeResponse;
+  } | null;
+  ResourceFees: {
+    ChargingAddress: string;
+    Fee: FeeResponse;
+  } | null;
+  Error: string | null;
+};
+
+export type FeeResponse = {
+  [symbol: string]: string;
+};
 
 /**
  * get a basic contract instance, which can be used to call contract method.
@@ -402,4 +436,90 @@ const parseVerifiedGuardianInfoToCaType = (guardianConfig: ApprovedGuardianInfo)
       verificationDoc,
     },
   };
+};
+
+export const useGetTransferFee = () => {
+  const { defaultToken } = useCommonNetworkInfo();
+  const wallet = useCurrentWalletInfo();
+
+  const getTransferFee = useCallback(
+    async ({
+      isCross,
+      sendAmount,
+      decimals,
+      symbol,
+      tokenContractAddress,
+      toAddress,
+      chainId = 'AELF',
+    }: GetTransferFeeParams) => {
+      const methodName = isCross ? 'ManagerTransfer' : 'ManagerForwardCall';
+      const calculateParams = isCross
+        ? {
+            contractAddress: tokenContractAddress,
+            caHash: wallet.caHash,
+            symbol,
+            to: wallet.caAddress,
+            amount: timesDecimals(sendAmount, decimals).toFixed(),
+            memo: '',
+          }
+        : {
+            caHash: wallet.caHash,
+            contractAddress: tokenContractAddress,
+            methodName: 'Transfer',
+            args: {
+              symbol: symbol,
+              to: toAddress,
+              amount: timesDecimals(sendAmount, decimals).toFixed(),
+              memo: '',
+            },
+          };
+
+      const caContract = await getContractInstanceOnParticularChain(chainId);
+
+      const req = await caContract.calculateTransactionFee(methodName, calculateParams);
+
+      if (req?.error) request.errorReport('calculateTransactionFee', calculateParams, req.error);
+
+      const { TransactionFees, TransactionFee } = (req.data as CalculateTransactionFeeResponse) || {};
+      // V2 calculateTransactionFee
+      if (TransactionFees) {
+        const { ChargingAddress, Fee } = TransactionFees;
+        const myPayFee = await isMyPayTransactionFee(ChargingAddress, chainId);
+        if (myPayFee) return divDecimalsStr(Fee?.[defaultToken.symbol], defaultToken.decimals).toString();
+        return '0';
+      }
+      // V1 calculateTransactionFee
+      if (TransactionFee)
+        return divDecimalsStr(TransactionFee?.[defaultToken.symbol], defaultToken.decimals).toString();
+      throw { code: 500, message: 'no enough fee' };
+    },
+    [defaultToken.decimals, defaultToken.symbol, wallet.caAddress, wallet.caHash],
+  );
+
+  return getTransferFee;
+};
+
+export const isMyPayTransactionFee = async (address: string, chainId?: ChainId) => {
+  // manager transaction fee hide
+  // const { walletInfo } = getWallet();
+  // if (isEqAddress(walletInfo?.address, address)) return true;
+  const {
+    caInfo: { caHash },
+    multiCaAddresses,
+  } = await getUnlockedWallet({ getMultiCaAddresses: true });
+  const caInfo = {
+    caHash,
+    caAddress: multiCaAddresses[chainId ?? 'AELF'],
+  };
+
+  if (chainId) {
+    if (!caInfo) return false;
+    return caInfo.caAddress && isEqAddress(caInfo.caAddress, address);
+  }
+
+  const addressList = Object.values(caInfo || {})
+    .map((item: any) => item?.caAddress)
+    .filter(i => !!i);
+
+  return addressList.some(i => isEqAddress(i, address));
 };
