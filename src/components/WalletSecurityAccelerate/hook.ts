@@ -5,7 +5,6 @@ import useLockCallback from 'packages/hooks/useLockCallback';
 import { ChainId } from 'packages/types';
 import { useCallback, useEffect, useState } from 'react';
 import { checkSecuritySafe } from 'utils/security';
-import { ContractBasic } from 'packages/contracts/utils/ContractBasic';
 import { divDecimals, timesDecimals } from 'packages/utils/converter';
 import { ZERO } from 'packages/constants/misc';
 import ActionSheet from 'components/ActionSheet';
@@ -19,6 +18,7 @@ interface WalletInfo {
   caHash?: string;
   managerAddress?: string;
   originChainId: ChainId;
+  caAddress?: string;
 }
 export function useCurrentWalletInfo() {
   const [walletInfo, setWalletInfo] = useState<WalletInfo>({
@@ -33,6 +33,7 @@ export function useCurrentWalletInfo() {
         caHash: caInfo?.caHash,
         managerAddress,
         originChainId: originChainId as ChainId,
+        caAddress: caInfo?.caAddress,
       });
     })();
   }, []);

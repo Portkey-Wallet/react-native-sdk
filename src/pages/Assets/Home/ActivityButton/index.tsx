@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 import Svg from 'components/Svg';
-import { dashBoardBtnStyle, innerPageStyles } from 'components/SendButton/style';
 
 import { View, TouchableOpacity } from 'react-native';
 import { TextM } from 'components/CommonText';
@@ -9,6 +8,7 @@ import { pTd } from 'utils/unit';
 import GStyles from 'assets/theme/GStyles';
 import useBaseContainer from 'model/container/UseBaseContainer';
 import { PortkeyEntries } from 'config/entries';
+import dashBoardBtnStyle, { innerPageStyles } from 'components/FaucetButton/style';
 
 interface ActivityButtonProps {
   themeType?: 'dashBoard' | 'innerPage';

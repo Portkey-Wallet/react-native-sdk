@@ -111,3 +111,7 @@ export async function addManager({
     },
   });
 }
+
+export function isEqAddress(a1?: string, a2?: string) {
+  return a1?.toLocaleLowerCase() === a2?.toLocaleLowerCase();
+}

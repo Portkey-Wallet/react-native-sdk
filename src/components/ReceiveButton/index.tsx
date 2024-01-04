@@ -1,7 +1,6 @@
 import React from 'react';
 import Svg from 'components/Svg';
 import { TouchableOpacity, View } from 'react-native';
-import { dashBoardBtnStyle, innerPageStyles } from '../SendButton/style';
 import { TextM } from 'components/CommonText';
 import { useLanguage } from 'i18n/hooks';
 import TokenOverlay from 'components/TokenOverlay';
@@ -10,6 +9,7 @@ import { pTd } from 'utils/unit';
 import GStyles from 'assets/theme/GStyles';
 import { PortkeyEntries } from 'config/entries';
 import useBaseContainer from 'model/container/UseBaseContainer';
+import dashBoardBtnStyle, { innerPageStyles } from 'components/FaucetButton/style';
 
 interface SendButtonType {
   currentTokenInfo?: TokenItemShowType;
