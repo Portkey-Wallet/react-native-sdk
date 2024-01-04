@@ -1,12 +1,13 @@
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
-import { View, Text, FlatList } from 'react-native';
-import PageContainer from 'components/PageContainer';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
+import { View, Text, FlatList, StatusBar } from 'react-native';
 import BuyButton from 'components/BuyButton';
 import SendButton from 'components/SendButton';
 import ReceiveButton from 'components/ReceiveButton';
 import FaucetButton from 'components/FaucetButton';
 import NoData from 'components/NoData';
 import TransferItem from 'components/TransferList/components/TransferItem';
+import SafeAreaBox from 'components/SafeAreaBox';
+import CustomHeader from 'components/CustomHeader';
 import { useLanguage } from 'i18n/hooks';
 import { TextXL } from 'components/CommonText';
 import GStyles from 'assets/theme/GStyles';
@@ -24,8 +25,9 @@ import { useCurrentNetworkType } from 'model/hooks/network';
 import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
 import { TokenPriceItem } from 'network/dto/token';
 import { useAccountTokenBalanceList } from 'model/hooks/balance';
-import { getUnlockedWallet } from 'model/wallet';
 import { ActivityItemType } from 'network/dto/query';
+import { PortkeyEntries } from 'config/entries';
+import { getUnlockedWallet, useUnlockedWallet } from 'model/wallet';
 
 interface TokenDetailPageProps {
   tokenInfo: TokenItemShowType;
@@ -39,7 +41,7 @@ const INIT_PAGE_INFO = {
 
 const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
   const { t } = useLanguage();
-  const { onFinish } = useBaseContainer({});
+  const { onFinish, navigateTo } = useBaseContainer({});
   const isMainnet = useCurrentNetworkType() === 'MAIN';
   const { defaultToken } = useCommonNetworkInfo();
   const [tokenPrice, setTokenPrice] = useState<number>(0);
@@ -56,7 +58,7 @@ const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
 
   useEffectOnce(() => {
     getTokenPrice();
-    getActivityList();
+    getActivityList(true);
   });
 
   const getTokenPrice = useCallback(async () => {
@@ -73,7 +75,10 @@ const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
     async (isInit = false) => {
       const instantWallet = await getUnlockedWallet({ getMultiCaAddresses: true });
       if (!instantWallet || !instantWallet.address) return;
-      const { activityList = [], skipCount = 0 } = currentActivity;
+      const { activityList = [], skipCount = 0, totalRecordCount: totalRecord = 0 } = currentActivity;
+      if (!isInit && activityList?.length >= totalRecord) return;
+      if (pageInfoRef.current.isLoading) return;
+      pageInfoRef.current.isLoading = true;
       const maxResultCount = 30;
       const { multiCaAddresses, address } = instantWallet;
       const { data, totalRecordCount } = await NetworkController.getRecentActivities({
@@ -88,9 +93,10 @@ const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
       });
       setCurrentActivity({
         activityList: isInit ? data : activityList.concat(data),
-        skipCount: skipCount + maxResultCount,
+        skipCount: isInit ? 0 : skipCount + maxResultCount,
         totalRecordCount,
       });
+      pageInfoRef.current.isLoading = false;
     },
     [currentActivity, tokenInfo.chainId, tokenInfo.symbol],
   );
@@ -160,62 +166,78 @@ const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
     });
   }, [onFinish]);
 
-  return (
-    <PageContainer
-      type="leftBack"
-      backTitle={t('')}
-      titleDom={
-        <View>
-          <TextXL style={[GStyles.textAlignCenter, FontStyles.font2, fonts.mediumFont]}>{tokenInfo.symbol}</TextXL>
-          <Text style={[GStyles.textAlignCenter, FontStyles.font2, styles.subTitle]}>
-            {formatChainInfoToShow(tokenInfo.chainId)}
-          </Text>
-        </View>
-      }
-      safeAreaColor={['blue', 'white']}
-      leftCallback={goBack}
-      containerStyles={styles.pageWrap}
-      scrollViewProps={{ disabled: true }}>
-      <View style={styles.card}>
-        <Text style={styles.tokenBalance}>{`${balanceShow} ${currentToken?.symbol}`}</Text>
-        {isMainnet && isTokenHasPrice && (
-          <Text style={styles.dollarBalance}>{`$ ${formatAmountShow(
-            divDecimals(currentToken?.balance, currentToken?.decimals).multipliedBy(currentToken ? tokenPrice : 0),
-            2,
-          )}`}</Text>
-        )}
-        <View style={[styles.buttonGroupWrap, buttonGroupWrapStyle]}>
-          {isBuyButtonShow && <BuyButton themeType="innerPage" wrapStyle={buttonWrapStyle} />}
-          <SendButton themeType="innerPage" sentToken={currentToken} wrapStyle={buttonWrapStyle} />
-          <ReceiveButton currentTokenInfo={currentToken} themeType="innerPage" wrapStyle={buttonWrapStyle} />
-          {isFaucetButtonShow && <FaucetButton themeType="innerPage" />}
-        </View>
-      </View>
+  const { wallet } = useUnlockedWallet({ getMultiCaAddresses: true });
+  const caAddresses = useMemo(() => {
+    if (!wallet) return {};
+    return Object.entries(wallet.multiCaAddresses).map(it => it[1]);
+  }, [wallet]);
 
-      <FlatList
-        refreshing={reFreshing}
-        data={currentActivity?.activityList || []}
-        keyExtractor={(_item, index) => `${index}`}
-        ListEmptyComponent={<NoData noPic message="You have no transactions." />}
-        renderItem={({ item }: { item: ActivityItemType }) => {
-          return (
-            <TransferItem
-              item={item}
-              onPress={() => {
-                // todo_wade: finish navigate
-              }}
-            />
-          );
-        }}
-        onRefresh={() => {
-          onRefreshList();
-        }}
-        onEndReached={() => {
-          getActivityList();
-        }}
-        onEndReachedThreshold={ON_END_REACHED_THRESHOLD}
+  const onNavigateActivityDetail = useCallback(
+    (item: ActivityItemType) => {
+      navigateTo(PortkeyEntries.ACTIVITY_DETAIL_ENTRY, {
+        params: { item, caAddresses },
+      });
+    },
+    [caAddresses, navigateTo],
+  );
+
+  return (
+    <SafeAreaBox style={styles.pageWrap}>
+      <StatusBar barStyle={'light-content'} />
+      <CustomHeader
+        themeType={'blue'}
+        backTitle={t('')}
+        leftCallback={goBack}
+        titleDom={
+          <View>
+            <TextXL style={[GStyles.textAlignCenter, FontStyles.font2, fonts.mediumFont]}>{tokenInfo.symbol}</TextXL>
+            <Text style={[GStyles.textAlignCenter, FontStyles.font2, styles.subTitle]}>
+              {formatChainInfoToShow(tokenInfo.chainId)}
+            </Text>
+          </View>
+        }
       />
-    </PageContainer>
+      <View style={styles.pageContainer}>
+        <View style={styles.card}>
+          <Text style={styles.tokenBalance}>{`${balanceShow} ${currentToken?.symbol}`}</Text>
+          {isMainnet && isTokenHasPrice && (
+            <Text style={styles.dollarBalance}>{`$ ${formatAmountShow(
+              divDecimals(currentToken?.balance, currentToken?.decimals).multipliedBy(currentToken ? tokenPrice : 0),
+              2,
+            )}`}</Text>
+          )}
+          <View style={[styles.buttonGroupWrap, buttonGroupWrapStyle]}>
+            {isBuyButtonShow && <BuyButton themeType="innerPage" wrapStyle={buttonWrapStyle} />}
+            <SendButton themeType="innerPage" sentToken={currentToken} wrapStyle={buttonWrapStyle} />
+            <ReceiveButton currentTokenInfo={currentToken} themeType="innerPage" wrapStyle={buttonWrapStyle} />
+            {isFaucetButtonShow && <FaucetButton themeType="innerPage" />}
+          </View>
+        </View>
+        <FlatList
+          refreshing={reFreshing}
+          data={currentActivity?.activityList || []}
+          keyExtractor={(_item, index) => `${index}`}
+          ListEmptyComponent={<NoData noPic message="You have no transactions." />}
+          renderItem={({ item }: { item: ActivityItemType }) => {
+            return (
+              <TransferItem
+                item={item}
+                onPress={() => {
+                  onNavigateActivityDetail(item);
+                }}
+              />
+            );
+          }}
+          onRefresh={() => {
+            onRefreshList();
+          }}
+          onEndReached={() => {
+            getActivityList();
+          }}
+          onEndReachedThreshold={ON_END_REACHED_THRESHOLD}
+        />
+      </View>
+    </SafeAreaBox>
   );
 };
 

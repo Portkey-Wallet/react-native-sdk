@@ -3,13 +3,32 @@ import { defaultColors } from 'assets/theme';
 import { pTd } from 'utils/unit';
 import GStyles from 'assets/theme/GStyles';
 import fonts from 'assets/theme/fonts';
+import { getStatusBarHeight } from 'utils/screen';
 
-const { bg1, bg4, font3, font5, font7 } = defaultColors;
+const { bg1, bg4, bg5, font3, font5, font7 } = defaultColors;
 
 export const styles = StyleSheet.create({
   pageWrap: {
-    backgroundColor: bg1,
+    backgroundColor: bg5,
     ...GStyles.paddingArg(0),
+    paddingTop: getStatusBarHeight(true),
+  },
+  iconWrap: {
+    width: pTd(20),
+    marginLeft: pTd(20),
+    marginBottom: pTd(16),
+    marginTop: pTd(16),
+  },
+  pageContainer: {
+    width: '100%',
+    flex: 1,
+    backgroundColor: bg1,
+  },
+  navigationBar: {
+    width: '100%',
+    height: 44,
+    backgroundColor: 'red',
+    flexDirection: 'row',
   },
   card: {
     backgroundColor: bg4,
