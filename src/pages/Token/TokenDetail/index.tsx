@@ -207,7 +207,7 @@ const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
             {isBuyButtonShow && <BuyButton themeType="innerPage" wrapStyle={buttonWrapStyle} />}
             <SendButton themeType="innerPage" sentToken={tokenInfo} wrapStyle={buttonWrapStyle} />
             <ReceiveButton currentTokenInfo={tokenInfo} themeType="innerPage" wrapStyle={buttonWrapStyle} />
-            {isFaucetButtonShow && <FaucetButton themeType="innerPage" />}
+            {isFaucetButtonShow && <FaucetButton themeType="innerPage" wrapStyle={buttonWrapStyle} />}
           </View>
         </View>
         <FlatList
