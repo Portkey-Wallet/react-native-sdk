@@ -340,7 +340,7 @@ export const callEditPaymentSecurityMethod = async (
  * get the contract instance on target chain.
  * @param chainId the target chain's chain id, like ```AELF```
  */
-const getContractInstanceOnParticularChain = async (chainId: string) => {
+export const getContractInstanceOnParticularChain = async (chainId: string) => {
   const { privateKey } = (await getUnlockedWallet()) || {};
   const { caContractAddress, endPoint } = await findParticularNetworkByChainId(chainId);
   if (!caContractAddress || !endPoint)
@@ -382,6 +382,25 @@ export const callFaucetMethod = async (amount = 100) => {
       amount: timesDecimals(amount, 8).toString(),
     },
   });
+};
+
+export const checkManagerSyncState = async (chainId: string): Promise<boolean> => {
+  try {
+    const networkInfos = await NetworkController.getNetworkInfo();
+    const networkInfo = networkInfos.items.find(it => it.chainId === chainId);
+    if (!networkInfo) throw new Error('unknown chainId:' + chainId);
+    const { caContractAddress, endPoint } = networkInfo;
+    const {
+      address,
+      caInfo: { caHash },
+    } = (await getUnlockedWallet()) || {};
+    const result = await callGetHolderInfoMethod(caHash, caContractAddress, endPoint);
+    if (result?.error) return false;
+    return result?.data?.managerInfos?.some((item: any) => item.address === address);
+  } catch (e) {
+    console.error('error when checkManagerSyncState', e);
+    return false;
+  }
 };
 
 /**

@@ -1,31 +1,23 @@
+import { ChainId } from '@portkey/provider-types';
+import { RecentContactItemType } from '@portkey/services';
+import { defaultColors } from 'assets/theme';
+import GStyles from 'assets/theme/GStyles';
+import { TextS } from 'components/CommonText';
+import NoData from 'components/NoData';
+import useEffectOnce from 'hooks/useEffectOnce';
+import { useLanguage } from 'i18n/hooks';
+import { ON_END_REACHED_THRESHOLD } from 'packages/constants/constants-ca/activity';
+import { useAppCommonDispatch } from 'packages/hooks';
+import { ContactItemType } from 'packages/im';
+import { fetchContactListAsync } from 'packages/store/store-ca/contact/actions';
+import { fetchRecentListAsync } from 'packages/store/store-ca/recent/slice';
 import React, { useMemo, useCallback, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import CommonTopTab from 'components/CommonTopTab';
-import GStyles from 'assets/theme/GStyles';
-import { defaultColors } from 'assets/theme';
-import { pTd } from 'utils/unit';
-import { useLanguage } from 'i18n/hooks';
-import { FlashList } from '@shopify/flash-list';
-import SendRecentItem from 'pages/Send/components/SendRecentItem';
-import SendContactItem from 'pages/Send/components/SendContactItem';
-
-import { ContactItemType, RecentContactItemType } from '@portkey-wallet/types/types-ca/contact';
-
-// import RecentList from '../components/RecentList';
-import ContactsList from 'components/ContactList';
-import NoData from 'components/NoData';
-import { TextS } from 'components/CommonText';
-import { useAppCommonDispatch } from '@portkey-wallet/hooks';
-import useEffectOnce from 'hooks/useEffectOnce';
-import { fetchContactListAsync } from '@portkey-wallet/store/store-ca/contact/actions';
-import { useContact } from '@portkey-wallet/hooks/hooks-ca/contact';
-import { ChainId } from '@portkey-wallet/types';
-import { useCaAddressInfoList, useCurrentWallet } from '@portkey-wallet/hooks/hooks-ca/wallet';
-import { useRecent } from '@portkey-wallet/hooks/hooks-ca/useRecent';
-import { fetchRecentListAsync } from '@portkey-wallet/store/store-ca/recent/slice';
-import MyAddressItem from '../components/MyAddressItem';
 import myEvents from 'utils/deviceEvent';
-import { ON_END_REACHED_THRESHOLD } from '@portkey-wallet/constants/constants-ca/activity';
+import { pTd } from 'utils/unit';
+import MyAddressItem from '../components/MyAddressItem';
+import SendContactItem from '../components/SendContactItem';
+import SendRecentItem from '../components/SendRecentItem';
 
 interface SelectContactProps {
   chainId: ChainId;

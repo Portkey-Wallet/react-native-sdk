@@ -1,5 +1,3 @@
-import { useWallet } from '@portkey-wallet/hooks/hooks-ca/wallet';
-import { RecentContactItemType } from '@portkey-wallet/types/types-ca/contact';
 import { defaultColors } from 'assets/theme';
 import { FontStyles } from 'assets/theme/styles';
 import GStyles from 'assets/theme/GStyles';
@@ -8,11 +6,12 @@ import { TextL, TextM, TextS } from 'components/CommonText';
 import Svg from 'components/Svg';
 import React, { memo, useState } from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { addressFormat, formatChainInfoToShow, formatStr2EllipsisStr } from '@portkey-wallet/utils';
 import { pTd } from 'utils/unit';
-import { ChainId } from '@portkey-wallet/types';
-import navigationService from 'utils/navigationService';
 import CommonAvatar from 'components/CommonAvatar';
+import { ChainId } from '@portkey/provider-types';
+import { addressFormat, formatStr2EllipsisStr, formatChainInfoToShow } from 'packages/utils';
+import { useCurrentNetworkType } from 'model/hooks/network';
+import { RecentContactItemType } from 'network/dto/query';
 
 export interface ItemType {
   fromChainId?: ChainId;
@@ -24,7 +23,7 @@ export interface ItemType {
 const SendContactItem: React.FC<ItemType> = props => {
   const { isContacts, contact, fromChainId, onPress } = props;
 
-  const { currentNetwork } = useWallet();
+  const currentNetwork = useCurrentNetworkType();
   const [collapsed, setCollapsed] = useState(true);
 
   return (
@@ -66,14 +65,17 @@ const SendContactItem: React.FC<ItemType> = props => {
               </TextS>
               <TouchableOpacity
                 style={[styles.contactActivity, styles.moreIconWrapStyle]}
-                onPress={() =>
-                  navigationService.navigate('ContactActivity', {
-                    address: ele.address,
-                    chainId: ele.chainId,
-                    contactName: contact.name || contact.caHolderInfo?.walletName || contact.imInfo?.name,
-                    fromChainId,
-                    avatar: contact.avatar,
-                  })
+                onPress={
+                  () => {
+                    throw new Error('Function not implemented.');
+                  }
+                  // navigationService.navigate('ContactActivity', {
+                  //   address: ele.address,
+                  //   chainId: ele.chainId,
+                  //   contactName: contact.name || contact.caHolderInfo?.walletName || contact.imInfo?.name,
+                  //   fromChainId,
+                  //   avatar: contact.avatar,
+                  // })
                 }>
                 <Svg icon="more-info" size={pTd(20)} />
               </TouchableOpacity>
@@ -89,14 +91,17 @@ const SendContactItem: React.FC<ItemType> = props => {
               <TouchableOpacity
                 hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
                 style={[styles.contactActivity, styles.moreIconWrapStyle]}
-                onPress={() =>
-                  navigationService.navigate('ContactActivity', {
-                    address: ele.address,
-                    chainId: ele.chainId,
-                    contactName: contact.name,
-                    fromChainId,
-                    avatar: contact.avatar,
-                  })
+                onPress={
+                  () => {
+                    throw new Error('Function not implemented.');
+                  }
+                  // navigationService.navigate('ContactActivity', {
+                  //   address: ele.address,
+                  //   chainId: ele.chainId,
+                  //   contactName: contact.name,
+                  //   fromChainId,
+                  //   avatar: contact.avatar,
+                  // })
                 }>
                 <Svg icon="more-info" size={pTd(20)} />
               </TouchableOpacity>

@@ -164,7 +164,7 @@ function useCheckTransferLimit() {
     };
   }, []);
 }
-// type for  TransferLimit check
+// type for TransferLimit check
 type CheckTransferLimitParams = {
   // caContract: ContractBasic;
   chainId: ChainId;

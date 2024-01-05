@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import PageContainer from 'components/PageContainer';
 import Svg from 'components/Svg';
@@ -37,10 +37,9 @@ import { useChainsNetworkInfo } from 'model/hooks/network';
 import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
 import { useTransactionFee } from 'model/hooks/transaction';
 import { useQrScanPermissionAndToast } from 'model/hooks/device';
-import { useGetTransferFee } from 'model/contract/handler';
-import { getUnlockedWallet } from 'model/wallet';
+import { checkManagerSyncState, getContractInstanceOnParticularChain, useGetTransferFee } from 'model/contract/handler';
+import { getUnlockedWallet, useUnlockedWallet } from 'model/wallet';
 import { useSecuritySafeCheckAndToast, useCheckTransferLimitWithJump } from 'components/WalletSecurityAccelerate/hook';
-import wallet from 'packages/api/api-did/wallet';
 
 const SendHome = (props: IToSendHomeParamsType) => {
   const { sendType = 'token', toInfo, assetInfo } = props;
@@ -53,6 +52,8 @@ const SendHome = (props: IToSendHomeParamsType) => {
     },
     [chainsNetworkInfo],
   );
+  const { wallet: unlockedWallet } = useUnlockedWallet({ getMultiCaAddresses: true });
+  const checkTransferLimitWithJump = useCheckTransferLimitWithJump();
 
   const fromChainId = useMemo(() => {
     return assetInfo?.chainId || 'AELF';
@@ -82,7 +83,6 @@ const SendHome = (props: IToSendHomeParamsType) => {
   const [errorMessage, setErrorMessage] = useState<any[]>([]);
   const getTransferFee = useGetTransferFee();
 
-  const checkManagerSyncState = useCheckManagerSyncState();
   useEffect(() => {
     setSelectedToContact(toInfo);
   }, [toInfo]);
@@ -147,30 +147,29 @@ const SendHome = (props: IToSendHomeParamsType) => {
       Loading.hide();
     }
   }, [
-    checkManagerSyncState,
-    balance,
+    assetInfo.chainId,
     assetInfo.decimals,
     assetInfo.symbol,
-    assetInfo.chainId,
+    balance,
+    currentNetworkInfo.defaultToken.symbol,
     maxFee,
     selectedToContact.chainId,
     getTransactionFee,
   ]);
 
-  const getTokenViewContract = useGetTokenViewContract();
   const initBalance = useCallback(async () => {
     const {
       caInfo: { caAddress },
     } = await getUnlockedWallet();
     if (!assetInfo || !caAddress) return;
     try {
-      const tokenContract = await getTokenViewContract(assetInfo.chainId);
+      const tokenContract = await getContractInstanceOnParticularChain(fromChainId);
       const _balance = await getELFChainBalance(tokenContract, assetInfo.symbol, caAddress);
       setBalance(_balance);
     } catch (error) {
       console.log('initBalance', error);
     }
-  }, [assetInfo, getTokenViewContract]);
+  }, [assetInfo, fromChainId]);
 
   useEffectOnce(() => {
     initBalance();
@@ -248,6 +247,8 @@ const SendHome = (props: IToSendHomeParamsType) => {
 
   const checkCanNext = useCallback(() => {
     const suffix = getAddressChainId(selectedToContact.address, fromChainId || 'AELF');
+    if (!unlockedWallet) return false;
+    const { multiCaAddresses } = unlockedWallet;
 
     if (!isAllowAelfAddress(selectedToContact.address)) {
       setErrorMessage([AddressError.INVALID_ADDRESS]);
@@ -255,7 +256,7 @@ const SendHome = (props: IToSendHomeParamsType) => {
     }
 
     if (
-      isSameAddresses(wallet?.[assetInfo?.chainId]?.caAddress || '', getAelfAddress(selectedToContact.address)) &&
+      isSameAddresses(multiCaAddresses[fromChainId] || '', getAelfAddress(selectedToContact.address)) &&
       suffix === assetInfo?.chainId
     ) {
       setErrorMessage([AddressError.SAME_ADDRESS]);
@@ -277,7 +278,7 @@ const SendHome = (props: IToSendHomeParamsType) => {
     }
 
     return true;
-  }, [fromChainId, selectedToContact.address, assetInfo?.chainId, isValidChainId, showDialog]);
+  }, [selectedToContact.address, fromChainId, unlockedWallet, assetInfo.chainId, isValidChainId, showDialog]);
 
   const nextStep = useCallback(() => {
     if (checkCanNext()) {
@@ -286,7 +287,7 @@ const SendHome = (props: IToSendHomeParamsType) => {
     }
   }, [checkCanNext]);
 
-  //when finish send  upDate balance
+  //when finish send upDate balance
 
   const previewParamsWithoutFee = useMemo(
     () =>
@@ -303,13 +304,13 @@ const SendHome = (props: IToSendHomeParamsType) => {
     [assetInfo, selectedToContact, sendNumber, sendType],
   );
 
-  const checkTransferLimitWithJump = useCheckTransferLimitWithJump();
   const checkCanPreview = useCallback(async () => {
     setErrorMessage([]);
 
-    if (!chainInfo) {
+    if (!currentNetworkInfo) {
       return { status: false };
     }
+    const { defaultToken } = currentNetworkInfo;
 
     const assetBalanceBigNumber = ZERO.plus(balance);
     const isCross = isCrossChain(selectedToContact.address, assetInfo.chainId);
@@ -356,31 +357,16 @@ const SendHome = (props: IToSendHomeParamsType) => {
       Loading.hide();
     }
 
-    // checkTransferLimitResult
-    if (!contractRef.current) {
-      try {
-        contractRef.current = await getCAContract(chainInfo.chainId);
-      } catch (error) {
-        return { status: false };
-      }
-    }
-
     try {
-      const contract = contractRef.current;
-      const checkTransferLimitResult = await checkTransferLimitWithJump({
-        caContract: contract,
-        symbol: assetInfo.symbol,
-        decimals: assetInfo.decimals,
-        amount: sendNumber,
-        balance: balance,
-        chainId: chainInfo.chainId,
-        approveMultiLevelParams: {
-          sendTransferPreviewApprove: {
-            successNavigateName: 'SendPreview',
-            params: previewParamsWithoutFee,
-          },
+      const checkTransferLimitResult = await checkTransferLimitWithJump(
+        {
+          symbol: assetInfo.symbol,
+          decimals: assetInfo.decimals,
+          amount: sendNumber,
+          chainId: fromChainId,
         },
-      });
+        fromChainId,
+      );
       console.log('checkTransferLimitResult', checkTransferLimitResult);
       if (!checkTransferLimitResult) {
         Loading.hide();
@@ -393,7 +379,7 @@ const SendHome = (props: IToSendHomeParamsType) => {
     }
 
     // check is SYNCHRONIZING
-    const _isManagerSynced = await checkManagerSyncState(chainInfo?.chainId || 'AELF');
+    const _isManagerSynced = await checkManagerSyncState(fromChainId || 'AELF');
     if (!_isManagerSynced) {
       Loading.hide();
       setErrorMessage([TransactionError.SYNCHRONIZING]);
@@ -418,22 +404,18 @@ const SendHome = (props: IToSendHomeParamsType) => {
 
     return { status: true, fee };
   }, [
-    chainInfo,
-    checkManagerSyncState,
-    sendNumber,
-    assetInfo.decimals,
-    assetInfo.chainId,
-    assetInfo.symbol,
+    currentNetworkInfo,
     balance,
     selectedToContact.address,
+    assetInfo.chainId,
+    assetInfo.decimals,
+    assetInfo.symbol,
+    sendNumber,
     sendType,
-    securitySafeCheckAndToast,
-    getCAContract,
-    checkTransferLimitWithJump,
-    previewParamsWithoutFee,
-    defaultToken.symbol,
-    defaultToken.decimals,
+    fromChainId,
     crossFee,
+    securitySafeCheckAndToast,
+    checkTransferLimitWithJump,
     getTransactionFee,
   ]);
 
@@ -442,11 +424,11 @@ const SendHome = (props: IToSendHomeParamsType) => {
     const result = await checkCanPreview();
     if (!result?.status) return;
 
-    navigationService.navigate('SendPreview', {
-      ...previewParamsWithoutFee,
-      transactionFee: result?.fee || '0',
-    });
-  }, [checkCanPreview, previewParamsWithoutFee]);
+    // navigationService.navigate('SendPreview', {
+    //   ...previewParamsWithoutFee,
+    //   transactionFee: result?.fee || '0',
+    // });
+  }, [checkCanPreview]);
 
   const ButtonUI = useMemo(() => {
     return (
@@ -484,7 +466,7 @@ const SendHome = (props: IToSendHomeParamsType) => {
               if (selectedToContact?.address) return showDialog('clearAddress');
               if (!(await qrScanPermissionAndToast())) return;
 
-              navigationService.navigate('QrScanner', { fromSendPage: true });
+              // navigationService.navigate('QrScanner', { fromSendPage: true });
             }}>
             <Svg icon="scan" size={pTd(17.5)} color={defaultColors.font2} iconStyle={styles.iconStyle} />
           </TouchableOpacity>
