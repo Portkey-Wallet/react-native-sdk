@@ -83,7 +83,7 @@ export default abstract class BaseContainer<
   onNewIntent<T>(_params: T) {}
 
   onFinish = (res: EntryResult<R>) => {
-    PortkeyModulesEntity.RouterModule.navigateBack(res);
+    PortkeyModulesEntity.RouterModule.navigateBack(res, this.getEntryName());
   };
 
   onError = (err: Error) => {

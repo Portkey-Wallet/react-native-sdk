@@ -27,6 +27,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.facebook.react.bridge.JavaOnlyMap
+import com.facebook.react.bridge.ReadableMap
 import finance.portkey.demo.ui.composable.ChoiceMaker
 import finance.portkey.demo.ui.composable.DialogProps
 import finance.portkey.demo.ui.composable.Loading
@@ -178,6 +180,9 @@ class MainActivity : ComponentActivity() {
                             }
                             Loading.showLoading("Running Test Cases...")
                         }
+                        BigButton(text = "Open UI Test Page") {
+                            jumpToActivity(finance.portkey.core.PortkeyEntries.TEST.entryName)
+                        }
                         TitleLine(text = "Environment Settings")
                         ChoiceMaker(
                             title = "Choose EndPointUrl",
@@ -240,7 +245,7 @@ class MainActivity : ComponentActivity() {
         entryName: String = finance.portkey.core.PortkeyEntries.SIGN_IN_ENTRY.entryName,
         params: Bundle? = null
     ) {
-        if (entryName != finance.portkey.core.PortkeyEntries.SIGN_IN_ENTRY.entryName) {
+        if (entryName != finance.portkey.core.PortkeyEntries.SIGN_IN_ENTRY.entryName && entryName != finance.portkey.core.PortkeyEntries.TEST.entryName) {
             if (!PortkeyWallet.isWalletUnlocked()) {
                 showWarnDialog(
                     mainTitle = "Error 😅",

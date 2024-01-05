@@ -27,7 +27,7 @@ export interface RouterModule {
     params: RouterOptions<T>,
     callback: (res: EntryResult<R>) => void,
   ) => void;
-  navigateBack: <R>(result: EntryResult<R>) => void;
+  navigateBack: <R>(result: EntryResult<R>, from: string) => void;
 }
 
 export interface EntryResult<R> {

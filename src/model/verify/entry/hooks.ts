@@ -57,10 +57,13 @@ const returnToGuardianHome = async (intent: GuardiansApprovalIntent) => {
 };
 
 const returnBack = async (intent: GuardiansApprovalIntent) => {
-  PortkeyModulesEntity.RouterModule.navigateBack({
-    status: intent.result,
-    data: intent,
-  });
+  PortkeyModulesEntity.RouterModule.navigateBack(
+    {
+      status: intent.result,
+      data: intent,
+    },
+    'unknown',
+  );
 };
 
 export const handlePhoneOrEmailGuardianVerify = async (config: VerifierDetailsPageProps) => {

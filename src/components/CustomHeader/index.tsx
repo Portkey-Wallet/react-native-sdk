@@ -80,9 +80,11 @@ const CustomHeader: React.FC<CustomHeaderProps> = props => {
       ? leftCallback
       : () => {
           PortkeyModulesEntity.RouterModule.navigateBack({
-            status: 'cancel',
-            data: {},
-          });
+              status: 'cancel',
+              data: {},
+            },
+            'unknown',
+          );
         };
     if (type === 'leftBack') {
       return (
