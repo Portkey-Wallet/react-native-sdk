@@ -45,7 +45,7 @@ const WalletModule: BaseJSModule = {
   },
 
   getWalletDetails: async (props: BaseMethodParams) => {
-    const { eventId } = props;
+    const { eventId = '' } = props;
     console.log('getWalletDetails called ', 'eventId: ', eventId);
     if (!(await isWalletUnlocked())) {
       return emitJSMethodResult(eventId, {
@@ -61,7 +61,7 @@ const WalletModule: BaseJSModule = {
   },
 
   lockWallet: async (props: BaseMethodParams) => {
-    const { eventId } = props;
+    const { eventId = '' } = props;
     console.log('lockWallet called ', 'eventId: ', eventId);
     if (!(await isWalletUnlocked())) {
       return emitJSMethodResult(eventId, {
@@ -77,7 +77,7 @@ const WalletModule: BaseJSModule = {
   },
 
   exitWallet: async (props: BaseMethodParams) => {
-    const { eventId } = props;
+    const { eventId = '' } = props;
     console.log('exitWallet called ', 'eventId: ', eventId);
     if (!(await isWalletUnlocked())) {
       return emitJSMethodResult(eventId, {

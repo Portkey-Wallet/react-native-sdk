@@ -79,7 +79,8 @@ const CustomHeader: React.FC<CustomHeaderProps> = props => {
     const onPress = leftCallback
       ? leftCallback
       : () => {
-          PortkeyModulesEntity.RouterModule.navigateBack({
+          PortkeyModulesEntity.RouterModule.navigateBack(
+            {
               status: 'cancel',
               data: {},
             },

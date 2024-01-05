@@ -1,5 +1,5 @@
 import { getUnlockedWallet } from 'model/wallet';
-import { TestCaseApi } from 'service/JsModules/types';
+import { TestCaseApi } from 'apiTest/type';
 import { WalletState, portkey } from 'service/core';
 
 //This array stores test cases where the wallet is the unlocked state

@@ -27,8 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.facebook.react.bridge.JavaOnlyMap
-import com.facebook.react.bridge.ReadableMap
 import finance.portkey.demo.ui.composable.ChoiceMaker
 import finance.portkey.demo.ui.composable.DialogProps
 import finance.portkey.demo.ui.composable.Loading

@@ -27,13 +27,17 @@ import PaymentSecurityEdit from 'pages/My/WalletSecurity/PaymentSecurity/Payment
 import { wrapEntry } from 'utils/commonUtil';
 import ActivityListPage from 'pages/Activity/ActivityListPage';
 import ActivityDetail from 'pages/Activity/ActivityDetail';
-import TestEntry from 'tests/apiTest/TestEntry';
+import TestEntry from 'apiTest/TestEntry';
+import { PortkeyTestEntries } from 'apiTest';
 
 type AcceptableComponentType = ComponentProvider;
 
 const initEntries = () => {
   const entryConfig = new Map<string, AcceptableComponentType>();
-  entryConfig.set(PortkeyEntries.TEST, () => TestEntry);
+  if (__DEV__) {
+    // test only
+    entryConfig.set(PortkeyTestEntries.TEST, () => TestEntry);
+  }
 
   // entry stage
   entryConfig.set(PortkeyEntries.SIGN_IN_ENTRY, () => SignInEntryPage);
