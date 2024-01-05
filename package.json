@@ -10,6 +10,7 @@
   },
   "files": [
     "dist",
+    "!dist/apiTest/**/*",
     "script/postinstall.js",
     "android/src/main/java/finance/portkey/core",
     "android/src/main/java/finance/portkey/lib",

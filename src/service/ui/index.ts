@@ -2,7 +2,7 @@ import { injectable, inject } from 'inversify';
 import { PortkeyEntries } from 'config/entries';
 import { LaunchMode, LaunchModeSet } from 'global/init/entries';
 import { LoginResult } from 'model/verify/entry';
-import { UnlockedWallet, getUnlockedWallet } from 'model/wallet';
+import { UnlockedWallet } from 'model/wallet';
 import { CheckPinResult } from 'pages/Pin/CheckPin';
 import { IPortkeyAccountService, IPortkeyUIManagerService } from 'service/core/base';
 import { EntryResult, PortkeyModulesEntity } from 'service/native-modules';

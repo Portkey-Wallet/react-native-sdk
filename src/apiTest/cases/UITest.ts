@@ -1,4 +1,4 @@
-import { TestCaseApi } from 'service/JsModules/types';
+import { TestCaseApi } from 'apiTest/type';
 import { portkey } from 'service/core';
 /*
 NOTE: 
@@ -106,7 +106,7 @@ export const UITestUnlockWalletCases: Array<TestCaseApi> = [
     },
   },
 ];
-// open check pin page, unlock wallet
+// open send token page, unlock wallet
 export const UITestSendTokenCases: Array<TestCaseApi> = [
   {
     describe: 'Test Open SendToken',

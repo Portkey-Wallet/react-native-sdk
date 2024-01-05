@@ -9,7 +9,7 @@ import {
   Modal,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { TestCaseApi, TestContextApi, TestReportApi } from 'service/JsModules/types';
+import { TestCaseApi, TestContextApi, TestReportApi } from 'apiTest/type';
 import * as Progress from 'react-native-progress';
 import { Dimensions } from 'react-native';
 import {
@@ -128,7 +128,6 @@ const TestEntry = () => {
                 state: condition ? 1 : 2,
               };
             } else {
-              // 如果没有找到匹配的项，返回原始的项
               return item;
             }
           });
@@ -178,7 +177,6 @@ const TestEntry = () => {
   const handleAllTests = () => {
     console.log('Executing all test cases');
     CommonToast.message('unavailable!');
-    // 在这里执行所有的测试用例
   };
   const renderItem = useCallback(
     ({ item }: { item: any }) => {
@@ -334,16 +332,13 @@ const styles = StyleSheet.create({
   leftAlignedText: {
     textAlign: 'left',
     marginTop: 5,
-    // backgroundColor: 'red',
     alignSelf: 'flex-start',
   },
   progressView: {
     flexDirection: 'column',
   },
   summaryView: {
-    // flex: 1,
     marginTop: 10,
-    // backgroundColor: 'red',
   },
   boldText: {
     fontWeight: 'bold',
