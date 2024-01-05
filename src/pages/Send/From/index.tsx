@@ -1,19 +1,19 @@
-import { useWallet } from '@portkey-wallet/hooks/hooks-ca/wallet';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { defaultColors } from 'assets/theme';
 import { pTd } from 'utils/unit';
 import { TextM } from 'components/CommonText';
 import { useLanguage } from 'i18n/hooks';
+import { useUnlockedWallet } from 'model/wallet';
 
 export default function From() {
   const { t } = useLanguage();
-  const { walletName } = useWallet();
+  const { wallet } = useUnlockedWallet();
 
   return (
     <View style={styles.fromWrap}>
       <TextM style={styles.leftTitle}>{t('From')}</TextM>
-      <TextM style={styles.middle}>{walletName}</TextM>
+      <TextM style={styles.middle}>{wallet?.name}</TextM>
     </View>
   );
 }

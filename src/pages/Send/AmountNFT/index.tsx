@@ -5,8 +5,7 @@ import { defaultColors } from 'assets/theme';
 import GStyles from 'assets/theme/GStyles';
 import { TextM } from 'components/CommonText';
 import { FontStyles } from 'assets/theme/styles';
-import { parseInputIntegerChange } from '@portkey-wallet/utils/input';
-import { useInputFocus } from 'hooks/useInputFocus';
+import { parseInputIntegerChange } from 'packages/utils';
 
 interface AmountNFT {
   sendNumber: string;
@@ -17,7 +16,6 @@ export default function AmountNFT(props: AmountNFT) {
   const { sendNumber, setSendNumber } = props;
 
   const iptRef = useRef<TextInput>(null);
-  useInputFocus(iptRef);
 
   return (
     <View style={styles.wrap}>

@@ -1,11 +1,11 @@
+import { ChainId } from '@portkey/provider-types';
 import { defaultColors } from 'assets/theme';
 import GStyles from 'assets/theme/GStyles';
 import { TextS, TextM } from 'components/CommonText';
+import { useCurrentNetworkType } from 'model/hooks/network';
+import { addressFormat, formatStr2EllipsisStr, formatChainInfoToShow } from 'packages/utils';
 import React, { memo } from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
-import { addressFormat, formatChainInfoToShow, formatStr2EllipsisStr } from '@portkey-wallet/utils';
-import { ChainId } from '@portkey-wallet/types';
-import { useWallet } from '@portkey-wallet/hooks/hooks-ca/wallet';
 import { pTd } from 'utils/unit';
 
 export interface ItemType {
@@ -16,7 +16,7 @@ export interface ItemType {
 
 const RecentContactItem: React.FC<ItemType> = props => {
   const { chainId, address, onPress } = props;
-  const { currentNetwork } = useWallet();
+  const currentNetwork = useCurrentNetworkType();
 
   return (
     <TouchableOpacity
