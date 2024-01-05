@@ -15,25 +15,25 @@ class Portkey implements IPortkeyAccountService, IPortkeyUIManagerService {
     return this._portkeyUIManagerService.login();
   }
   async openAssetsDashboard() {
-    this._portkeyUIManagerService.openAssetsDashboard();
+    await this._portkeyUIManagerService.openAssetsDashboard();
   }
   async guardiansManager() {
-    this._portkeyUIManagerService.guardiansManager();
+    await this._portkeyUIManagerService.guardiansManager();
   }
   async settingsManager() {
-    this._portkeyUIManagerService.settingsManager();
+    await this._portkeyUIManagerService.settingsManager();
   }
   async paymentSecurityManager() {
-    this._portkeyUIManagerService.paymentSecurityManager();
+    await this._portkeyUIManagerService.paymentSecurityManager();
   }
   async scanQRCodeManager() {
-    this._portkeyUIManagerService.scanQRCodeManager();
+    await this._portkeyUIManagerService.scanQRCodeManager();
   }
   async unlockWallet() {
     return this._portkeyUIManagerService.unlockWallet();
   }
   async openSendToken() {
-    return this._portkeyUIManagerService.openSendToken();
+    await this._portkeyUIManagerService.openSendToken();
   }
   async callCaContractMethod(props: CallCaMethodProps) {
     return this._portkeyAccountService.callCaContractMethod(props);
