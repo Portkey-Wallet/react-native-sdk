@@ -8,7 +8,6 @@ import { defaultColors } from 'assets/theme';
 import { TextL, TextM, TextXXL } from 'components/CommonText';
 import { FontStyles } from 'assets/theme/styles';
 import fonts from 'assets/theme/fonts';
-import { IToSendHomeParamsType } from 'packages/types/types-ca/routeParams';
 import SafeAreaBox from 'components/SafeAreaBox';
 import Svg from 'components/Svg';
 import CommonAvatar from 'components/CommonAvatar';
@@ -122,11 +121,7 @@ const NFTDetail: React.FC<TokenDetailProps> = ({ nftItem }: TokenDetailProps) =>
           style={styles.sendBtn}
           type="primary"
           onPress={() => {
-            // navigationService.navigate('SendHome', {
-            //   sendType: 'nft',
-            //   assetInfo: nftItem,
-            //   toInfo: { name: '', address: '' },
-            // } as unknown as IToSendHomeParamsType);
+            // todo_wade: finish navigateTo
           }}
         />
       </View>
