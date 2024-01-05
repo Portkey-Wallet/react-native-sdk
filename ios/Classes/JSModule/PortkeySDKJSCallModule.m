@@ -30,13 +30,6 @@
     static dispatch_once_t token;
     dispatch_once(&token, ^{
         instance = [PortkeySDKJSCallModule new];
-        id<UIApplicationDelegate> appDelagete = [UIApplication sharedApplication].delegate;
-        if ([appDelagete isKindOfClass:RCTAppDelegate.class]
-            && ((RCTAppDelegate *)appDelagete).bridge != NULL) {
-            instance.bridge = ((RCTAppDelegate *)appDelagete).bridge;
-        } else {
-            instance.bridge = [[RCTBridge alloc] initWithDelegate:instance launchOptions:nil];
-        }
     });
     return instance;
 }
@@ -104,5 +97,38 @@
     return _methodEventDict;
 }
 
+- (RCTBridge *)bridge {
+    if (!_bridge) {
+        _bridge = [self createBridge];
+    }
+    return _bridge;
+}
+
+- (RCTBridge *)createBridge {
+    __block RCTBridge *bridge;
+    if ([[NSThread currentThread] isMainThread]) {
+        id<UIApplicationDelegate> appDelagete = [UIApplication sharedApplication].delegate;
+        if ([appDelagete isKindOfClass:RCTAppDelegate.class]
+            && ((RCTAppDelegate *)appDelagete).bridge != NULL) {
+            bridge = ((RCTAppDelegate *)appDelagete).bridge;
+        } else {
+            bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:nil];
+        }
+    } else {
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            id<UIApplicationDelegate> appDelagete = [UIApplication sharedApplication].delegate;
+            if ([appDelagete isKindOfClass:RCTAppDelegate.class]
+                && ((RCTAppDelegate *)appDelagete).bridge != NULL) {
+                bridge = ((RCTAppDelegate *)appDelagete).bridge;
+            } else {
+                bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:nil];
+            }
+            dispatch_semaphore_signal(semaphore);
+        });
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    }
+    return bridge;
+}
 
 @end

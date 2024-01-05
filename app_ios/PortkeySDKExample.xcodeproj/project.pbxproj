@@ -769,7 +769,7 @@
 				GCC_PREFIX_HEADER = "PortkeySDKExample/PortkeySDKExample-Prefix.pch";
 				INFOPLIST_FILE = "PortkeySDKExample/PortkeySDKExample-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = PortkeySDK;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(LD_RUNPATH_SEARCH_PATHS_$(IS_MACCATALYST))",
 					/usr/lib/swift,
@@ -796,7 +796,7 @@
 				GCC_PREFIX_HEADER = "PortkeySDKExample/PortkeySDKExample-Prefix.pch";
 				INFOPLIST_FILE = "PortkeySDKExample/PortkeySDKExample-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = PortkeySDK;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(LD_RUNPATH_SEARCH_PATHS_$(IS_MACCATALYST))",
 					/usr/lib/swift,
