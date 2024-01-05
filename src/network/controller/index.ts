@@ -501,6 +501,16 @@ export class NetworkControllerEntity {
     return res.result;
   };
 
+  getActivityListWithAddress = async (params: any): Promise<any> => {
+    const res = await this.realExecute<IActivitiesApiResponse>(
+      await this.parseUrl(APIPaths.GET_ACTIVITY_LIST_WITH_ADDRESS),
+      'POST',
+      params,
+    );
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
   /**
    * check one particular activity item info
    */

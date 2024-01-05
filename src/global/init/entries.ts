@@ -29,6 +29,8 @@ import NFTDetail from 'pages/NFT/NFTDetail';
 import { wrapEntry } from 'utils/commonUtil';
 import ActivityListPage from 'pages/Activity/ActivityListPage';
 import ActivityDetail from 'pages/Activity/ActivityDetail';
+import ContactDetail from 'pages/My/Contacts/ContactDetail';
+import ContactActivity from 'pages/My/Contacts/ContactActivity';
 
 type AcceptableComponentType = ComponentProvider;
 
@@ -81,6 +83,9 @@ const initEntries = () => {
 
   entryConfig.set(PortkeyEntries.TOKEN_DETAIL_ENTRY, () => TokenDetail);
   entryConfig.set(PortkeyEntries.NFT_DETAIL_ENTRY, () => NFTDetail);
+
+  entryConfig.set(PortkeyEntries.CONTACT_DETAIL_ENTRY, () => ContactDetail);
+  entryConfig.set(PortkeyEntries.CONTACT_ACTIVITY_ENTRY, () => ContactActivity);
 
   for (const [key, value] of entryConfig) {
     AppRegistry.registerComponent(wrapEntry(key), value);

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useRef } from 'react';
-import { View, Text, FlatList, StatusBar } from 'react-native';
+import { View, Text, FlatList, StatusBar, TouchableOpacity } from 'react-native';
 import BuyButton from 'components/BuyButton';
 import SendButton from 'components/SendButton';
 import ReceiveButton from 'components/ReceiveButton';
