@@ -49,6 +49,10 @@ export enum PortkeyEntries {
   PAYMENT_SECURITY_HOME_ENTRY = 'payment_security_home_entry',
   PAYMENT_SECURITY_DETAIL_ENTRY = 'payment_security_detail_entry',
   PAYMENT_SECURITY_EDIT_ENTRY = 'payment_security_edit_entry',
+
+  // contact
+  CONTACT_DETAIL_ENTRY = 'contact_detail_entry',
+  CONTACT_ACTIVITY_ENTRY = 'contact_activity_entry',
 }
 
 export function isPortkeyEntries(variable: any): boolean {
