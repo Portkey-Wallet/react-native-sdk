@@ -3,7 +3,7 @@ import { getUnlockedWallet } from 'model/wallet';
 import { AElfChainStatusItemDTO } from 'network/dto/wallet';
 import useLockCallback from 'packages/hooks/useLockCallback';
 import { ChainId } from 'packages/types';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { checkSecuritySafe } from 'utils/security';
 import { ContractBasic } from 'packages/contracts/utils/ContractBasic';
 import { divDecimals, timesDecimals } from 'packages/utils/converter';

@@ -3,17 +3,18 @@ import useEffectOnce from 'hooks/useEffectOnce';
 import { getUnlockedWallet } from 'model/wallet';
 import { NetworkController } from 'network/controller';
 import { FetchAccountNftCollectionItemListResult, ITokenItemResponse, IUserTokenItem } from 'network/dto/query';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-export const useTokenPrices = () => {
+// @deprecated - use useAccountTokenBalanceList instead
+export const useTokenPrices = (tokenList: string[] = []) => {
   const [tokenPrices, setTokenPrices] = useState<Array<{ symbol: string; priceInUsd: number }>>([]);
-  useEffectOnce(async () => {
-    await updateTokenPrices();
-  });
-  const updateTokenPrices = async () => {
-    const result = await NetworkController.checkELFTokenPrice();
+  const updateTokenPrices = useCallback(async () => {
+    const result = await NetworkController.checkTokenPrices(tokenList);
     result && setTokenPrices(result.items);
-  };
+  }, [tokenList]);
+  useEffect(() => {
+    updateTokenPrices();
+  }, [updateTokenPrices]);
   return {
     tokenPrices,
     updateTokenPrices,
