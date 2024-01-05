@@ -48,8 +48,8 @@ internal object NavigationHolder {
         if (callbackId == NO_CALLBACK_METHOD) return
         val jsCallback = callbackMap[callbackId]
         if (jsCallback != null) {
+            callbackMap.remove(callbackId)
             jsCallback.invoke(result ?: generateCancelCallbackData())
-            nativeCallbackMap.remove(callbackId)
         } else {
             invokeNativeCallback(callbackId, result ?: generateCancelCallbackData())
         }

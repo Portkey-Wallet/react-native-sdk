@@ -32,6 +32,9 @@ class Portkey implements IPortkeyAccountService, IPortkeyUIManagerService {
   async unlockWallet() {
     return this._portkeyUIManagerService.unlockWallet();
   }
+  async openSendToken() {
+    return this._portkeyUIManagerService.openSendToken();
+  }
   async callCaContractMethod(props: CallCaMethodProps) {
     return this._portkeyAccountService.callCaContractMethod(props);
   }

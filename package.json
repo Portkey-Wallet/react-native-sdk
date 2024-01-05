@@ -70,6 +70,7 @@
     "expo-screen-capture": "^5.5.0",
     "expo-secure-store": "^12.5.0",
     "expo-web-browser": "^12.0.0",
+    "fast-deep-equal": "^3.1.1",
     "graphql": "^16.6.0",
     "i18next": "^21.8.5",
     "inversify": "^6.0.2",
@@ -92,6 +93,7 @@
     "react-native-localize": "^2.2.1",
     "react-native-mmkv": "^2.10.2",
     "react-native-pager-view": "^6.2.2",
+    "react-native-progress": "^5.0.1",
     "react-native-qrcode-styled": "^0.2.1",
     "react-native-safe-area-context": "4.7.2",
     "react-native-spinkit": "1.5.1",
@@ -110,7 +112,6 @@
     "rn-teaset": "0.1.2-alpha.1",
     "stream": "^0.0.2",
     "subscriptions-transport-ws": "^0.11.0",
-    "fast-deep-equal": "^3.1.1",
     "tslib": "^2.6.2"
   },
   "scripts": {
@@ -124,9 +125,9 @@
   "devDependencies": {
     "@babel/cli": "^7.23.4",
     "@babel/core": "^7.12.9",
-    "@babel/preset-react": "^7.23.3",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-proposal-decorators": "^7.23.5",
+    "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
     "@babel/runtime": "^7.12.5",
     "@graphql-codegen/cli": "^2.16.2",

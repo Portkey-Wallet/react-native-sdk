@@ -2,7 +2,7 @@ import { injectable, inject } from 'inversify';
 import { PortkeyEntries } from 'config/entries';
 import { LaunchMode, LaunchModeSet } from 'global/init/entries';
 import { LoginResult } from 'model/verify/entry';
-import { UnlockedWallet } from 'model/wallet';
+import { UnlockedWallet, getUnlockedWallet } from 'model/wallet';
 import { CheckPinResult } from 'pages/Pin/CheckPin';
 import { IPortkeyAccountService, IPortkeyUIManagerService } from 'service/core/base';
 import { EntryResult, PortkeyModulesEntity } from 'service/native-modules';
@@ -17,7 +17,7 @@ export class UIManagerService implements IPortkeyUIManagerService {
   @inject(TYPES.AccountModule) private _accountService: IPortkeyAccountService;
   login(): Promise<UnlockedWallet | null> {
     return new Promise((resolve, reject) => {
-      this.openResultFromExternal<LoginResult>(PortkeyEntries.SIGN_IN_ENTRY, res => {
+      this.openResultFromExternal<LoginResult>(PortkeyEntries.SIGN_IN_ENTRY, async res => {
         if (res) {
           resolve(res?.data?.walletInfo ?? null);
         } else {
@@ -66,6 +66,12 @@ export class UIManagerService implements IPortkeyUIManagerService {
         }
       });
     });
+  }
+  async openSendToken() {
+    if (!(await this.checkIsUnlocked())) {
+      throw new AccountError(1001);
+    }
+    this.openFromExternal(PortkeyEntries.SEND_TOKEN_HOME_ENTRY);
   }
 
   private async checkIsUnlocked() {

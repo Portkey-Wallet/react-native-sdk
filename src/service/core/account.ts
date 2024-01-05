@@ -26,8 +26,8 @@ export class PortkeyAccountService implements IPortkeyAccountService {
     const isParamsEmpty = Object.values(params ?? {}).length === 0;
     try {
       const result: ViewResult | SendResult = isViewMethod
-        ? await contract.callSendMethod(methodName, address, isParamsEmpty ? null : params)
-        : await contract.callViewMethod(methodName, isParamsEmpty ? null : params);
+        ? await contract.callViewMethod(methodName, isParamsEmpty ? '' : params)
+        : await contract.callSendMethod(methodName, address, isParamsEmpty ? '' : params);
       if (!result) throw new AccountError(1002);
       const { data, error } = result;
       let jsData: BaseMethodResult = {
@@ -80,7 +80,7 @@ export class PortkeyAccountService implements IPortkeyAccountService {
       if (!res.error) {
         exitInternalWallet();
       } else {
-        console.warn(res.error);
+        console.warn('exitWallet', JSON.stringify(res.error));
         return false;
       }
       return true;
