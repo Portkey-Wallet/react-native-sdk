@@ -56,7 +56,10 @@ export class UIManagerService implements IPortkeyUIManagerService {
     }
     this.openFromExternal(PortkeyEntries.PAYMENT_SECURITY_HOME_ENTRY);
   }
-  unlockWallet(): Promise<UnlockedWallet | null> {
+  async unlockWallet(): Promise<UnlockedWallet | null> {
+    if (!(await this.checkIsLocked())) {
+      throw new AccountError(1001);
+    }
     return new Promise((resolve, reject) => {
       this.openResultFromExternal<CheckPinResult>(PortkeyEntries.CHECK_PIN, res => {
         if (res) {
@@ -77,6 +80,10 @@ export class UIManagerService implements IPortkeyUIManagerService {
   private async checkIsUnlocked() {
     const wallState = await this._accountService.getWalletState();
     return wallState === WalletState.UNLOCKED;
+  }
+  private async checkIsLocked() {
+    const wallState = await this._accountService.getWalletState();
+    return wallState === WalletState.LOCKED;
   }
   private openFromExternal(target: PortkeyEntries) {
     PortkeyModulesEntity.RouterModule.navigateTo(
