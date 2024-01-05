@@ -40,7 +40,7 @@ const returnToParticularBasePage = async (intent: GuardiansApprovalIntent) => {
       break;
     case GuardianVerifyType.EDIT_PAYMENT_SECURITY:
     case GuardianVerifyType.ADD_GUARDIAN_ACCELERATE:
-      returnBack(intent);
+      returnPreviousPage(intent);
       break;
   }
 };
@@ -56,7 +56,7 @@ const returnToGuardianHome = async (intent: GuardiansApprovalIntent) => {
   );
 };
 
-const returnBack = async (intent: GuardiansApprovalIntent) => {
+const returnPreviousPage = async (intent: GuardiansApprovalIntent) => {
   PortkeyModulesEntity.RouterModule.navigateBack(
     {
       status: intent.result,
