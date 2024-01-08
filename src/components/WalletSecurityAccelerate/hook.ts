@@ -5,7 +5,6 @@ import useLockCallback from 'packages/hooks/useLockCallback';
 import { ChainId } from 'packages/types';
 import { useCallback, useEffect, useState } from 'react';
 import { checkSecuritySafe } from 'utils/security';
-import { ContractBasic } from 'packages/contracts/utils/ContractBasic';
 import { divDecimals, timesDecimals } from 'packages/utils/converter';
 import { ZERO } from 'packages/constants/misc';
 import ActionSheet from 'components/ActionSheet';
