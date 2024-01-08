@@ -12,6 +12,7 @@ import {
 import { TestCaseApi, TestContextApi, TestReportApi } from 'apiTest/type';
 import * as Progress from 'react-native-progress';
 import { Dimensions } from 'react-native';
+import CustomHeader from 'components/CustomHeader';
 import {
   UnLockedWalletTestCases,
   LockedWalletTestCases,
@@ -192,6 +193,7 @@ const TestEntry = () => {
   );
   return (
     <SafeAreaView style={styles.container}>
+      <CustomHeader themeType={'blue'} titleDom={''} />
       <FlatList
         // eslint-disable-next-line react-native/no-inline-styles
         style={{
