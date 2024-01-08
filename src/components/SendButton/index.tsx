@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import CommonSvg from 'components/Svg';
-import { commonButtonStyle, dashBoardBtnStyle } from './style';
-// import navigationService from 'utils/navigationService';
+import dashBoardBtnStyle, { innerPageStyles } from 'components/FaucetButton/style';
 import { View, TouchableOpacity, StyleProp, ViewProps } from 'react-native';
 import { TextM } from 'components/CommonText';
 import { useLanguage } from 'i18n/hooks';
@@ -11,6 +10,7 @@ import { TokenItemShowType } from 'packages/types/types-eoa/token';
 import useBaseContainer from 'model/container/UseBaseContainer';
 import { PortkeyEntries } from 'config/entries';
 import { IToSendHomeParamsType } from 'packages/types/types-ca/routeParams';
+import { commonButtonStyle } from './style';
 
 interface SendButtonType {
   themeType?: 'dashBoard' | 'tokenInnerPage' | 'nftInnerPage';
@@ -20,7 +20,7 @@ interface SendButtonType {
 
 const SendButton = (props: SendButtonType) => {
   const { themeType = 'dashBoard', wrapStyle, sentToken } = props;
-  const styles = themeType === 'dashBoard' ? dashBoardBtnStyle : commonButtonStyle;
+  const styles = themeType === 'dashBoard' ? dashBoardBtnStyle : innerPageStyles;
 
   const { t } = useLanguage();
 

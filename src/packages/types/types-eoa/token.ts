@@ -11,8 +11,8 @@ export interface BaseToken {
 }
 
 export interface TokenItemType extends BaseToken {
-  isDefault: boolean; // boolean,
-  tokenName: string; //  "ELF"
+  isDefault?: boolean; // boolean,
+  tokenName?: string; //  "ELF"
   chainId: ChainId; // string "AELF"
 }
 export interface TokenItemShowType extends TokenItemType {

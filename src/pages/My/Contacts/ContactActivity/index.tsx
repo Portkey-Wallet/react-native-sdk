@@ -27,6 +27,7 @@ import { getStatusBarHeight } from 'utils/screen';
 import { PortkeyEntries } from 'config/entries';
 import { ActivityDetailPropsType } from 'pages/Activity/ActivityDetail';
 import { ViewOnWebViewProps } from 'pages/Activity/ViewOnWebView';
+import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
 
 interface ParamsType {
   fromChainId: ChainId;
@@ -42,8 +43,7 @@ const ContactActivity = ({ address, chainId, contactName, avatar }: ParamsType) 
   const { t } = useLanguage();
   const { navigateTo, onFinish } = useBaseContainer({});
   const { wallet } = useUnlockedWallet({ getMultiCaAddresses: true });
-  // const { explorerUrl } = useCurrentChain(chainId) ?? {};
-  const explorerUrl = 'https://baidu.com';
+  const { explorerUrl } = useCommonNetworkInfo(chainId);
 
   const [addressName, setAddressName] = useState<string | undefined>(contactName);
   const [addressAvatar, setAddressAvatar] = useState<string | undefined>(avatar);
@@ -138,7 +138,7 @@ const ContactActivity = ({ address, chainId, contactName, avatar }: ParamsType) 
         },
       });
     },
-    [address, navigateTo, t],
+    [address, explorerUrl, navigateTo, t],
   );
 
   useEffect(() => {
