@@ -6,8 +6,6 @@ import { NFTCollectionItemShowType } from 'packages/types/types-ca/assets';
 export interface AssetsContextType {
   balanceList: Array<ITokenItemResponse>;
   updateBalanceList: () => Promise<void>;
-  tokenPrices: Array<{ symbol: string; priceInUsd: number }>;
-  updateTokenPrices: () => Promise<void>;
   allOfTokensList: Array<IUserTokenItem>;
   updateTokensList: () => Promise<void>;
   nftCollections: Array<NFTCollectionItemShowType>;
@@ -19,9 +17,6 @@ const AssetsContext = createContext<AssetsContextType>({
   balanceList: [],
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   updateBalanceList: async () => {},
-  tokenPrices: [],
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  updateTokenPrices: async () => {},
   allOfTokensList: [],
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   updateTokensList: async () => {},

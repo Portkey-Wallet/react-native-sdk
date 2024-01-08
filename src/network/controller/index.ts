@@ -330,10 +330,9 @@ export class NetworkControllerEntity {
     return res.result;
   };
 
-  // at current version, only ELF tokens have price
-  checkELFTokenPrice = async (): Promise<FetchTokenPriceResult | null | undefined> => {
+  checkTokenPrices = async (symbols: string[]): Promise<FetchTokenPriceResult | null | undefined> => {
     const res = await this.realExecute<FetchTokenPriceResult>(await this.parseUrl(APIPaths.GET_TOKEN_PRICES), 'GET', {
-      symbols: ['ELF'],
+      symbols,
     });
     return res.result;
   };

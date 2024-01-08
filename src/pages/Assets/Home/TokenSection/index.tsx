@@ -21,7 +21,7 @@ export default function TokenSection() {
   const commonInfo = useCommonNetworkInfo();
   const [isFetching] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const { balanceList, updateBalanceList, allOfTokensList, updateTokensList, tokenPrices, updateTokenPrices } =
+  const { balanceList, updateBalanceList, allOfTokensList, updateTokensList } =
     useContext<AssetsContextType>(AssetsContext);
 
   const itemData: Array<TokenItemShowType> = useMemo(() => {
@@ -29,14 +29,16 @@ export default function TokenSection() {
       .map<TokenItemShowType>(item => {
         const { symbol, decimals, chainId, address } = item.token;
         const balanceItem = balanceList.find(it => it.symbol === symbol && it.chainId === item.token.chainId);
-        const price = tokenPrices.find(it => it.symbol === symbol);
+        const balanceInfo = balanceList.find(it => it.symbol === symbol && it.chainId === item.token.chainId);
+        const { balanceInUsd, price: priceInUsd } = balanceInfo || {};
         return {
           balance: balanceItem?.balance ?? '0',
           decimals,
           chainId,
           address,
           symbol,
-          priceInUsd: price?.priceInUsd ?? 0,
+          priceInUsd,
+          balanceInUsd,
           name: item.token.symbol,
           isDisplay: item.isDisplay,
           isDefault: item.isDefault,
@@ -55,7 +57,7 @@ export default function TokenSection() {
           return symbolA.localeCompare(symbolB);
         }
       });
-  }, [allOfTokensList, balanceList, tokenPrices]);
+  }, [allOfTokensList, balanceList]);
 
   const { navigateTo } = useBaseContainer({});
 
@@ -81,11 +83,10 @@ export default function TokenSection() {
     try {
       await updateTokensList();
       await updateBalanceList();
-      await updateTokenPrices();
     } catch (e) {
       console.warn('updateBalanceList or updateTokensList failed! ', e);
     }
-  }, [updateBalanceList, updateTokenPrices, updateTokensList]);
+  }, [updateBalanceList, updateTokensList]);
 
   useEffect(() => {
     if (timerRef.current) clearInterval(timerRef.current);
