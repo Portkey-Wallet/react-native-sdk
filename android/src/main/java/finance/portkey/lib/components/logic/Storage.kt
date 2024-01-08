@@ -3,7 +3,7 @@ package finance.portkey.lib.components.logic
 import android.util.Log
 import com.tencent.mmkv.MMKV
 import finance.portkey.core.JSNameSpace
-import java.util.Arrays
+import finance.portkey.lib.BuildConfig
 
 
 // change this crypto key to ensure high level of information security
@@ -75,11 +75,16 @@ object PortkeyMMKVStorage {
         }
     }
 
-    internal fun clear() {
-        portkeyMMKV.clearAll()
-        portkeyMMKV.clearMemoryCache()
-        portkeyMMKV.sync()
-        Log.w("PortkeyMMKV", "keys : ${Arrays.toString(portkeyMMKV.allNonExpireKeys())}")
+    fun clear(exceptStorageKey: List<String> = emptyList()) {
+        if (!BuildConfig.IS_DEBUG) {
+            Log.w(
+                "PortkeyMMKVStorage",
+                "clear() is only recommended to be called in debug mode, this will fully destroy and reset all of the SDK's data."
+            )
+        }
+        portkeyMMKV.allKeys()?.filter { !exceptStorageKey.contains(it) }?.forEach {
+            portkeyMMKV.removeValueForKey(it)
+        }
     }
 
     @Synchronized
