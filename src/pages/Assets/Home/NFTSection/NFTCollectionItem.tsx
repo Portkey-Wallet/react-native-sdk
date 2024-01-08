@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { defaultColors } from 'assets/theme';
 import { pTd } from 'utils/unit';
@@ -15,6 +15,8 @@ import { OpenCollectionObjType } from './index';
 import { ChainId } from 'packages/types';
 import { formatChainInfoToShow } from 'packages/utils';
 import { useCurrentNetworkType } from 'model/hooks/network';
+import useBaseContainer from 'model/container/UseBaseContainer';
+import { PortkeyEntries } from 'config/entries';
 
 export enum NoDataMessage {
   CustomNetWorkNoData = 'No transaction records accessible from the current custom network',
@@ -46,6 +48,7 @@ export default function NFTItem(props: NFTItemPropsType) {
   } = props;
 
   const currentNetwork = useCurrentNetworkType();
+  const { navigateTo } = useBaseContainer({});
 
   const [open, setOpen] = useState<boolean>(false);
 
@@ -63,6 +66,17 @@ export default function NFTItem(props: NFTItemPropsType) {
   const hasMore = useMemo(
     () => showChildren?.length !== 0 && showChildren?.length < itemCount,
     [itemCount, showChildren?.length],
+  );
+
+  const onNavigateToNFTDetail = useCallback(
+    (item: any) => {
+      navigateTo(PortkeyEntries.NFT_DETAIL_ENTRY, {
+        params: {
+          nftItem: item,
+        },
+      });
+    },
+    [navigateTo],
   );
 
   return (
@@ -107,7 +121,7 @@ export default function NFTItem(props: NFTItemPropsType) {
               key={ele.symbol}
               data={ele}
               onPress={() => {
-                // navigationService.navigate('NFTDetail', { ...ele, collectionInfo: { imageUrl, collectionName } });
+                onNavigateToNFTDetail({ ...ele, collectionInfo: { imageUrl, collectionName } });
               }}
             />
           ))}
