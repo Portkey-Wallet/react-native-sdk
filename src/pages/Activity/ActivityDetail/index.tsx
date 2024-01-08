@@ -42,12 +42,12 @@ const ActivityDetail = ({ item, caAddresses }: ActivityDetailPropsType) => {
   const { transactionId = '', blockHash = '' } = item;
   const [activityItem, setActivityItem] = useState<ActivityItemType>();
   const isTestnet = useMemo(() => currentNetwork === 'TESTNET', [currentNetwork]);
-  const { tokenPrices } = useTokenPrices();
+  const { tokenPrices } = useTokenPrices([item.symbol]);
   const { navigateTo, onFinish } = useBaseContainer({
     entryName: PortkeyEntries.ACTIVITY_DETAIL_ENTRY,
   });
   const isTokenHasPrice = useMemo(
-    () => !!tokenPrices.find(token => token.symbol === item.symbol),
+    () => !!tokenPrices?.find(token => token.symbol === item.symbol),
     [item.symbol, tokenPrices],
   );
 
