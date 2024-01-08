@@ -11,11 +11,15 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import okhttp3.FormBody
 import okhttp3.Headers
+import okhttp3.Interceptor
+import okhttp3.JavaNetCookieJar
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONObject
+import java.net.CookieManager
+import java.net.CookiePolicy
 
 
 internal fun JsonObject.toPrettyJson(): String {
@@ -86,6 +90,9 @@ private fun Number.toFixedType(): Number {
 internal object NetworkConnector {
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(TimeOutInterceptor())
+        .cookieJar(JavaNetCookieJar(CookieManager().apply {
+            setCookiePolicy(CookiePolicy.ACCEPT_ALL)
+        }))
         .build()
 
     fun getRequest(url: String, header: ReadableMap, options: ReadableMap?): ResultWrapper {

@@ -300,7 +300,7 @@ const SendHome = (props: IToSendHomeParamsType) => {
         },
         transactionFee: '0',
         sendNumber,
-      }) as IToSendPreviewParamsType,
+      } as IToSendPreviewParamsType),
     [assetInfo, selectedToContact, sendNumber, sendType],
   );
 
