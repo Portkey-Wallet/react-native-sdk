@@ -1,4 +1,4 @@
-import TestPage from 'components/TestPage';
+import 'react-native-get-random-values'; // if delete this import, it will cause a big bug,
 import GuardianApprovalEntryPage from 'pages/Entries/GuardianApproval';
 import SignInEntryPage from 'pages/Entries/SignIn';
 import SelectCountryPage from 'pages/Entries/SelectCountry';
@@ -31,12 +31,17 @@ import ActivityListPage from 'pages/Activity/ActivityListPage';
 import ActivityDetail from 'pages/Activity/ActivityDetail';
 import ContactDetail from 'pages/My/Contacts/ContactDetail';
 import ContactActivity from 'pages/My/Contacts/ContactActivity';
+import TestEntry from 'apiTest/TestEntry';
+import { PortkeyTestEntries } from 'apiTest';
 
 type AcceptableComponentType = ComponentProvider;
 
 const initEntries = () => {
   const entryConfig = new Map<string, AcceptableComponentType>();
-  entryConfig.set(PortkeyEntries.TEST, () => TestPage);
+  if (__DEV__) {
+    // test only
+    entryConfig.set(PortkeyTestEntries.TEST, () => TestEntry);
+  }
 
   // entry stage
   entryConfig.set(PortkeyEntries.SIGN_IN_ENTRY, () => SignInEntryPage);

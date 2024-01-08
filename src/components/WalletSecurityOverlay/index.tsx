@@ -18,8 +18,8 @@ import { ChainId } from '@portkey/provider-types';
 import useBaseContainer from 'model/container/UseBaseContainer';
 import { PortkeyEntries } from 'config/entries';
 import { TargetScene } from 'pages/Guardian/GuardianManage/type';
-
-function AlertBody({ accelerateChainId }: { accelerateChainId: ChainId }) {
+// function AlertBody({ accelerateChainId }: { accelerateChainId: ChainId }) {
+function AlertBody() {
   // const dispatch = useAppDispatch();
   // const isDrawerOpen = useAppCASelector(state => state.discover.isDrawerOpen);
   const { navigateTo } = useBaseContainer({});

@@ -16,4 +16,5 @@ export interface IPortkeyUIManagerService {
   settingsManager(): Promise<void>;
   paymentSecurityManager(): Promise<void>;
   unlockWallet(): Promise<UnlockedWallet | null>;
+  openSendToken(): Promise<void>;
 }

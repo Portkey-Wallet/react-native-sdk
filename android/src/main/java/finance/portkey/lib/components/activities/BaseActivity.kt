@@ -95,11 +95,11 @@ abstract class BasePortkeyReactActivity : ReactActivity() {
     fun navigateBackWithResult(result: ReadableMap? = null, thenFinish: Boolean = true) {
         if (!callbackAccessed) {
             callbackAccessed = true
+            NavigationHolder.popTopComponent()
             NavigationHolder.invokeAnnotatedCallback(
                 getCallbackId(),
                 result?.toWriteableNativeMap()
             )
-            NavigationHolder.popTopComponent()
         }
         if (thenFinish) {
             this.finish()

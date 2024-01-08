@@ -87,7 +87,7 @@ export const testRunner = async (): Promise<TestReport> => {
 
 const TestModule: BaseJSModule = {
   runTestCases: async (props: BaseMethodParams) => {
-    const { eventId } = props;
+    const { eventId = '' } = props;
     const testReport = await testRunner();
     console.log('testReport : ', JSON.stringify(testReport));
     return emitJSMethodResult(eventId, {
