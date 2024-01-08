@@ -79,21 +79,26 @@ const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
       if (!isInit && activityList?.length >= totalRecord) return;
       if (pageInfoRef.current.isLoading) return;
       pageInfoRef.current.isLoading = true;
-      const maxResultCount = 30;
+      const maxResultCount = 10;
       const { multiCaAddresses, address } = instantWallet;
-      const { data, totalRecordCount } = await NetworkController.getRecentActivities({
-        caAddressInfos: Object.entries(multiCaAddresses).map(it => {
+      const caAddressInfos = Object.entries(multiCaAddresses)
+        .map(it => {
           return { chainId: it[0], caAddress: it[1] };
-        }),
+        })
+        .filter(it => {
+          return it.chainId === tokenInfo.chainId;
+        });
+      const { data, totalRecordCount } = await NetworkController.getRecentActivities({
+        caAddressInfos: caAddressInfos,
         managerAddresses: [address],
         chainId: tokenInfo.chainId,
         symbol: tokenInfo.symbol,
-        skipCount,
+        skipCount: isInit ? 0 : skipCount + maxResultCount,
         maxResultCount,
       });
       setCurrentActivity({
         activityList: isInit ? data : activityList.concat(data),
-        skipCount: isInit ? 0 : skipCount + maxResultCount,
+        skipCount: (isInit ? 0 : skipCount) + maxResultCount,
         totalRecordCount,
       });
       pageInfoRef.current.isLoading = false;
