@@ -6,7 +6,7 @@ import BaseContainerContext from './BaseContainerContext';
 import { LaunchMode, LaunchModeSet } from 'global/init/entries';
 import { wrapEntry } from 'utils/commonUtil';
 
-const useBaseContainer = (props: BaseContainerHookedProps): BaseContainerHooks => {
+const useBaseContainer = (props: BaseContainerHookedProps = {}): BaseContainerHooks => {
   const onShowListener = useRef<EmitterSubscription | null>(null);
   const onNewIntentListener = useRef<EmitterSubscription | null>(null);
   const baseContainerContext = useContext(BaseContainerContext);

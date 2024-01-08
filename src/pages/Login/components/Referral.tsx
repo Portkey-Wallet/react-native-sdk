@@ -5,7 +5,7 @@ import styles from '../styles';
 import Touchable from 'components/Touchable';
 import GStyles from 'assets/theme/GStyles';
 import { TextL } from 'components/CommonText';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { pTd } from 'utils/unit';
 import CommonButton from 'components/CommonButton';
 import { PortkeyEntries } from 'config/entries';
@@ -136,7 +136,7 @@ export default function Referral({
           type="outline"
           onPress={onGoogleSign}
           title={TitleMap[type].google}
-          icon={<Svg icon="google" size={24} />}
+          icon={<CommonSvg icon="google" size={24} />}
           containerStyle={pageStyles.outlineContainerStyle}
           titleStyle={[FontStyles.font3, pageStyles.outlineTitleStyle]}
         />
@@ -145,7 +145,7 @@ export default function Referral({
           type="outline"
           onPress={onAppleSign}
           title={TitleMap[type].apple}
-          icon={<Svg icon="apple" size={24} />}
+          icon={<CommonSvg icon="apple" size={24} />}
           containerStyle={pageStyles.outlineContainerStyle}
           titleStyle={[FontStyles.font3, pageStyles.outlineTitleStyle]}
         />
@@ -158,7 +158,7 @@ export default function Referral({
           <TextL style={FontStyles.font3}>
             No account? <Text style={FontStyles.font4}>Sign up </Text>
           </TextL>
-          <Svg size={pTd(20)} color={FontStyles.font4.color} icon="right-arrow2" />
+          <CommonSvg size={pTd(20)} color={FontStyles.font4.color} icon="right-arrow2" />
         </Touchable>
       )}
       <TermsServiceButton />

@@ -6,7 +6,7 @@ import Collapsible from 'components/Collapsible';
 import NFTAvatar from 'components/NFTAvatar';
 import GStyles from 'assets/theme/GStyles';
 import CommonAvatar from 'components/CommonAvatar';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { TextL, TextM, TextS, TextXL } from 'components/CommonText';
 import { FontStyles } from 'assets/theme/styles';
 import { NFTCollectionItemShowType } from 'packages/types/types-ca/assets';
@@ -91,7 +91,7 @@ export default function NFTItem(props: NFTItemPropsType) {
             openItem(symbol, chainId, itemCount);
           }
         }}>
-        <Svg
+        <CommonSvg
           icon={!open ? 'right-arrow' : 'down-arrow'}
           size={pTd(16)}
           color={defaultColors.font3}
@@ -131,7 +131,12 @@ export default function NFTItem(props: NFTItemPropsType) {
             style={[styles.loadMore]}
             onPress={() => loadMoreItem?.(symbol, chainId, openCollectionInfo?.pageNum + 1)}>
             <TextM style={FontStyles.font4}>More</TextM>
-            <Svg icon="down-arrow" size={pTd(16)} color={defaultColors.primaryColor} iconStyle={styles.downArrow} />
+            <CommonSvg
+              icon="down-arrow"
+              size={pTd(16)}
+              color={defaultColors.primaryColor}
+              iconStyle={styles.downArrow}
+            />
           </Touchable>
         )}
       </Collapsible>

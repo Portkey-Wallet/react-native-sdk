@@ -33,6 +33,7 @@ import ContactDetail from 'pages/My/Contacts/ContactDetail';
 import ContactActivity from 'pages/My/Contacts/ContactActivity';
 import TestEntry from 'apiTest/TestEntry';
 import { PortkeyTestEntries } from 'apiTest';
+import SendHome from 'pages/Send/SendHome';
 
 type AcceptableComponentType = ComponentProvider;
 
@@ -80,6 +81,9 @@ const initEntries = () => {
   entryConfig.set(PortkeyEntries.RECEIVE_TOKEN_ENTRY, () => ReceiveTokenPage);
   entryConfig.set(PortkeyEntries.ACTIVITY_LIST_ENTRY, () => ActivityListPage);
   entryConfig.set(PortkeyEntries.ACTIVITY_DETAIL_ENTRY, () => ActivityDetail);
+
+  // send service
+  entryConfig.set(PortkeyEntries.SEND_TOKEN_HOME_ENTRY, () => SendHome);
 
   // payment security module
   entryConfig.set(PortkeyEntries.PAYMENT_SECURITY_HOME_ENTRY, () => PaymentSecurityList);

@@ -5,7 +5,7 @@ import { pTd } from 'utils/unit';
 import { ImageBackground, View } from 'react-native';
 import { isIOS } from 'packages/utils/mobile/device';
 import { useLanguage } from 'i18n/hooks';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { BGStyles, FontStyles } from 'assets/theme/styles';
 import styles from '../styles';
 import Email from '../components/Email';
@@ -113,7 +113,7 @@ export default function LogInPortKey({
           safeAreaColor={safeAreaColor}
           scrollViewProps={scrollViewProps}
           leftCallback={onBack}>
-          <Svg icon="logo-icon" size={pTd(60)} iconStyle={styles.logoIconStyle} color={defaultColors.bg1} />
+          <CommonSvg icon="logo-icon" size={pTd(60)} iconStyle={styles.logoIconStyle} color={defaultColors.bg1} />
           <View style={GStyles.center}>
             {!isMainnet && (
               <View style={styles.labelBox}>

@@ -1,6 +1,6 @@
 import { View, TouchableOpacity, ViewStyle, StyleProp } from 'react-native';
 import React, { ReactNode, useMemo } from 'react';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { blueStyles, hideTitleStyles, whitStyles } from './style/index.style';
 import { pTd } from 'utils/unit';
 import GStyles from 'assets/theme/GStyles';
@@ -53,7 +53,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = props => {
   const leftIcon = useMemo(() => {
     const isClose = leftIconType === 'close';
     return (
-      <Svg
+      <CommonSvg
         color={styles.leftBackTitle.color}
         icon={isClose ? 'close2' : 'left-arrow'}
         size={pTd(20)}

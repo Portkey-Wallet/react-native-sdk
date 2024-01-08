@@ -3,7 +3,7 @@ import { FontStyles } from 'assets/theme/styles';
 import GStyles from 'assets/theme/GStyles';
 import Collapsible from 'components/Collapsible';
 import { TextL, TextM, TextS } from 'components/CommonText';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import React, { memo, useState } from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { pTd } from 'utils/unit';
@@ -40,7 +40,7 @@ const SendContactItem: React.FC<ItemType> = props => {
         <TextL style={styles.contactName}>
           {contact?.name || contact.caHolderInfo?.walletName || contact.imInfo?.name}
         </TextL>
-        <Svg icon={collapsed ? 'down-arrow' : 'up-arrow'} size={pTd(20)} />
+        <CommonSvg icon={collapsed ? 'down-arrow' : 'up-arrow'} size={pTd(20)} />
       </TouchableOpacity>
 
       <Collapsible collapsed={collapsed} style={styles.addressListWrap}>
@@ -77,7 +77,7 @@ const SendContactItem: React.FC<ItemType> = props => {
                   //   avatar: contact.avatar,
                   // })
                 }>
-                <Svg icon="more-info" size={pTd(20)} />
+                <CommonSvg icon="more-info" size={pTd(20)} />
               </TouchableOpacity>
             </TouchableOpacity>
           ) : (
@@ -103,7 +103,7 @@ const SendContactItem: React.FC<ItemType> = props => {
                   //   avatar: contact.avatar,
                   // })
                 }>
-                <Svg icon="more-info" size={pTd(20)} />
+                <CommonSvg icon="more-info" size={pTd(20)} />
               </TouchableOpacity>
             </View>
           ),

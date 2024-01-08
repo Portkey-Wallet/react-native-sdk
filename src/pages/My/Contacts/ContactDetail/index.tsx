@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import { pageStyles } from './style';
 import PageContainer from 'components/PageContainer';
 import { useLanguage } from 'i18n/hooks';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { pTd } from 'utils/unit';
 import { AddressItem, ContactItemType } from 'packages/types/types-ca/contact';
 import Touchable from 'components/Touchable';
@@ -40,7 +40,7 @@ const ContactDetail: React.FC = ({ contact }: RouterParams) => {
             const isCopy = await setStringAsync(`ELF_${addressItem.address}_${addressItem.chainId}`);
             isCopy && CommonToast.success(t('Copied'));
           }}>
-          <Svg icon="copy" size={pTd(16)} />
+          <CommonSvg icon="copy" size={pTd(16)} />
         </Touchable>
       </View>
     ),

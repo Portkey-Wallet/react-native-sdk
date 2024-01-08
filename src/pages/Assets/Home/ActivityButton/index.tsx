@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 
 import { View, TouchableOpacity } from 'react-native';
 import { TextM } from 'components/CommonText';
@@ -28,7 +28,7 @@ const ActivityButton = (props: ActivityButtonProps) => {
         onPress={() => {
           navigateTo(PortkeyEntries.ACTIVITY_LIST_ENTRY);
         }}>
-        <Svg icon={'activity'} size={pTd(46)} />
+        <CommonSvg icon={'activity'} size={pTd(46)} />
       </TouchableOpacity>
       <TextM style={styles.titleStyle}>{t('Activity')}</TextM>
     </View>
