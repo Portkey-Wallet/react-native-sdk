@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Platform } from 'react-native';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { pTd } from 'utils/unit';
 import { defaultColors } from 'assets/theme';
 import { useLanguage } from 'i18n/hooks';
@@ -184,14 +184,14 @@ const QrScanner: React.FC = () => {
               onPress={() => {
                 navigateBack({ status: 'cancel', data: {} });
               }}>
-              <Svg icon="close1" size={pTd(14)} iconStyle={PageStyle.icon} />
+              <CommonSvg icon="close1" size={pTd(14)} iconStyle={PageStyle.icon} />
             </TouchableOpacity>
           </View>
-          <Svg icon="scan-square" size={pTd(240)} iconStyle={PageStyle.scan} />
+          <CommonSvg icon="scan-square" size={pTd(240)} iconStyle={PageStyle.scan} />
           <TextM style={PageStyle.tips}>{t('only support Login code by now')}</TextM>
 
           <TouchableOpacity style={[PageStyle.albumWrap, GStyles.alignCenter]} onPress={selectImage}>
-            <Svg icon="album" size={pTd(48)} />
+            <CommonSvg icon="album" size={pTd(48)} />
             <TextM style={[FontStyles.font2, PageStyle.albumText]}>{t('Album')}</TextM>
           </TouchableOpacity>
         </SafeAreaView>
@@ -209,14 +209,14 @@ const QrScanner: React.FC = () => {
             onPress={() => {
               navigateBack({ status: 'cancel', data: {} });
             }}>
-            <Svg icon="close1" size={pTd(14)} iconStyle={PageStyle.icon} />
+            <CommonSvg icon="close1" size={pTd(14)} iconStyle={PageStyle.icon} />
           </TouchableOpacity>
         </View>
-        <Svg icon="scan-square" size={pTd(240)} iconStyle={PageStyle.scan} />
+        <CommonSvg icon="scan-square" size={pTd(240)} iconStyle={PageStyle.scan} />
         <TextM style={PageStyle.tips}>{t('only support Login code by now')}</TextM>
 
         <TouchableOpacity style={[PageStyle.albumWrap, GStyles.alignCenter]} onPress={selectImage}>
-          <Svg icon="album" size={pTd(48)} />
+          <CommonSvg icon="album" size={pTd(48)} />
           <TextM style={[FontStyles.font2, PageStyle.albumText]}>{t('Album')}</TextM>
         </TouchableOpacity>
       </SafeAreaView>

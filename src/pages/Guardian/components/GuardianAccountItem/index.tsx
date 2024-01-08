@@ -5,7 +5,7 @@ import { pTd } from 'utils/unit';
 import { UserGuardianItem } from 'packages/store/store-ca/guardians/type';
 import { LoginType } from 'packages/types/types-ca/wallet';
 import { PRIVATE_GUARDIAN_ACCOUNT } from 'packages/constants/constants-ca/guardian';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { LoginGuardianTypeIcon } from 'constants/misc';
 import { defaultColors } from 'assets/theme';
 import GStyles from 'assets/theme/GStyles';
@@ -52,7 +52,11 @@ const GuardianAccountItem = ({ guardian }: GuardianAccountItemProps) => {
     <View style={styles.guardianTypeWrap}>
       {guardian && (
         <>
-          <Svg iconStyle={styles.loginTypeIcon} icon={LoginGuardianTypeIcon[guardian.guardianType]} size={pTd(28)} />
+          <CommonSvg
+            iconStyle={styles.loginTypeIcon}
+            icon={LoginGuardianTypeIcon[guardian.guardianType]}
+            size={pTd(28)}
+          />
           {renderGuardianAccount()}
         </>
       )}

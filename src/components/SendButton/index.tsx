@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo } from 'react';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { commonButtonStyle, dashBoardBtnStyle } from './style';
 // import navigationService from 'utils/navigationService';
 import { View, TouchableOpacity, StyleProp, ViewProps } from 'react-native';
@@ -11,7 +11,6 @@ import { TokenItemShowType } from 'packages/types/types-eoa/token';
 import useBaseContainer from 'model/container/UseBaseContainer';
 import { PortkeyEntries } from 'config/entries';
 import { IToSendHomeParamsType } from 'packages/types/types-ca/routeParams';
-import CommonToast from 'components/CommonToast';
 
 interface SendButtonType {
   themeType?: 'dashBoard' | 'tokenInnerPage' | 'nftInnerPage';
@@ -20,7 +19,7 @@ interface SendButtonType {
 }
 
 const SendButton = (props: SendButtonType) => {
-  const { themeType = 'dashBoard', wrapStyle } = props;
+  const { themeType = 'dashBoard', wrapStyle, sentToken } = props;
   const styles = themeType === 'dashBoard' ? dashBoardBtnStyle : commonButtonStyle;
 
   const { t } = useLanguage();
@@ -46,20 +45,20 @@ const SendButton = (props: SendButtonType) => {
   const onPressButton = useCallback(() => {
     if (themeType !== 'dashBoard') {
       navigateTo<IToSendHomeParamsType>(PortkeyEntries.SEND_TOKEN_HOME_ENTRY, {
-        params: {},
+        params: {
+          sendType: sentToken?.symbol ? 'token' : 'nft',
+          assetInfo: sentToken as any,
+          toInfo: undefined,
+        },
       });
     }
     // AssetsOverlay.showAssetList();
-  }, [navigateTo, themeType]);
+  }, [navigateTo, sentToken, themeType]);
 
   return (
     <View style={[styles.buttonWrap, wrapStyle]}>
-      <TouchableOpacity
-        style={[styles.iconWrapStyle, GStyles.alignCenter]}
-        onPress={async () => {
-          CommonToast.fail('Send is not available by now');
-        }}>
-        <Svg icon={themeType === 'dashBoard' ? 'send' : 'send1'} size={pTd(46)} />
+      <TouchableOpacity style={[styles.iconWrapStyle, GStyles.alignCenter]} onPress={onPressButton}>
+        <CommonSvg icon={themeType === 'dashBoard' ? 'send' : 'send1'} size={pTd(46)} />
       </TouchableOpacity>
       <TextM style={[commonButtonStyle.commonTitleStyle, buttonTitleStyle]}>{t('Send')}</TextM>
     </View>

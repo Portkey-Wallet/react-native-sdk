@@ -7,7 +7,7 @@ import { ScrollView, StyleSheet, View, Text } from 'react-native';
 import GStyles from 'assets/theme/GStyles';
 import CommonButton from 'components/CommonButton';
 import { BorderStyles, FontStyles } from 'assets/theme/styles';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { pTd } from 'utils/unit';
 import { getApprovalCount } from 'packages/utils/guardian';
 import { ApprovalType, OperationTypeEnum, VerifyStatus } from 'packages/types/verifier';
@@ -531,7 +531,7 @@ export default function GuardianApproval({
                     buttons: [{ title: 'OK' }],
                   })
                 }>
-                <Svg color={FontStyles.font3.color} size={pTd(16)} icon="question-mark" />
+                <CommonSvg color={FontStyles.font3.color} size={pTd(16)} icon="question-mark" />
               </Touchable>
             </View>
             <TextM>

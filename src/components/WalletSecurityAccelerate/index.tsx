@@ -14,7 +14,7 @@ import { ChainId } from '@portkey/provider-types';
 import { IAccelerateGuardian, getAccelerateGuardianTxId } from 'utils/security';
 import { getAelfTxResult } from 'packages/utils/aelf';
 import { TransactionStatus } from 'packages/types/types-ca/activity';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import Loading from 'components/Loading';
 import CommonToast from 'components/CommonToast';
 import { useCurrentWalletInfo, useGetChainInfo } from './hook';
@@ -109,7 +109,7 @@ function AlertBody({
   return (
     <View style={styles.alertBox}>
       <View onTouchEnd={onClose} style={styles.closeWrap}>
-        <Svg icon={'close'} size={pTd(12.5)} color={defaultColors.font7} />
+        <CommonSvg icon={'close'} size={pTd(12.5)} color={defaultColors.font7} />
       </View>
 
       <Image resizeMode="cover" source={securityWarning} style={styles.img} />

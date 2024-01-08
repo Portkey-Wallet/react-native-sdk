@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import PageContainer from 'components/PageContainer';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import From from '../From';
 import To from '../To';
 import { styles } from './style';
@@ -468,7 +468,7 @@ const SendHome = (props: IToSendHomeParamsType) => {
 
               // navigationService.navigate('QrScanner', { fromSendPage: true });
             }}>
-            <Svg icon="scan" size={pTd(17.5)} color={defaultColors.font2} iconStyle={styles.iconStyle} />
+            <CommonSvg icon="scan" size={pTd(17.5)} color={defaultColors.font2} iconStyle={styles.iconStyle} />
           </TouchableOpacity>
         ) : undefined
       }
@@ -495,9 +495,9 @@ const SendHome = (props: IToSendHomeParamsType) => {
         <Touchable
           style={[GStyles.flexRow, GStyles.itemCenter, styles.warningWrap]}
           onPress={() => showDialog('exchange')}>
-          <Svg icon="warning1" size={pTd(16)} />
+          <CommonSvg icon="warning1" size={pTd(16)} />
           <TextM style={[GStyles.marginLeft(pTd(8)), GStyles.flex1, FontStyles.font3]}>Send to exchange account?</TextM>
-          <Svg icon="down-arrow" size={pTd(16)} />
+          <CommonSvg icon="down-arrow" size={pTd(16)} />
         </Touchable>
       )}
 

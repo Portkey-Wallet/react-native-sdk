@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import PageContainer from 'components/PageContainer';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { pTd } from 'utils/unit';
 import { StyleSheet, View } from 'react-native';
 import { defaultColors } from 'assets/theme';
@@ -78,11 +78,11 @@ export default function ScanLogin(props: ScanToLoginProps) {
       leftCallback={() => onFinish({ status: 'cancel', data: {} })}
       rightDom={
         <Touchable onPress={() => onFinish({ status: 'cancel', data: {} })}>
-          <Svg size={pTd(14)} color={FontStyles.font3.color} icon="close" iconStyle={styles.svgStyle} />
+          <CommonSvg size={pTd(14)} color={FontStyles.font3.color} icon="close" iconStyle={styles.svgStyle} />
         </Touchable>
       }>
       <View style={[GStyles.itemCenter]}>
-        <Svg size={pTd(100)} icon="logo-icon" color={defaultColors.primaryColor} />
+        <CommonSvg size={pTd(100)} icon="logo-icon" color={defaultColors.primaryColor} />
         <TextXXXL style={[styles.title, GStyles.textAlignCenter]}>Confirm Your Log In To Portkey</TextXXXL>
       </View>
       <View style={styles.bottomBox}>

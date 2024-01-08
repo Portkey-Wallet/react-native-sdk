@@ -1,5 +1,5 @@
 import React from 'react';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { TextM } from 'components/CommonText';
 import { useLanguage } from 'i18n/hooks';
 import TokenOverlay from 'components/TokenOverlay';
@@ -54,7 +54,7 @@ export default function ReceiveButton(props: SendButtonType) {
             });
           }
         }}>
-        <Svg icon={themeType === 'dashBoard' ? 'receive' : 'receive1'} size={pTd(46)} />
+        <CommonSvg icon={themeType === 'dashBoard' ? 'receive' : 'receive1'} size={pTd(46)} />
       </TouchableOpacity>
       <TextM style={styles.titleStyle}>{t('Receive')}</TextM>
     </View>

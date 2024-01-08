@@ -6,7 +6,7 @@ import { screenWidth } from 'packages/utils/mobile/device';
 import { pTd } from 'utils/unit';
 import { defaultColors } from 'assets/theme';
 import { TextXL } from 'components/CommonText';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import GStyles from 'assets/theme/GStyles';
 import fonts from 'assets/theme/fonts';
 import ButtonRow from 'components/ButtonRow';
@@ -56,7 +56,7 @@ export const ModalBody: React.FC<ModalBodyProps> = props => {
                 Keyboard.dismiss();
                 OverlayModal.hide();
               }}>
-              <Svg icon="left-arrow" size={pTd(20)} />
+              <CommonSvg icon="left-arrow" size={pTd(20)} />
             </View>
           )}
           <TextXL suppressHighlighting={true} style={[styles.titleStyle, fonts.mediumFont]} onPress={Keyboard.dismiss}>
@@ -71,7 +71,7 @@ export const ModalBody: React.FC<ModalBodyProps> = props => {
                 Keyboard.dismiss();
                 OverlayModal.hide();
               }}>
-              <Svg icon="close" size={pTd(12)} />
+              <CommonSvg icon="close" size={pTd(12)} />
             </View>
           )}
         </View>

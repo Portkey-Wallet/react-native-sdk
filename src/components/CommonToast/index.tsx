@@ -3,7 +3,7 @@ import Toast from 'rn-teaset/components/Toast/Toast';
 import Overlay from 'rn-teaset/components/Overlay/Overlay';
 import { StyleSheet, View } from 'react-native';
 import { defaultColors } from 'assets/theme';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { TextL } from 'components/CommonText';
 import { pTd } from 'utils/unit';
 import { statusBarHeight } from 'packages/utils/mobile/device';
@@ -61,9 +61,9 @@ const styles = StyleSheet.create({
 });
 
 const icons: any = {
-  success: <Svg icon="success" size={pTd(22)} />,
-  fail: <Svg icon="fail" size={pTd(22)} />,
-  warning: <Svg icon="warning" size={pTd(22)} />,
+  success: <CommonSvg icon="success" size={pTd(22)} />,
+  fail: <CommonSvg icon="fail" size={pTd(22)} />,
+  warning: <CommonSvg icon="warning" size={pTd(22)} />,
   loading: <Lottie source={require('assets/lottieFiles/loading.json')} style={{ height: pTd(22) }} autoPlay loop />,
 } as const;
 

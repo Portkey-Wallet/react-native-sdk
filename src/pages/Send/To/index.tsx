@@ -1,7 +1,7 @@
 import { defaultColors } from 'assets/theme';
 import GStyles from 'assets/theme/GStyles';
 import { TextM } from 'components/CommonText';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { useLanguage } from 'i18n/hooks';
 import { formatStr2EllipsisStr } from 'packages/utils';
 import React, { useCallback } from 'react';
@@ -44,7 +44,7 @@ export default function To({ setErrorMessage, selectedToContact, setSelectedToCo
 
           {!!selectedToContact?.address && (
             <TouchableOpacity style={styles.iconWrap} onPress={() => clearInput()}>
-              <Svg icon="clear2" size={pTd(16)} />
+              <CommonSvg icon="clear2" size={pTd(16)} />
             </TouchableOpacity>
           )}
         </View>
@@ -53,7 +53,7 @@ export default function To({ setErrorMessage, selectedToContact, setSelectedToCo
           <TextM style={styles.middleTitle}>{selectedToContact?.name || ''}</TextM>
           <TextM style={styles.middleAddress}>{formatStr2EllipsisStr(selectedToContact?.address, 15)}</TextM>
           <TouchableOpacity style={styles.iconWrap} onPress={() => clearInput()}>
-            <Svg icon="clear2" size={pTd(16)} />
+            <CommonSvg icon="clear2" size={pTd(16)} />
           </TouchableOpacity>
         </View>
       )}

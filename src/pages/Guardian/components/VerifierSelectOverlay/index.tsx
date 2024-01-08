@@ -3,7 +3,7 @@ import OverlayModal from 'components/OverlayModal';
 import { Keyboard, ScrollView, View } from 'react-native';
 import Touchable from 'components/Touchable';
 import styles from './styles';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { TextL } from 'components/CommonText';
 import { pTd } from 'utils/unit';
 import { useLanguage } from 'i18n/hooks';
@@ -54,7 +54,7 @@ const SelectList = <ItemType extends ItemTypeBase<ItemValueType>, ItemValueType 
                 <View style={styles.itemContent}>
                   <TextL>{item[labelAttrName]}</TextL>
                   {id !== undefined && id === item.id && (
-                    <Svg iconStyle={styles.itemIcon} icon="selected" size={pTd(24)} />
+                    <CommonSvg iconStyle={styles.itemIcon} icon="selected" size={pTd(24)} />
                   )}
                 </View>
               </View>
