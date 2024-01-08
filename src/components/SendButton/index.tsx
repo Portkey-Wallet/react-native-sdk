@@ -11,6 +11,7 @@ import useBaseContainer from 'model/container/UseBaseContainer';
 import { PortkeyEntries } from 'config/entries';
 import { IToSendHomeParamsType } from 'packages/types/types-ca/routeParams';
 import { commonButtonStyle } from './style';
+import AssetsOverlay from 'pages/Assets/Home/AssetsOverlay';
 
 interface SendButtonType {
   themeType?: 'dashBoard' | 'tokenInnerPage' | 'nftInnerPage';
@@ -55,7 +56,7 @@ const SendButton = (props: SendButtonType) => {
         },
       });
     }
-    // AssetsOverlay.showAssetList();
+    AssetsOverlay.showAssetList();
   }, [navigateTo, sentToken, themeType]);
 
   return (
