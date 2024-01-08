@@ -87,9 +87,12 @@ const useBaseContainer = (props: BaseContainerHookedProps): BaseContainerHooks =
     [getEntryName],
   );
 
-  const onFinish = useCallback(<R>(res: EntryResult<R>) => {
-    PortkeyModulesEntity.RouterModule.navigateBack(res);
-  }, []);
+  const onFinish = useCallback(
+    <R>(res: EntryResult<R>) => {
+      PortkeyModulesEntity.RouterModule.navigateBack(res, getEntryName());
+    },
+    [getEntryName],
+  );
 
   const onError = useCallback(
     (err: Error) => {

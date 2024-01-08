@@ -7,7 +7,7 @@ import { getUnlockedWallet } from 'model/wallet';
 
 const WalletModule: BaseJSModule = {
   callCaContractMethod: async (props: CallCaMethodProps) => {
-    const { eventId, contractMethodName: methodName, params, isViewMethod } = props;
+    const { eventId = '', contractMethodName: methodName, params, isViewMethod } = props;
     console.log('callContractMethod called ', 'eventId: ', eventId, 'methodName: ', methodName, 'params: ', params);
     if (!(await isWalletUnlocked())) {
       return emitJSMethodResult(eventId, {
@@ -20,8 +20,8 @@ const WalletModule: BaseJSModule = {
     const isParamsEmpty = Object.values(params ?? {}).length === 0;
     try {
       const result: ViewResult | SendResult = isViewMethod
-        ? await contract.callSendMethod(methodName, address, isParamsEmpty ? null : params)
-        : await contract.callViewMethod(methodName, isParamsEmpty ? null : params);
+        ? await contract.callViewMethod(methodName, isParamsEmpty ? '' : params)
+        : await contract.callSendMethod(methodName, address, isParamsEmpty ? '' : params);
       if (!result) throw new Error('result is null');
       const { data, error } = result;
       let jsData: BaseMethodResult = {
@@ -45,7 +45,7 @@ const WalletModule: BaseJSModule = {
   },
 
   getWalletDetails: async (props: BaseMethodParams) => {
-    const { eventId } = props;
+    const { eventId = '' } = props;
     console.log('getWalletDetails called ', 'eventId: ', eventId);
     if (!(await isWalletUnlocked())) {
       return emitJSMethodResult(eventId, {
@@ -61,7 +61,7 @@ const WalletModule: BaseJSModule = {
   },
 
   lockWallet: async (props: BaseMethodParams) => {
-    const { eventId } = props;
+    const { eventId = '' } = props;
     console.log('lockWallet called ', 'eventId: ', eventId);
     if (!(await isWalletUnlocked())) {
       return emitJSMethodResult(eventId, {
@@ -77,7 +77,7 @@ const WalletModule: BaseJSModule = {
   },
 
   exitWallet: async (props: BaseMethodParams) => {
-    const { eventId } = props;
+    const { eventId = '' } = props;
     console.log('exitWallet called ', 'eventId: ', eventId);
     if (!(await isWalletUnlocked())) {
       return emitJSMethodResult(eventId, {

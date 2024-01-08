@@ -28,9 +28,9 @@ export default function NFTInfo({ nftItem = { alias: '', balance: 0 } }: AmountN
       />
       <View>
         <TextL numberOfLines={1} style={styles.nftTitle}>{`${nftItem?.alias || ''}  #${nftItem?.tokenId}`}</TextL>
-        <TextS numberOfLines={1} style={[styles.balance, FontStyles.font3]}>{`${t(
-          'Balance',
-        )}: ${nftItem?.balance}`}</TextS>
+        <TextS numberOfLines={1} style={[styles.balance, FontStyles.font3]}>{`${t('Balance')}: ${
+          nftItem?.balance
+        }`}</TextS>
       </View>
     </View>
   );
