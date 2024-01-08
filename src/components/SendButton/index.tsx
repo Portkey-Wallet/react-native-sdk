@@ -48,7 +48,10 @@ const SendButton = (props: SendButtonType) => {
         params: {
           sendType: sentToken?.symbol ? 'token' : 'nft',
           assetInfo: sentToken as any,
-          toInfo: undefined,
+          toInfo: {
+            name: '',
+            address: '',
+          },
         },
       });
     }

@@ -1,23 +1,24 @@
 import { ChainId } from '@portkey/provider-types';
-import { RecentContactItemType } from '@portkey/services';
 import { defaultColors } from 'assets/theme';
 import GStyles from 'assets/theme/GStyles';
 import { TextS } from 'components/CommonText';
 import NoData from 'components/NoData';
 import useEffectOnce from 'hooks/useEffectOnce';
 import { useLanguage } from 'i18n/hooks';
+import { FlashList } from '@shopify/flash-list';
 import { ON_END_REACHED_THRESHOLD } from 'packages/constants/constants-ca/activity';
-import { useAppCommonDispatch } from 'packages/hooks';
 import { ContactItemType } from 'packages/im';
-import { fetchContactListAsync } from 'packages/store/store-ca/contact/actions';
-import { fetchRecentListAsync } from 'packages/store/store-ca/recent/slice';
-import React, { useMemo, useCallback, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
-import myEvents from 'utils/deviceEvent';
+import React, { useMemo, useCallback } from 'react';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import { pTd } from 'utils/unit';
 import MyAddressItem from '../components/MyAddressItem';
 import SendContactItem from '../components/SendContactItem';
 import SendRecentItem from '../components/SendRecentItem';
+import { useUnlockedWallet } from 'model/wallet';
+import ContactsList from 'components/ContactList';
+import { RecentContactItemType } from 'network/dto/query';
+import { useContact, useRecent } from 'model/hooks/contact';
+import { RNTabView, TabProps } from 'model/hooks/tabs';
 
 interface SelectContactProps {
   chainId: ChainId;
@@ -28,14 +29,24 @@ export default function SelectContact(props: SelectContactProps) {
   const { chainId, onPress } = props;
 
   const { t } = useLanguage();
-  const dispatch = useAppCommonDispatch();
-  const { contactIndexList } = useContact();
-  const { walletInfo } = useCurrentWallet();
-  const caAddressInfos = useCaAddressInfoList();
+  const contactList = useContact();
+  const { wallet } = useUnlockedWallet({ getMultiCaAddresses: true });
+  const caAddressInfos = useMemo(
+    () =>
+      Object.entries(wallet?.multiCaAddresses || {}).map(([itemChainId, caAddress]) => {
+        return {
+          chainId: itemChainId as ChainId,
+          caAddress,
+          chainName: itemChainId,
+        };
+      }),
+    [wallet],
+  );
 
-  const caAddress = useMemo(() => walletInfo?.[chainId]?.caAddress || '', [chainId, walletInfo]);
-
-  const { recentContactList, totalRecordCount } = useRecent(caAddress || '');
+  const {
+    recent: { data: recentContactList, totalRecordCount },
+    loadMoreRecent,
+  } = useRecent();
 
   const renderRecentItem = useCallback(
     ({ item }: { item: RecentContactItemType }) => {
@@ -44,63 +55,40 @@ export default function SelectContact(props: SelectContactProps) {
     [chainId, onPress],
   );
 
-  const isExistContact = useMemo<boolean>(
-    () => contactIndexList.reduce((pv, cv) => pv + cv.contacts.length, 0) > 0,
-    [contactIndexList],
-  );
+  const isExistContact = useMemo<boolean>(() => contactList.totalCount > 0, [contactList]);
 
   const myOtherAddressList = useMemo(() => {
     return caAddressInfos.filter(item => item.chainId !== chainId);
   }, [caAddressInfos, chainId]);
 
-  const loadMore = useCallback(() => {
-    dispatch(
-      fetchRecentListAsync({
-        caAddress: caAddress,
-        caAddressInfos: caAddressInfos.filter(item => item.chainId === chainId),
-        isFirstTime: false,
-      }),
-    );
-  }, [caAddress, caAddressInfos, chainId, dispatch]);
-
-  const init = useCallback(() => {
-    dispatch(
-      fetchRecentListAsync({
-        caAddress: caAddress,
-        caAddressInfos: caAddressInfos.filter(item => item.chainId === chainId),
-        isFirstTime: true,
-      }),
-    );
-    dispatch(fetchContactListAsync());
-  }, [caAddress, caAddressInfos, chainId, dispatch]);
-
   useEffectOnce(() => {
-    init();
+    loadMoreRecent();
   });
-
-  useEffect(() => {
-    const listener = myEvents.refreshMyContactDetailInfo.addListener(() => init());
-    return () => listener.remove();
-  }, [init]);
 
   const tabList = useMemo(() => {
     return [
       {
-        name: t('Recents'),
-        tabItemDom: (
-          <View style={styles.recentListWrap}>
+        key: t('Recents'),
+        title: t('Recents'),
+        component: () => (
+          <View
+            style={[
+              styles.recentListWrap,
+              { width: Dimensions.get('screen').width, height: Dimensions.get('screen').height },
+            ]}>
             <FlashList
               data={recentContactList || []}
               renderItem={renderRecentItem}
+              estimatedItemSize={pTd(80)}
               ListFooterComponent={
                 <TextS style={styles.footer}>{recentContactList?.length === 0 ? '' : t('No More Data')}</TextS>
               }
               ListEmptyComponent={<NoData noPic message={t('There is no recents')} />}
               refreshing={false}
-              onRefresh={() => init()}
+              onRefresh={() => loadMoreRecent(true)}
               onEndReached={() => {
                 if (recentContactList.length >= totalRecordCount) return;
-                loadMore();
+                loadMoreRecent();
               }}
               onEndReachedThreshold={ON_END_REACHED_THRESHOLD}
             />
@@ -108,33 +96,41 @@ export default function SelectContact(props: SelectContactProps) {
         ),
       },
       {
-        name: t('Contacts'),
-        tabItemDom: !isExistContact ? (
-          <NoData noPic message={t('There is no contacts')} />
-        ) : (
-          <ContactsList
-            isReadOnly
-            style={styles.contactWrap}
-            isIndexBarShow={false}
-            isSearchShow={false}
-            renderContactItem={(item: ContactItemType) => (
-              <SendContactItem
-                fromChainId={chainId}
-                isContacts={true}
-                contact={item as RecentContactItemType}
-                onPress={onPress}
-              />
-            )}
-            ListFooterComponent={<View style={styles.footer} />}
-          />
-        ),
+        key: t('Contacts'),
+        title: t('Contacts'),
+        component: () =>
+          !isExistContact ? (
+            <NoData noPic message={t('There is no contacts')} />
+          ) : (
+            <ContactsList
+              isReadOnly
+              style={styles.contactWrap}
+              isIndexBarShow={false}
+              isSearchShow={false}
+              renderContactItem={(item: ContactItemType) => (
+                <SendContactItem
+                  fromChainId={chainId}
+                  isContacts={true}
+                  contact={item as RecentContactItemType}
+                  onPress={onPress}
+                />
+              )}
+              ListFooterComponent={<View style={styles.footer} />}
+            />
+          ),
       },
       {
-        name: t('My address'),
-        tabItemDom: (
-          <View style={styles.recentListWrap}>
+        key: t('My address'),
+        title: t('My address'),
+        component: () => (
+          <View
+            style={[
+              styles.recentListWrap,
+              { width: Dimensions.get('screen').width, height: Dimensions.get('screen').height },
+            ]}>
             <FlashList
               data={myOtherAddressList || []}
+              estimatedItemSize={pTd(80)}
               renderItem={({ item }) => (
                 <MyAddressItem chainId={item.chainId} address={item.caAddress} onPress={onPress} />
               )}
@@ -143,12 +139,11 @@ export default function SelectContact(props: SelectContactProps) {
           </View>
         ),
       },
-    ];
+    ] as TabProps[];
   }, [
     chainId,
-    init,
     isExistContact,
-    loadMore,
+    loadMoreRecent,
     myOtherAddressList,
     onPress,
     recentContactList,
@@ -157,7 +152,7 @@ export default function SelectContact(props: SelectContactProps) {
     totalRecordCount,
   ]);
 
-  return <CommonTopTab tabList={tabList} />;
+  return <RNTabView tabs={tabList} defaultTab={'Recents'} />;
 }
 
 const styles = StyleSheet.create({
@@ -179,6 +174,8 @@ const styles = StyleSheet.create({
   recentListWrap: {
     flex: 1,
     backgroundColor: defaultColors.bg1,
+    minHeight: 2,
+    minWidth: 2,
   },
   item: {
     height: 20,

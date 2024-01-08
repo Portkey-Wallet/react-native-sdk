@@ -424,7 +424,7 @@ export class NetworkControllerEntity {
   /**
    * Get the addresses from recent transactions.
    */
-  getRecentTransactionAddresses = async (config: GetRecentTransactionParams) => {
+  getRecentTransactionInfo = async (config: GetRecentTransactionParams) => {
     const { caAddressInfos, skipCount = 0, maxResultCount = MAX_PAGE_LIMIT } = config;
     const res = await this.realExecute<RecentTransactionResponse>(
       await this.parseUrl(APIPaths.GET_RECENT_ADDRESS),
@@ -442,13 +442,13 @@ export class NetworkControllerEntity {
   /**
    * Read addresses from user's contract info.
    */
-  getContractAddresses = async (config?: GetContractAddressesParams) => {
-    const { keyword = '', page = 1, size = MAX_PAGE_LIMIT, modificationTime = Date.now() } = config || {};
+  getContractInfo = async (config: GetContractAddressesParams = {}) => {
+    const { keyword, page = 1, size = MAX_PAGE_LIMIT, modificationTime = Date.now() } = config || {};
     const res = await this.realExecute<GetContractListApiType>(
       await this.parseUrl(APIPaths.READ_CONTRACTS_ADDRESS),
       'GET',
       {
-        filter: `modificationTime: [* TO ${modificationTime}] AND isDeleted: false`,
+        filter: '*',
         sort: 'modificationTime',
         sortType: 0,
         skipCount: (page - 1) * size,

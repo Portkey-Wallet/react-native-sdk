@@ -220,3 +220,14 @@ export interface RecentContactItemType extends ContactItemType {
 export interface RecentAddressItem extends AddressItem {
   transactionTime?: string;
 }
+
+export interface RecentContactItemType extends ContactItemType {
+  chainId: ChainId;
+  chainName: string;
+  caAddress: string;
+  address: string;
+  addressChainId: ChainId;
+  transactionTime: string;
+  name: string;
+  addresses: RecentAddressItem[];
+}
