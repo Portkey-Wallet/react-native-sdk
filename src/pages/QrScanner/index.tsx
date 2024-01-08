@@ -28,7 +28,14 @@ import { checkIsPortKeyUrl, isEntryScheme } from 'utils/scheme';
 import { myThrottle } from 'utils/commonUtil';
 import { getCurrentNetworkType } from 'model/hooks/network';
 
-const QrScanner: React.FC = () => {
+export interface ScanQRCodeProps {
+  useScanQRPath?: boolean;
+}
+export interface ScanQRCodeResult {
+  uri?: string;
+}
+
+const QrScanner: React.FC = ({ useScanQRPath = false }: ScanQRCodeProps) => {
   const { t } = useLanguage();
   const canScan = useRef<boolean>(true);
   // const jumpToWebview = useDiscoverJumpWithNetWork();
@@ -102,6 +109,7 @@ const QrScanner: React.FC = () => {
     }
     canScan.current = false;
     if (typeof data !== 'string') return invalidQRCode(InvalidQRCodeText.INVALID_QR_CODE);
+    if (useScanQRPath) return navigateBack({ status: 'success', data: { uri: data } });
     const currentNetwork = await getCurrentNetworkType();
     try {
       const str = data.replace(/("|'|\s)/g, '');
@@ -315,8 +323,6 @@ export enum InvalidQRCodeText {
   INVALID_QR_CODE = 'The QR code is invalid',
   DID_NOT_UNLOCK = 'Please unlock your wallet first',
 }
-
-export interface ScanQRCodeResult {}
 
 const ensurePermission = async (
   permission: PermissionType,

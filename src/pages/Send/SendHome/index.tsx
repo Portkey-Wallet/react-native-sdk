@@ -28,7 +28,7 @@ import { MAIN_CHAIN_ID } from 'packages/constants/constants-ca/activity';
 import { TransactionError } from 'packages/constants/constants-ca/assets';
 import { AddressError, AddressErrorArray, TransactionErrorArray } from 'packages/constants/constants-ca/send';
 import { ZERO } from 'packages/constants/misc';
-import { IToSendHomeParamsType, IToSendPreviewParamsType } from 'packages/types/types-ca/routeParams';
+import { IToSendHomeParamsType } from 'packages/types/types-ca/routeParams';
 import { getAddressChainId, isSameAddresses } from 'packages/utils';
 import { getEntireDIDAelfAddress, isCrossChain, isAllowAelfAddress, getAelfAddress } from 'packages/utils/aelf';
 import { getELFChainBalance } from 'packages/utils/balance';
@@ -40,6 +40,9 @@ import { useQrScanPermissionAndToast } from 'model/hooks/device';
 import { checkManagerSyncState, getContractInstanceOnParticularChain, useGetTransferFee } from 'model/contract/handler';
 import { getUnlockedWallet, useUnlockedWallet } from 'model/wallet';
 import { useSecuritySafeCheckAndToast, useCheckTransferLimitWithJump } from 'components/WalletSecurityAccelerate/hook';
+import useBaseContainer from 'model/container/UseBaseContainer';
+import { PortkeyEntries } from 'config/entries';
+import { ScanQRCodeProps, ScanQRCodeResult } from 'pages/QrScanner';
 
 const SendHome = (props: IToSendHomeParamsType) => {
   const { sendType = 'token', toInfo, assetInfo } = props;
@@ -52,6 +55,10 @@ const SendHome = (props: IToSendHomeParamsType) => {
     },
     [chainsNetworkInfo],
   );
+  const isValidAddress = useCallback((address: string) => {
+    return isAllowAelfAddress(address);
+  }, []);
+
   const { wallet: unlockedWallet } = useUnlockedWallet({ getMultiCaAddresses: true });
   const checkTransferLimitWithJump = useCheckTransferLimitWithJump();
 
@@ -77,6 +84,7 @@ const SendHome = (props: IToSendHomeParamsType) => {
   const [sendNumber, setSendNumber] = useState<string>(''); // tokenNumber  like 100
   const debounceSendNumber = useDebounce(sendNumber, 500);
   const [, setTransactionFee] = useState<string>('0'); // like 1.2ELF
+  const { navigateForResult } = useBaseContainer({ entryName: PortkeyEntries.SEND_TOKEN_HOME_ENTRY });
 
   const [step, setStep] = useState<1 | 2>(1);
   const [isLoading] = useState(false);
@@ -287,22 +295,45 @@ const SendHome = (props: IToSendHomeParamsType) => {
     }
   }, [checkCanNext]);
 
-  //when finish send upDate balance
-
-  const previewParamsWithoutFee = useMemo(
-    () =>
-      ({
-        sendType,
-        assetInfo,
-        toInfo: {
-          ...selectedToContact,
-          address: getEntireDIDAelfAddress(selectedToContact.address, undefined, assetInfo.chainId),
-        },
-        transactionFee: '0',
-        sendNumber,
-      } as IToSendPreviewParamsType),
-    [assetInfo, selectedToContact, sendNumber, sendType],
+  const dealWithQRCode = useCallback(
+    (result: string) => {
+      const invalidQRCode = (text = 'Invalid QR code') => {
+        CommonToast.fail(t(text));
+      };
+      if (!result) return invalidQRCode();
+      let parseResult: Array<string> = [];
+      try {
+        parseResult = JSON.parse(result);
+      } catch (e) {
+        return invalidQRCode();
+      }
+      const [, , , address, chainId] = parseResult;
+      if (!isValidAddress(address)) {
+        return invalidQRCode('Invalid address');
+      }
+      if (!isValidChainId(chainId)) {
+        return invalidQRCode('Invalid chainId');
+      }
+      setSelectedToContact({ address, name: '' });
+    },
+    [isValidAddress, isValidChainId, t],
   );
+
+  // notice: since current code remove the use of previewParamsWithoutFee, it is now commented out
+  // const previewParamsWithoutFee = useMemo(
+  //   () =>
+  //     ({
+  //       sendType,
+  //       assetInfo,
+  //       toInfo: {
+  //         ...selectedToContact,
+  //         address: getEntireDIDAelfAddress(selectedToContact.address, undefined, assetInfo.chainId),
+  //       },
+  //       transactionFee: '0',
+  //       sendNumber,
+  //     } as IToSendPreviewParamsType),
+  //   [assetInfo, selectedToContact, sendNumber, sendType],
+  // );
 
   const checkCanPreview = useCallback(async () => {
     setErrorMessage([]);
@@ -465,8 +496,22 @@ const SendHome = (props: IToSendHomeParamsType) => {
             onPress={async () => {
               if (selectedToContact?.address) return showDialog('clearAddress');
               if (!(await qrScanPermissionAndToast())) return;
-
-              // navigationService.navigate('QrScanner', { fromSendPage: true });
+              navigateForResult<ScanQRCodeResult, ScanQRCodeProps>(
+                PortkeyEntries.SCAN_QR_CODE,
+                {
+                  params: { useScanQRPath: true },
+                },
+                result => {
+                  console.log('scan qr code result', result);
+                  const { data } = result;
+                  const uri = data?.uri;
+                  if (!uri) {
+                    CommonToast.fail(t('Invalid QR code'));
+                    return;
+                  }
+                  dealWithQRCode(uri);
+                },
+              );
             }}>
             <CommonSvg icon="scan" size={pTd(17.5)} color={defaultColors.font2} iconStyle={styles.iconStyle} />
           </TouchableOpacity>
