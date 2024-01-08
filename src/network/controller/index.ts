@@ -443,6 +443,7 @@ export class NetworkControllerEntity {
    * Read addresses from user's contract info.
    */
   getContractInfo = async (config: GetContractAddressesParams = {}) => {
+    // TODO: fix filter options issue
     const { keyword, page = 1, size = MAX_PAGE_LIMIT, modificationTime = Date.now() } = config || {};
     const res = await this.realExecute<GetContractListApiType>(
       await this.parseUrl(APIPaths.READ_CONTRACTS_ADDRESS),
