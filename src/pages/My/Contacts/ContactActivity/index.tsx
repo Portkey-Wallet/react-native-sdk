@@ -75,9 +75,11 @@ const ContactActivity = ({ address, chainId, contactName, avatar }: ParamsType) 
       if (isFetching) return;
       const newParams = {
         ...params,
-        caAddressInfos: Object.entries(multiCaAddresses).map(it => {
-          return { chainId: it[0], caAddress: it[1] };
-        }),
+        caAddressInfos: Object.entries(multiCaAddresses)
+          .map(it => {
+            return { chainId: it[0], caAddress: it[1] };
+          })
+          .filter(it => it.chainId === chainId),
         skipCount: skipActivityNumber,
       };
 
@@ -95,7 +97,7 @@ const ContactActivity = ({ address, chainId, contactName, avatar }: ParamsType) 
       setTotalCount(result.totalRecordCount);
       setIsFetching(false);
     },
-    [activityList, isFetching, params],
+    [activityList, chainId, isFetching, params],
   );
 
   const copyAddress = useCallback(

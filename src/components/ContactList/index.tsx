@@ -2,7 +2,6 @@ import React from 'react';
 import { View } from 'react-native';
 import { FontStyles } from 'assets/theme/styles';
 import { TextL } from 'components/CommonText';
-import { useContact } from 'model/hooks/contact';
 import { ContactItemType } from 'packages/im';
 import { ContactIndexType } from 'packages/types/types-ca/contact';
 import { ViewStyleType } from 'types/styles';
@@ -10,6 +9,7 @@ import ContactFlashList from './ContactFlashList';
 import { styles as contactListStyles } from './style';
 import { styles as contactItemStyles } from 'components/ContactItem';
 interface ContactsListProps {
+  contactData: ContactItemType[];
   justChatContact?: boolean;
   isIndexBarShow?: boolean;
   isSearchShow?: boolean; // blocked because of massive errors
@@ -20,8 +20,13 @@ interface ContactsListProps {
   style?: ViewStyleType;
   ListFooterComponent?: JSX.Element;
 }
-const ContactsList: React.FC<ContactsListProps> = ({ renderContactItem, itemHeight, style, ListFooterComponent }) => {
-  const { items: flashListData } = useContact();
+const ContactsList: React.FC<ContactsListProps> = ({
+  renderContactItem,
+  itemHeight,
+  style,
+  ListFooterComponent,
+  contactData,
+}) => {
   // const navToChatDetails = useJumpToChatDetails();
 
   // const isShowChat = useIsChatShow();
@@ -45,8 +50,8 @@ const ContactsList: React.FC<ContactsListProps> = ({ renderContactItem, itemHeig
   return (
     <View style={[contactListStyles.listWrap, style]}>
       <ContactFlashList
-        dataArray={flashListData}
-        contactIndexList={[{ index: 'A', contacts: flashListData }]}
+        dataArray={contactData}
+        contactIndexList={[{ index: 'A', contacts: contactData }]}
         sectionHeight={contactListStyles.sectionIndex.height}
         itemHeight={itemHeight || contactItemStyles.itemWrap.height}
         renderContactIndex={_renderSection}
