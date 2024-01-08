@@ -2,6 +2,7 @@ import { ChainType } from '@portkey/provider-types';
 import { ELF_DECIMAL } from 'packages/constants/constants-ca/activity';
 import { ELF_SYMBOL } from 'packages/constants/constants-ca/assets';
 import { ZERO } from 'packages/constants/misc';
+import { GuardiansApprovedType } from 'packages/types/types-ca/routeParams';
 import { BaseToken } from 'packages/types/types-eoa/token';
 import { getChainIdByAddress } from 'packages/utils';
 import { getChainNumber } from 'packages/utils/aelf';
@@ -73,6 +74,7 @@ interface CrossChainTransferParams extends CrossChainTransferParamsType {
   contract: ContractBasic;
   caHash: string;
   crossDefaultFee: number;
+  guardiansApproved?: GuardiansApprovedType[];
 }
 const crossChainTransfer = async ({
   tokenInfo,
@@ -85,6 +87,7 @@ const crossChainTransfer = async ({
   contract,
   caHash,
   crossDefaultFee,
+  guardiansApproved,
 }: CrossChainTransferParams) => {
   let managerTransferResult;
   const issueChainId = await getTokenIssueChainId({ tokenContract, paramsOption: { symbol: tokenInfo.symbol } });
@@ -94,14 +97,16 @@ const crossChainTransfer = async ({
     console.log('first transaction:transfer to manager itself Amount', amount);
 
     managerTransferResult = await managerTransfer({
-      contract,
-      paramsOption: {
-        caHash,
+      caContract: contract,
+      tokenContractAddress: tokenInfo.address,
+      caHash,
+      paramsArgs: {
         symbol: tokenInfo.symbol,
         to: managerAddress,
         amount,
         memo,
       },
+      guardiansApproved,
     });
     if (managerTransferResult.error) throw managerTransferResult.error;
 

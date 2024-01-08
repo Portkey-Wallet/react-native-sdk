@@ -4,6 +4,7 @@ import { getUnlockedWallet } from 'model/wallet';
 import { NetworkController } from 'network/controller';
 import { FetchAccountNftCollectionItemListResult, ITokenItemResponse, IUserTokenItem } from 'network/dto/query';
 import { useCallback, useEffect, useState } from 'react';
+import { CheckTransactionFeeResult } from 'network/dto/transaction';
 
 // @deprecated - use useAccountTokenBalanceList instead
 export const useTokenPrices = (tokenList: string[] = []) => {
@@ -98,5 +99,28 @@ export const useSearchTokenList = () => {
   return {
     tokenList,
     updateTokensList,
+  };
+};
+
+export const useGetTxFee = (targetChainId?: string) => {
+  const [txFee, setTxFee] = useState<CheckTransactionFeeResult>();
+  useEffectOnce(async () => {
+    await updateTxFee();
+  });
+  const updateTxFee = async () => {
+    const {
+      caInfo: { caHash },
+      originChainId,
+    } = await getUnlockedWallet();
+    const chainId = targetChainId || originChainId;
+    if (!caHash) return;
+    const result = await NetworkController.getTransactionFee({
+      chainIds: [chainId],
+    });
+    result && setTxFee(result);
+  };
+  return {
+    txFee,
+    updateTxFee,
   };
 };

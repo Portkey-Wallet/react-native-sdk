@@ -154,7 +154,7 @@ export default function SelectContact(props: SelectContactProps) {
     userContactList,
   ]);
 
-  return <RNTabView tabs={tabList} defaultTab={'Recents'} />;
+  return useMemo(() => <RNTabView tabs={tabList} defaultTab={'Recents'} />, [tabList]);
 }
 
 const styles = StyleSheet.create({

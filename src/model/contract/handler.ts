@@ -77,7 +77,7 @@ export const getTokenContract = async (targetChainId?: string): Promise<Contract
 };
 
 /**
- * get a basic contract instance for CA contract, which can be used to call contract method.
+ * get a basic contract instance for CA c, which can be used to call contract method.
  * @param allowTemplateWallet if true, a fake wallet will be used to create the contract instance, which can only be used on VIEW method.
  * @returns Contract Basic
  */

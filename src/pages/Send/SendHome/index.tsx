@@ -84,7 +84,7 @@ const SendHome = (props: IToSendHomeParamsType) => {
   const [sendNumber, setSendNumber] = useState<string>(''); // tokenNumber  like 100
   const debounceSendNumber = useDebounce(sendNumber, 500);
   const [, setTransactionFee] = useState<string>('0'); // like 1.2ELF
-  const { navigateForResult } = useBaseContainer({ entryName: PortkeyEntries.SEND_TOKEN_HOME_ENTRY });
+  const { navigateTo, navigateForResult } = useBaseContainer({ entryName: PortkeyEntries.SEND_TOKEN_HOME_ENTRY });
 
   const [step, setStep] = useState<1 | 2>(1);
   const [isLoading] = useState(false);
@@ -458,12 +458,19 @@ const SendHome = (props: IToSendHomeParamsType) => {
     // TODO : getTransactionFee and check the balance
     const result = await checkCanPreview();
     if (!result?.status) return;
-
-    // navigationService.navigate('SendPreview', {
-    //   ...previewParamsWithoutFee,
-    //   transactionFee: result?.fee || '0',
-    // });
-  }, [checkCanPreview]);
+    navigateTo(PortkeyEntries.SEND_TOKEN_CONFIRM_ENTRY, {
+      params: {
+        sendType,
+        assetInfo,
+        toInfo: {
+          ...selectedToContact,
+          address: getEntireDIDAelfAddress(selectedToContact.address, undefined, assetInfo.chainId),
+        },
+        transactionFee: result?.fee || '0',
+        sendNumber,
+      },
+    });
+  }, [assetInfo, checkCanPreview, navigateTo, selectedToContact, sendNumber, sendType]);
 
   const ButtonUI = useMemo(() => {
     return (

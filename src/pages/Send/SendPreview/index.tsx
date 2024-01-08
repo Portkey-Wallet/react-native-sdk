@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Text, View, StyleSheet, ScrollView } from 'react-native';
 import PageContainer from 'components/PageContainer';
 import { defaultColors } from 'assets/theme';
@@ -6,93 +6,83 @@ import { pTd } from 'utils/unit';
 import { TextM, TextS, TextL } from 'components/CommonText';
 import CommonButton from 'components/CommonButton';
 import ActionSheet from 'components/ActionSheet';
-import { addressFormat, formatChainInfoToShow, formatStr2EllipsisStr } from '@portkey-wallet/utils';
-import { isCrossChain } from '@portkey-wallet/utils/aelf';
-import { useLanguage } from 'i18n/hooks';
-import { useAppCommonDispatch } from '@portkey-wallet/hooks';
-import GStyles from 'assets/theme/GStyles';
+import { ChainId } from '@portkey/provider-types';
 import fonts from 'assets/theme/fonts';
-import { getContractBasic } from '@portkey-wallet/contracts/utils';
-import { useCurrentChain, useDefaultToken } from '@portkey-wallet/hooks/hooks-ca/chainList';
-import { usePin } from 'hooks/store';
-import { useCaAddressInfoList, useWallet } from '@portkey-wallet/hooks/hooks-ca/wallet';
-import { getManagerAccount } from 'utils/redux';
+import GStyles from 'assets/theme/GStyles';
+import { FontStyles } from 'assets/theme/styles';
+import CommonAvatar from 'components/CommonAvatar';
+import CommonToast from 'components/CommonToast';
+import Loading from 'components/Loading';
+import { useCheckTransferLimitWithJump } from 'components/WalletSecurityAccelerate/hook';
+import { useLanguage } from 'i18n/hooks';
+import { ZERO } from 'packages/constants/misc';
+import { useAppCommonDispatch } from 'packages/hooks';
+import { addFailedActivity } from 'packages/store/store-ca/activity/slice';
+import { IToSendPreviewParamsType } from 'packages/types/types-ca/routeParams';
+import { BaseToken } from 'packages/types/types-eoa/token';
+import { sleep, formatChainInfoToShow, formatStr2EllipsisStr, addressFormat } from 'packages/utils';
+import { isCrossChain } from 'packages/utils/aelf';
+import { timesDecimals, formatAmountShow, unitConverter } from 'packages/utils/converter';
 import crossChainTransfer, {
   CrossChainTransferIntervalParams,
   intervalCrossChainTransfer,
 } from 'utils/transfer/crossChainTransfer';
-import { useCurrentNetworkInfo, useIsTestnet } from '@portkey-wallet/hooks/hooks-ca/network';
-import { useCaAddresses, useCurrentWalletInfo } from '@portkey-wallet/hooks/hooks-ca/wallet';
-import { formatAmountShow, timesDecimals, unitConverter } from '@portkey-wallet/utils/converter';
 import sameChainTransfer from 'utils/transfer/sameChainTransfer';
-import { addFailedActivity, removeFailedActivity } from '@portkey-wallet/store/store-ca/activity/slice';
-import { useRouterEffectParams } from '@portkey-wallet/hooks/useRouterParams';
-import CommonToast from 'components/CommonToast';
-import navigationService from 'utils/navigationService';
-import Loading from 'components/Loading';
-import { IToSendPreviewParamsType } from '@portkey-wallet/types/types-ca/routeParams';
-import { BaseToken } from '@portkey-wallet/types/types-ca/token';
-import { ContractBasic } from '@portkey-wallet/contracts/utils/ContractBasic';
-import { ZERO } from '@portkey-wallet/constants/misc';
-import {
-  clearNftCollection,
-  fetchNFTCollectionsAsync,
-  fetchTokenListAsync,
-} from '@portkey-wallet/store/store-ca/assets/slice';
-import { sleep } from '@portkey-wallet/utils';
-import { FontStyles } from 'assets/theme/styles';
-import { ChainId } from '@portkey-wallet/types';
-import { useGetCurrentAccountTokenPrice, useIsTokenHasPrice } from '@portkey-wallet/hooks/hooks-ca/useTokensPrice';
-import useEffectOnce from 'hooks/useEffectOnce';
-import { useFetchTxFee, useGetTxFee } from '@portkey-wallet/hooks/hooks-ca/useTxFee';
-import CommonAvatar from 'components/CommonAvatar';
-import { useCheckTransferLimitWithJump } from 'hooks/security';
-import { useFocusEffect } from '@react-navigation/native';
+import { useCurrentNetworkType } from 'model/hooks/network';
+import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
+import { useUnlockedWallet } from 'model/wallet';
+import { useGetTxFee, useTokenPrices } from 'model/hooks/balance';
+import { getContractInstanceOnParticularChain, getTokenContract } from 'model/contract/handler';
+import { ContractBasic } from 'packages/utils/contract';
+import useBaseContainer from 'model/container/UseBaseContainer';
+import { PortkeyEntries } from 'config/entries';
 
-const SendHome: React.FC = () => {
+const SendPreview = (props: IToSendPreviewParamsType) => {
+  const { navigateTo } = useBaseContainer({ entryName: PortkeyEntries.SEND_TOKEN_CONFIRM_ENTRY });
   const { t } = useLanguage();
-  const isTestnet = useIsTestnet();
-  const defaultToken = useDefaultToken();
+  const networkType = useCurrentNetworkType();
+  const isTestnet = useMemo(() => networkType !== 'MAIN', [networkType]);
+  const { sendType, assetInfo, toInfo, transactionFee, sendNumber, guardiansApproved, isAutoSend = false } = props;
 
-  const routerParams = useRouterEffectParams<IToSendPreviewParamsType>();
-  const {
-    sendType,
-    assetInfo,
-    toInfo,
-    transactionFee,
-    sendNumber,
-    successNavigateName,
-    guardiansApproved,
-    isAutoSend = false,
-  } = routerParams;
+  const fromChainId = useMemo(() => assetInfo?.chainId || 'AELF', [assetInfo]);
+
+  const { defaultToken } = useCommonNetworkInfo(fromChainId);
 
   const isApproved = useMemo(() => guardiansApproved && guardiansApproved.length > 0, [guardiansApproved]);
 
-  useFetchTxFee();
-  const { crossChain: crossDefaultFee } = useGetTxFee(assetInfo.chainId);
+  const tokenList = useMemo(() => [assetInfo.symbol], [assetInfo]);
+  const tokenPriceList = useTokenPrices(tokenList);
 
-  const dispatch = useAppCommonDispatch();
-  const pin = usePin();
-  const chainInfo = useCurrentChain(assetInfo.chainId);
-  const caAddresses = useCaAddresses();
+  const { txFee } = useGetTxFee(fromChainId);
+  const { crossChain: crossDefaultFee } = useMemo(
+    () => txFee?.find(it => it.chainId === fromChainId)?.transactionFee || { crossChain: 0 },
+    [fromChainId, txFee],
+  );
+  const { wallet } = useUnlockedWallet();
+  const walletName = useMemo(() => wallet?.name, [wallet]);
+
+  const tokenPrice = useMemo(
+    () => tokenPriceList.tokenPrices.find(it => it.symbol === assetInfo.symbol)?.priceInUsd ?? '0',
+    [tokenPriceList, assetInfo.symbol],
+  );
 
   const [isLoading] = useState(false);
-  const currentNetwork = useCurrentNetworkInfo();
-  const caAddressInfos = useCaAddressInfoList();
-  const wallet = useCurrentWalletInfo();
-  const { walletName } = useWallet();
+  // const currentNetwork = useCurrentNetworkInfo();
   const contractRef = useRef<ContractBasic>();
   const tokenContractRef = useRef<ContractBasic>();
-  const [tokenPriceObject, getTokenPrice] = useGetCurrentAccountTokenPrice();
-  const isTokenHasPrice = useIsTokenHasPrice(assetInfo.symbol);
 
-  const isCrossChainTransfer = isCrossChain(toInfo.address, assetInfo.chainId);
+  const isTokenHasPrice = useMemo(
+    () => tokenPriceList.tokenPrices.some(it => it.symbol === assetInfo.symbol),
+    [tokenPriceList, assetInfo.symbol],
+  );
+
+  const isCrossChainTransfer = isCrossChain(toInfo.address, fromChainId);
   const checkTransferLimitWithJump = useCheckTransferLimitWithJump();
 
   const showRetry = useCallback(
     (retryFunc: () => void) => {
       ActionSheet.alert({
-        title: t('Transaction failed ！'),
+        title: t('Transaction failed !'),
         buttons: [
           {
             title: t('Resend'),
@@ -113,61 +103,48 @@ const SendHome: React.FC = () => {
       decimals: assetInfo.decimals ?? 0,
       address: assetInfo.tokenContractAddress,
     };
-
-    if (!chainInfo || !pin) return;
-    const account = getManagerAccount(pin);
-    if (!account) return;
+    if (!wallet) throw new Error('unlocked wallet is null');
+    const {
+      caInfo: { caHash },
+    } = wallet;
 
     if (!contractRef.current) {
-      contractRef.current = await getContractBasic({
-        contractAddress: chainInfo.caContractAddress,
-        rpcUrl: chainInfo.endPoint,
-        account,
-      });
+      contractRef.current = await getContractInstanceOnParticularChain(fromChainId);
     }
 
     const contract = contractRef.current;
     const amount = timesDecimals(sendNumber, tokenInfo.decimals).toFixed();
 
     if (!isApproved) {
-      const checkTransferLimitResult = await checkTransferLimitWithJump({
-        caContract: contract,
-        symbol: tokenInfo.symbol,
-        decimals: tokenInfo.decimals,
-        amount: String(sendNumber),
-        chainId: chainInfo.chainId,
-        approveMultiLevelParams: {
-          successNavigate: {
-            name: 'SendPreview',
-            params: {
-              ...routerParams,
-              isAutoSend: true,
-            },
-          },
+      const checkTransferLimitResult = await checkTransferLimitWithJump(
+        {
+          symbol: tokenInfo.symbol,
+          decimals: tokenInfo.decimals,
+          amount: String(sendNumber),
+          chainId: fromChainId,
         },
-      });
+        fromChainId,
+      );
       if (!checkTransferLimitResult) return;
     }
 
     if (isCrossChainTransfer) {
       if (!tokenContractRef.current) {
-        tokenContractRef.current = await getContractBasic({
-          contractAddress: tokenInfo.address,
-          rpcUrl: chainInfo.endPoint,
-          account,
-        });
+        tokenContractRef.current = await getTokenContract(fromChainId);
       }
       const tokenContract = tokenContractRef.current;
+
+      if (!tokenContract || !contract) throw new Error('tokenContract or contract is null');
 
       const crossChainTransferResult = await crossChainTransfer({
         tokenContract,
         contract,
-        chainType: currentNetwork.walletType ?? 'aelf',
+        chainType: 'aelf',
         managerAddress: wallet.address,
         tokenInfo: { ...assetInfo, address: assetInfo.tokenContractAddress } as unknown as BaseToken,
-        caHash: wallet.caHash || '',
+        caHash: caHash || '',
         amount,
-        crossDefaultFee,
+        crossDefaultFee: typeof crossDefaultFee === 'string' ? Number(crossDefaultFee) : crossDefaultFee,
         toAddress: toInfo.address,
         guardiansApproved,
       });
@@ -181,7 +158,7 @@ const SendHome: React.FC = () => {
           ...assetInfo,
           address: assetInfo?.tokenContractAddress || assetInfo?.address,
         } as unknown as BaseToken,
-        caHash: wallet.caHash || '',
+        caHash: caHash || '',
         amount,
         toAddress: toInfo.address,
         guardiansApproved,
@@ -195,64 +172,33 @@ const SendHome: React.FC = () => {
 
     await sleep(1500);
 
-    if (sendType === 'nft') {
-      dispatch(clearNftCollection());
-      dispatch(fetchNFTCollectionsAsync({ caAddresses: caAddresses, caAddressInfos }));
-    } else {
-      dispatch(fetchTokenListAsync({ caAddresses: caAddresses, caAddressInfos }));
-    }
-    if (successNavigateName) {
-      navigationService.navigate(successNavigateName);
-    } else {
-      navigationService.navigate('Tab', { clearType: sendType + Math.random() });
-    }
+    navigateTo(PortkeyEntries.ASSETS_HOME_ENTRY);
     CommonToast.success('success');
   }, [
     assetInfo,
-    caAddressInfos,
-    caAddresses,
-    chainInfo,
     checkTransferLimitWithJump,
     crossDefaultFee,
-    currentNetwork.walletType,
-    dispatch,
+    fromChainId,
     guardiansApproved,
     isApproved,
     isCrossChainTransfer,
-    pin,
-    routerParams,
+    navigateTo,
     sendNumber,
-    sendType,
-    successNavigateName,
     toInfo.address,
-    wallet.address,
-    wallet.caHash,
+    wallet,
   ]);
 
   const retryCrossChain = useCallback(
     async (managerTransferTxId: string, data: CrossChainTransferIntervalParams) => {
-      const tokenInfo = {
-        symbol: assetInfo.symbol,
-        decimals: assetInfo.decimals ?? 0,
-        address: assetInfo.tokenContractAddress,
-      };
-      if (!chainInfo || !pin) return;
-      const account = getManagerAccount(pin);
-      if (!account) return;
-
       Loading.show();
       try {
         if (!tokenContractRef.current) {
-          tokenContractRef.current = await getContractBasic({
-            contractAddress: tokenInfo.address,
-            rpcUrl: chainInfo.endPoint,
-            account,
-          });
+          tokenContractRef.current = await getTokenContract(fromChainId);
         }
         const tokenContract = tokenContractRef.current;
         await intervalCrossChainTransfer(tokenContract, data);
-        dispatch(removeFailedActivity(managerTransferTxId));
-        navigationService.navigate('Tab');
+        // dispatch(removeFailedActivity(managerTransferTxId));
+        navigateTo(PortkeyEntries.ASSETS_HOME_ENTRY);
         CommonToast.success('success');
       } catch (error) {
         showRetry(() => {
@@ -261,7 +207,7 @@ const SendHome: React.FC = () => {
       }
       Loading.hide();
     },
-    [assetInfo.decimals, assetInfo.symbol, assetInfo.tokenContractAddress, chainInfo, dispatch, pin, showRetry],
+    [fromChainId, navigateTo, showRetry],
   );
 
   const onSend = useCallback(async () => {
@@ -275,12 +221,12 @@ const SendHome: React.FC = () => {
         CommonToast.failError(error.error);
         return;
       } else if (error.type === 'crossChainTransfer') {
-        dispatch(
-          addFailedActivity({
-            transactionId: error.managerTransferTxId,
-            params: error.data,
-          }),
-        );
+        // dispatch(
+        //   addFailedActivity({
+        //     transactionId: error.managerTransferTxId,
+        //     params: error.data,
+        //   }),
+        // );
         showRetry(() => {
           retryCrossChain(error.managerTransferTxId, error.data);
         });
@@ -290,24 +236,17 @@ const SendHome: React.FC = () => {
       }
     }
     Loading.hide();
-  }, [dispatch, retryCrossChain, showRetry, transfer]);
+  }, [retryCrossChain, showRetry, transfer]);
 
-  useFocusEffect(
-    useCallback(() => {
-      if (!isAutoSend) return;
-      onSend();
-    }, [isAutoSend, onSend]),
-  );
+  useEffect(() => {
+    if (!isAutoSend) return;
+    onSend();
+  }, [isAutoSend, onSend]);
 
   const networkInfoShow = (address: string) => {
     const chainId = address.split('_')[2] as ChainId;
     return formatChainInfoToShow(chainId);
   };
-
-  useEffectOnce(() => {
-    getTokenPrice(assetInfo.symbol);
-    getTokenPrice(defaultToken.symbol);
-  });
 
   return (
     <PageContainer
@@ -334,7 +273,7 @@ const SendHome: React.FC = () => {
           </Text>
           {!isTestnet && isTokenHasPrice && (
             <TextM style={styles.tokenUSD}>{`-$ ${formatAmountShow(
-              ZERO.plus(sendNumber).multipliedBy(tokenPriceObject[assetInfo.symbol]),
+              ZERO.plus(sendNumber).multipliedBy(tokenPrice),
               2,
             )}`}</TextM>
           )}
@@ -351,7 +290,7 @@ const SendHome: React.FC = () => {
             <View style={[styles.flexSpaceBetween]}>
               <TextM style={styles.lightGrayFontColor} />
               <TextS style={styles.lightGrayFontColor}>
-                {formatStr2EllipsisStr(addressFormat(wallet?.[assetInfo?.chainId]?.caAddress, assetInfo.chainId))}
+                {formatStr2EllipsisStr(addressFormat(wallet?.caInfo?.caAddress, assetInfo.chainId))}
               </TextS>
             </View>
           </View>
@@ -393,7 +332,7 @@ const SendHome: React.FC = () => {
               <View>
                 <TextM />
                 <TextS style={[styles.blackFontColor, styles.lightGrayFontColor, GStyles.alignEnd]}>{`$ ${unitConverter(
-                  ZERO.plus(transactionFee).multipliedBy(tokenPriceObject[defaultToken.symbol]),
+                  ZERO.plus(transactionFee).multipliedBy(tokenPrice),
                 )}`}</TextS>
               </View>
             )}
@@ -417,9 +356,7 @@ const SendHome: React.FC = () => {
                           styles.blackFontColor,
                           styles.lightGrayFontColor,
                           GStyles.alignEnd,
-                        ]}>{`$ ${unitConverter(
-                        ZERO.plus(crossDefaultFee).multipliedBy(tokenPriceObject[defaultToken.symbol]),
-                      )}`}</TextS>
+                        ]}>{`$ ${unitConverter(ZERO.plus(crossDefaultFee).multipliedBy(tokenPrice))}`}</TextS>
                     ) : (
                       <TextM />
                     )}
@@ -446,12 +383,7 @@ const SendHome: React.FC = () => {
                     <TextS style={[styles.blackFontColor, styles.lightGrayFontColor, GStyles.alignEnd]}>{`$ ${
                       ZERO.plus(sendNumber).isLessThanOrEqualTo(ZERO.plus(crossDefaultFee))
                         ? '0'
-                        : formatAmountShow(
-                            ZERO.plus(sendNumber)
-                              .minus(ZERO.plus(crossDefaultFee))
-                              .times(tokenPriceObject[defaultToken.symbol]),
-                            2,
-                          )
+                        : formatAmountShow(ZERO.plus(sendNumber).minus(ZERO.plus(crossDefaultFee)).times(tokenPrice), 2)
                     }`}</TextS>
                   ) : (
                     <TextM />
@@ -470,7 +402,7 @@ const SendHome: React.FC = () => {
   );
 };
 
-export default memo(SendHome);
+export default memo(SendPreview);
 
 export const styles = StyleSheet.create({
   pageWrap: {
