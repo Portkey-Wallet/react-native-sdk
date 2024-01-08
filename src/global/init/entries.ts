@@ -34,6 +34,7 @@ import ContactActivity from 'pages/My/Contacts/ContactActivity';
 import TestEntry from 'apiTest/TestEntry';
 import { PortkeyTestEntries } from 'apiTest';
 import SendHome from 'pages/Send/SendHome';
+import SendPreview from 'pages/Send/SendPreview';
 
 type AcceptableComponentType = ComponentProvider;
 
@@ -84,6 +85,7 @@ const initEntries = () => {
 
   // send service
   entryConfig.set(PortkeyEntries.SEND_TOKEN_HOME_ENTRY, () => SendHome);
+  entryConfig.set(PortkeyEntries.SEND_TOKEN_CONFIRM_ENTRY, () => SendPreview);
 
   // payment security module
   entryConfig.set(PortkeyEntries.PAYMENT_SECURITY_HOME_ENTRY, () => PaymentSecurityList);
@@ -110,5 +112,6 @@ export const LaunchModeSet = new Map<string, string>();
 const registerLaunchMode = () => {
   LaunchModeSet.set(PortkeyEntries.ACCOUNT_SETTING_ENTRY, LaunchMode.SINGLE_TASK);
   LaunchModeSet.set(PortkeyEntries.PAYMENT_SECURITY_HOME_ENTRY, LaunchMode.SINGLE_TASK);
+  LaunchModeSet.set(PortkeyEntries.ASSETS_HOME_ENTRY, LaunchMode.SINGLE_TASK);
 };
 export { initEntries };

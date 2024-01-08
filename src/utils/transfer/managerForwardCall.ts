@@ -9,6 +9,7 @@
  */
 
 import { SendOptions } from 'packages/contracts/types';
+import { GuardiansApprovedType } from 'packages/types/types-ca/routeParams';
 import { ContractBasic } from 'packages/utils/contract';
 
 type ParamsOptionArgs = any;
@@ -18,13 +19,7 @@ interface ParamsOption {
   contractAddress: string; // Contract address that needs to be traded
   methodName: string; // 'Transfer',
   args: ParamsOptionArgs;
-}
-
-interface ParamsOption {
-  caHash: string;
-  contractAddress: string; // Contract address that needs to be traded
-  methodName: string; // 'Transfer',
-  args: ParamsOptionArgs;
+  guardiansApproved?: GuardiansApprovedType[];
 }
 
 export interface ManagerForwardCallParams {
