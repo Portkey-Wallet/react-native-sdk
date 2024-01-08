@@ -20,6 +20,7 @@ import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
 import { useCurrentWalletInfo } from 'components/WalletSecurityAccelerate/hook';
 import { request } from 'packages/api/api-did';
 import { useCallback } from 'react';
+import AElf from 'aelf-sdk';
 
 export interface Verifier {
   id: string;
@@ -56,12 +57,31 @@ export type FeeResponse = {
   [symbol: string]: string;
 };
 
+export const getTokenContract = async (targetChainId?: string): Promise<ContractBasic> => {
+  const tokenContractName = 'AElf.ContractNames.Token';
+  const { privateKey, originChainId } = (await getUnlockedWallet()) || {};
+  const chainId = targetChainId || originChainId || (await PortkeyConfig.currChainId());
+  const networkInfo = await findParticularNetworkByChainId(chainId);
+  const { endPoint: peerUrl } = networkInfo;
+  const wallet = AElfWeb3SDK.getWalletByPrivateKey(privateKey);
+  const aelf = new AElf(new AElf.providers.HttpProvider(peerUrl));
+  // first, we need to get the genesis contract address, since the only way to get any contract address is to call the genesis contract.
+  const chainStatus = await aelf.chain.getChainStatus();
+  const { GenesisContractAddress } = chainStatus || {};
+  if (!GenesisContractAddress) throw new Error('GenesisContractAddress is invalid');
+  // one particular method on the genesis contract could provide any contract address by its name.
+  const zeroContract = await aelf.chain.contractAt(GenesisContractAddress, wallet);
+  const tokenContractAddress = await zeroContract.GetContractAddressByName.call(AElf.utils.sha256(tokenContractName));
+  // finally, we can get the token contract instance by its contractAddress, it can also used on other contract.
+  return await aelf.chain.contractAt(tokenContractAddress, wallet);
+};
+
 /**
- * get a basic contract instance, which can be used to call contract method.
+ * get a basic contract instance for CA contract, which can be used to call contract method.
  * @param allowTemplateWallet if true, a fake wallet will be used to create the contract instance, which can only be used on VIEW method.
  * @returns Contract Basic
  */
-export const getContractInstance = async (allowTemplateWallet = false): Promise<ContractBasic> => {
+export const getCAContractInstance = async (allowTemplateWallet = false): Promise<ContractBasic> => {
   try {
     let privateKey = '';
     if (allowTemplateWallet && !(await isWalletUnlocked())) {
@@ -94,7 +114,7 @@ export const getContractInstance = async (allowTemplateWallet = false): Promise<
  */
 export const callAddManagerMethod = async (extraData: string, managerAddress: string) => {
   if (!(await isWalletUnlocked())) throw new Error('wallet is not unlocked');
-  const contractInstance = await getContractInstance();
+  const contractInstance = await getCAContractInstance();
   const { address } = (await getUnlockedWallet()) || {};
   const {
     caInfo: { caHash },
@@ -126,7 +146,7 @@ export const getVerifierData = async (): Promise<{
       return `GetVerifierServers_${chainId}_${endPoint}`;
     },
     getValueIfNonExist: async () => {
-      const contractInstance = await getContractInstance(true);
+      const contractInstance = await getCAContractInstance(true);
       const result = await contractInstance.callViewMethod('GetVerifierServers', '');
       if (!result?.data) throw new Error('getOrReadCachedVerifierData: result is invalid');
       return result;
@@ -222,7 +242,7 @@ export const callRemoveGuardianMethod = async (
   particularGuardian: GuardianConfig,
   guardianList: Array<ApprovedGuardianInfo>,
 ) => {
-  const contractInstance = await getContractInstance();
+  const contractInstance = await getCAContractInstance();
   const {
     address,
     caInfo: { caHash },
@@ -245,7 +265,7 @@ export const callEditGuardianMethod = async (
   pastGuardian: GuardianConfig,
   guardianList: Array<ApprovedGuardianInfo>,
 ) => {
-  const contractInstance = await getContractInstance();
+  const contractInstance = await getCAContractInstance();
   const {
     address,
     caInfo: { caHash },
@@ -264,7 +284,7 @@ export const callEditGuardianMethod = async (
  * @see {@link attemptAccountCheck} for more details.
  */
 export const callCancelLoginGuardianMethod = async (particularGuardian: GuardianConfig) => {
-  const contractInstance = await getContractInstance();
+  const contractInstance = await getCAContractInstance();
   const { guardianIdentifier } = handleVerificationDoc(particularGuardian.verifiedDoc?.verificationDoc ?? '');
   const {
     address,
@@ -364,7 +384,7 @@ const findParticularNetworkByChainId = async (chainId: string): Promise<AElfChai
  * @param amount the token amount you want to get, default is 100
  */
 export const callFaucetMethod = async (amount = 100) => {
-  const contractInstance = await getContractInstance();
+  const contractInstance = await getCAContractInstance();
   if ((await getCurrentNetworkType()) === 'MAIN') {
     throw new Error('faucet is not supported on mainnet');
   }
@@ -409,7 +429,7 @@ export const checkManagerSyncState = async (chainId: string): Promise<boolean> =
  * hope you know what you are doing.
  */
 export const callRemoveManagerMethod = async () => {
-  const contractInstance = await getContractInstance();
+  const contractInstance = await getCAContractInstance();
   const {
     address,
     caInfo: { caHash },

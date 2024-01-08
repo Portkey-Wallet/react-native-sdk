@@ -31,14 +31,13 @@ import { ZERO } from 'packages/constants/misc';
 import { IToSendHomeParamsType } from 'packages/types/types-ca/routeParams';
 import { getAddressChainId, isSameAddresses } from 'packages/utils';
 import { getEntireDIDAelfAddress, isCrossChain, isAllowAelfAddress, getAelfAddress } from 'packages/utils/aelf';
-import { getELFChainBalance } from 'packages/utils/balance';
 import { divDecimals, timesDecimals } from 'packages/utils/converter';
 import { useChainsNetworkInfo } from 'model/hooks/network';
 import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
 import { useTransactionFee } from 'model/hooks/transaction';
 import { useQrScanPermissionAndToast } from 'model/hooks/device';
-import { checkManagerSyncState, getContractInstanceOnParticularChain, useGetTransferFee } from 'model/contract/handler';
-import { getUnlockedWallet, useUnlockedWallet } from 'model/wallet';
+import { checkManagerSyncState, useGetTransferFee } from 'model/contract/handler';
+import { useUnlockedWallet } from 'model/wallet';
 import { useSecuritySafeCheckAndToast, useCheckTransferLimitWithJump } from 'components/WalletSecurityAccelerate/hook';
 import useBaseContainer from 'model/container/UseBaseContainer';
 import { PortkeyEntries } from 'config/entries';
@@ -167,18 +166,20 @@ const SendHome = (props: IToSendHomeParamsType) => {
   ]);
 
   const initBalance = useCallback(async () => {
-    const {
-      caInfo: { caAddress },
-    } = await getUnlockedWallet();
-    if (!assetInfo || !caAddress) return;
-    try {
-      const tokenContract = await getContractInstanceOnParticularChain(fromChainId);
-      const _balance = await getELFChainBalance(tokenContract, assetInfo.symbol, caAddress);
-      setBalance(_balance);
-    } catch (error) {
-      console.log('initBalance', error);
-    }
-  }, [assetInfo, fromChainId]);
+    // TODO: the result is incorrect, emmmmm.....
+    // const {
+    //   caInfo: { caAddress },
+    // } = await getUnlockedWallet();
+    // if (!assetInfo || !caAddress) return;
+    // try {
+    //   const tokenContract = await getTokenContract(fromChainId);
+    //   const _balance = await getELFChainBalance(tokenContract, assetInfo.symbol, caAddress);
+    //   setBalance(_balance);
+    // } catch (error) {
+    //   console.log('initBalance', error);
+    // }
+    setBalance(assetInfo?.balance || '0');
+  }, [assetInfo]);
 
   useEffectOnce(() => {
     initBalance();
