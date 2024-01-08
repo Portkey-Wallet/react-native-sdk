@@ -24,9 +24,13 @@ import AssetsHome from 'pages/Assets/Home/AssetsHome';
 import PaymentSecurityList from 'pages/My/WalletSecurity/PaymentSecurity/PaymentSecurityHome';
 import PaymentSecurityDetail from 'pages/My/WalletSecurity/PaymentSecurity/PaymentSecurityDetail';
 import PaymentSecurityEdit from 'pages/My/WalletSecurity/PaymentSecurity/PaymentSecurityEdit';
+import TokenDetail from 'pages/Token/TokenDetail';
+import NFTDetail from 'pages/NFT/NFTDetail';
 import { wrapEntry } from 'utils/commonUtil';
 import ActivityListPage from 'pages/Activity/ActivityListPage';
 import ActivityDetail from 'pages/Activity/ActivityDetail';
+import ContactDetail from 'pages/My/Contacts/ContactDetail';
+import ContactActivity from 'pages/My/Contacts/ContactActivity';
 import TestEntry from 'apiTest/TestEntry';
 import { PortkeyTestEntries } from 'apiTest';
 
@@ -81,6 +85,12 @@ const initEntries = () => {
   entryConfig.set(PortkeyEntries.PAYMENT_SECURITY_HOME_ENTRY, () => PaymentSecurityList);
   entryConfig.set(PortkeyEntries.PAYMENT_SECURITY_DETAIL_ENTRY, () => PaymentSecurityDetail);
   entryConfig.set(PortkeyEntries.PAYMENT_SECURITY_EDIT_ENTRY, () => PaymentSecurityEdit);
+
+  entryConfig.set(PortkeyEntries.TOKEN_DETAIL_ENTRY, () => TokenDetail);
+  entryConfig.set(PortkeyEntries.NFT_DETAIL_ENTRY, () => NFTDetail);
+
+  entryConfig.set(PortkeyEntries.CONTACT_DETAIL_ENTRY, () => ContactDetail);
+  entryConfig.set(PortkeyEntries.CONTACT_ACTIVITY_ENTRY, () => ContactActivity);
 
   for (const [key, value] of entryConfig) {
     AppRegistry.registerComponent(wrapEntry(key), value);
