@@ -43,6 +43,7 @@ import { useSecuritySafeCheckAndToast, useCheckTransferLimitWithJump } from 'com
 import useBaseContainer from 'model/container/UseBaseContainer';
 import { PortkeyEntries } from 'config/entries';
 import { ScanQRCodeProps, ScanQRCodeResult } from 'pages/QrScanner';
+import { isArray } from 'lodash';
 
 const SendHome = (props: IToSendHomeParamsType) => {
   const { sendType = 'token', toInfo, assetInfo } = props;
@@ -307,7 +308,9 @@ const SendHome = (props: IToSendHomeParamsType) => {
       } catch (e) {
         return invalidQRCode();
       }
-      const [, , , address, chainId] = parseResult;
+      if (!isArray(parseResult) || parseResult.length !== 9) return invalidQRCode();
+      // example: ["aelf","TESTNET","send","ELF_2YdkMPsjGdt2jC6ApptUQvG31WYCAtVpjgB4dM17R2edswSeAm_AELF","ELF","JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE","AELF",8,null]
+      const [, , , address, , , chainId] = parseResult;
       if (!isValidAddress(address)) {
         return invalidQRCode('Invalid address');
       }

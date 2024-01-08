@@ -24,7 +24,7 @@ export const useRecent = () => {
   });
   const loadMoreRecent = async (reset = false) => {
     const { skipCount, data: originData, totalRecordCount: pastTotalRecordCount } = recent;
-    if (originData.length >= pastTotalRecordCount) return;
+    if (pastTotalRecordCount > 0 && originData.length >= pastTotalRecordCount) return;
     const { multiCaAddresses } = await getUnlockedWallet({ getMultiCaAddresses: true });
     const result = await NetworkController.getRecentTransactionInfo({
       caAddressInfos: Object.entries(multiCaAddresses).map(([chainId, caAddress]) => ({
