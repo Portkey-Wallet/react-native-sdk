@@ -12,6 +12,8 @@ import { ChainId } from '@portkey/provider-types';
 import { addressFormat, formatStr2EllipsisStr, formatChainInfoToShow } from 'packages/utils';
 import { useCurrentNetworkType } from 'model/hooks/network';
 import { RecentContactItemType } from 'network/dto/query';
+import useBaseContainer from 'model/container/UseBaseContainer';
+import { PortkeyEntries } from 'config/entries';
 
 export interface ItemType {
   fromChainId?: ChainId;
@@ -22,6 +24,7 @@ export interface ItemType {
 
 const SendContactItem: React.FC<ItemType> = props => {
   const { isContacts, contact, fromChainId, onPress } = props;
+  const { navigateTo } = useBaseContainer();
 
   const currentNetwork = useCurrentNetworkType();
   const [collapsed, setCollapsed] = useState(true);
@@ -65,18 +68,17 @@ const SendContactItem: React.FC<ItemType> = props => {
               </TextS>
               <TouchableOpacity
                 style={[styles.contactActivity, styles.moreIconWrapStyle]}
-                onPress={
-                  () => {
-                    throw new Error('Function not implemented.');
-                  }
-                  // navigationService.navigate('ContactActivity', {
-                  //   address: ele.address,
-                  //   chainId: ele.chainId,
-                  //   contactName: contact.name || contact.caHolderInfo?.walletName || contact.imInfo?.name,
-                  //   fromChainId,
-                  //   avatar: contact.avatar,
-                  // })
-                }>
+                onPress={() => {
+                  navigateTo(PortkeyEntries.CONTACT_ACTIVITY_ENTRY, {
+                    params: {
+                      address: ele.address,
+                      chainId: ele.chainId,
+                      contactName: contact.name || contact.caHolderInfo?.walletName || contact.imInfo?.name,
+                      fromChainId,
+                      avatar: contact.avatar,
+                    },
+                  });
+                }}>
                 <CommonSvg icon="more-info" size={pTd(20)} />
               </TouchableOpacity>
             </TouchableOpacity>
@@ -91,18 +93,17 @@ const SendContactItem: React.FC<ItemType> = props => {
               <TouchableOpacity
                 hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
                 style={[styles.contactActivity, styles.moreIconWrapStyle]}
-                onPress={
-                  () => {
-                    throw new Error('Function not implemented.');
-                  }
-                  // navigationService.navigate('ContactActivity', {
-                  //   address: ele.address,
-                  //   chainId: ele.chainId,
-                  //   contactName: contact.name,
-                  //   fromChainId,
-                  //   avatar: contact.avatar,
-                  // })
-                }>
+                onPress={() => {
+                  navigateTo(PortkeyEntries.CONTACT_ACTIVITY_ENTRY, {
+                    params: {
+                      address: ele.address,
+                      chainId: ele.chainId,
+                      contactName: contact.name,
+                      fromChainId,
+                      avatar: contact.avatar,
+                    },
+                  });
+                }}>
                 <CommonSvg icon="more-info" size={pTd(20)} />
               </TouchableOpacity>
             </View>

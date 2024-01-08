@@ -108,7 +108,7 @@ export const NetworkTestCases: Array<TestCase> = [
     describe: 'get recent transaction address',
     run: async testContext => {
       const wallet = await getUnlockedWallet({ getMultiCaAddresses: true });
-      const it = await NetworkController.getRecentTransactionAddresses({
+      const it = await NetworkController.getRecentTransactionInfo({
         caAddressInfos: Object.entries(wallet.multiCaAddresses).map(([chainId, caAddress]) => ({
           chainId,
           caAddress,
@@ -121,10 +121,11 @@ export const NetworkTestCases: Array<TestCase> = [
   {
     describe: 'get contracts address',
     run: async testContext => {
-      const it = await NetworkController.getContractAddresses();
+      const it = await NetworkController.getContractInfo();
       testContext.assert(!!it, 'it should not be falsy');
       testContext.log(it, 'readContractsAddress result');
     },
+    useDetailsReport: true,
   },
   {
     describe: 'get account recent activities and check one activity info',

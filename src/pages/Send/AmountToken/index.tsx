@@ -1,24 +1,21 @@
-import React, { useMemo, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
-import { pTd } from 'utils/unit';
-import { parseInputChange } from '@portkey-wallet/utils/input';
-import { ZERO } from '@portkey-wallet/constants/misc';
+import React from 'react';
+import { Input } from '@rneui/base';
 import { defaultColors } from 'assets/theme';
 import GStyles from 'assets/theme/GStyles';
-import { Input } from '@rneui/themed';
-import { divDecimals, formatAmountShow } from '@portkey-wallet/utils/converter';
-import { useLanguage } from 'i18n/hooks';
-import CommonAvatar from 'components/CommonAvatar';
-import { IToSendAssetParamsType } from '@portkey-wallet/types/types-ca/routeParams';
-import { useSymbolImages } from '@portkey-wallet/hooks/hooks-ca/useToken';
 import { FontStyles } from 'assets/theme/styles';
+import CommonAvatar from 'components/CommonAvatar';
 import { TextM, TextS } from 'components/CommonText';
-
-import { useIsTestnet } from '@portkey-wallet/hooks/hooks-ca/network';
-import { useGetCurrentAccountTokenPrice, useIsTokenHasPrice } from '@portkey-wallet/hooks/hooks-ca/useTokensPrice';
-import useEffectOnce from 'hooks/useEffectOnce';
-import { useDefaultToken } from '@portkey-wallet/hooks/hooks-ca/chainList';
-import { useInputFocus } from 'hooks/useInputFocus';
+import { useCommonNetworkInfo, useSymbolImages } from 'components/TokenOverlay/hooks';
+import { useLanguage } from 'i18n/hooks';
+import { useCurrentNetworkType } from 'model/hooks/network';
+import { ZERO } from 'packages/constants/misc';
+import { IToSendAssetParamsType } from 'packages/types/types-ca/routeParams';
+import { formatAmountShow, divDecimals } from 'packages/utils/converter';
+import { parseInputChange } from 'packages/utils/input';
+import { useMemo } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { pTd } from 'utils/unit';
+import { useAccountTokenBalanceList } from 'model/hooks/balance';
 
 interface AmountTokenProps {
   onPressMax: () => void;
@@ -37,13 +34,14 @@ export default function AmountToken({
   selectedToken,
 }: AmountTokenProps) {
   const { t } = useLanguage();
-  const defaultToken = useDefaultToken();
-  const iptRef = useRef<TextInput>(null);
-  useInputFocus(iptRef);
-  const isTestNet = useIsTestnet();
-  const isTokenHasPrice = useIsTokenHasPrice(selectedToken?.symbol);
-
-  const [tokenPriceObject, getTokenPrice] = useGetCurrentAccountTokenPrice();
+  const { defaultToken } = useCommonNetworkInfo();
+  const networkType = useCurrentNetworkType();
+  const isTestNet = useMemo(() => networkType !== 'MAIN', [networkType]);
+  const { balanceList } = useAccountTokenBalanceList();
+  const isTokenHasPrice = useMemo(
+    () => balanceList.find(it => it.symbol === selectedToken.symbol),
+    [balanceList, selectedToken.symbol],
+  );
 
   const symbolImages = useSymbolImages();
   const aelfIconName = useMemo(() => (isTestNet ? 'testnet' : 'mainnet'), [isTestNet]);
@@ -51,10 +49,6 @@ export default function AmountToken({
   const formattedTokenNameToSuffix = useMemo(() => {
     return selectedToken?.symbol?.length > 5 ? `${selectedToken?.symbol.slice(0, 5)}...` : selectedToken?.symbol;
   }, [selectedToken?.symbol]);
-
-  useEffectOnce(() => {
-    getTokenPrice(selectedToken.symbol);
-  });
 
   return (
     <View style={styles.amountWrap}>
@@ -82,7 +76,6 @@ export default function AmountToken({
         <View style={styles.middleRight}>
           <Input
             autoFocus
-            ref={iptRef}
             onFocus={() => {
               if (sendTokenNumber === '0') setSendTokenNumber('');
             }}
@@ -106,7 +99,9 @@ export default function AmountToken({
         <View style={styles.bottom}>
           <TextS style={styles.topBalance}>
             {`$ ${formatAmountShow(
-              ZERO.plus(sendTokenNumber).multipliedBy(tokenPriceObject[selectedToken.symbol]),
+              ZERO.plus(sendTokenNumber).multipliedBy(
+                balanceList.find(ele => ele.symbol === selectedToken.symbol)?.price || '0',
+              ),
               2,
             )}`}
           </TextS>
