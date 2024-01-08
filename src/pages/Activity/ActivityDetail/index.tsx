@@ -47,7 +47,7 @@ const ActivityDetail = ({ item, caAddresses }: ActivityDetailPropsType) => {
     entryName: PortkeyEntries.ACTIVITY_DETAIL_ENTRY,
   });
   const isTokenHasPrice = useMemo(
-    () => !!tokenPrices.find(token => token.symbol === item.symbol),
+    () => !!tokenPrices?.find(token => token.symbol === item.symbol),
     [item.symbol, tokenPrices],
   );
 
