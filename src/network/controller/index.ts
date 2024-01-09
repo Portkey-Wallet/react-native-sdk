@@ -444,7 +444,7 @@ export class NetworkControllerEntity {
    */
   getContractInfo = async (config: GetContractAddressesParams = {}) => {
     // TODO: fix filter options issue
-    const { keyword, page = 1, size = MAX_PAGE_LIMIT, modificationTime = Date.now() } = config || {};
+    const { keyword, page = 1, size = MAX_PAGE_LIMIT } = config || {};
     const res = await this.realExecute<GetContractListApiType>(
       await this.parseUrl(APIPaths.READ_CONTRACTS_ADDRESS),
       'GET',

@@ -18,8 +18,7 @@ import { ChainId } from '@portkey/provider-types';
 import useBaseContainer from 'model/container/UseBaseContainer';
 import { PortkeyEntries } from 'config/entries';
 import { TargetScene } from 'pages/Guardian/GuardianManage/type';
-// function AlertBody({ accelerateChainId }: { accelerateChainId: ChainId }) {
-function AlertBody() {
+function AlertBody({ accelerateChainId }: { accelerateChainId: ChainId }) {
   // const dispatch = useAppDispatch();
   // const isDrawerOpen = useAppCASelector(state => state.discover.isDrawerOpen);
   const { navigateTo } = useBaseContainer({});
@@ -40,11 +39,10 @@ function AlertBody() {
         title: 'Add Guardians',
         type: 'primary',
         onPress: async () => {
-          // navigationService.navigate('GuardianEdit', {
-          //   accelerateChainId,
-          // });
-          // todo: goto GuardianEdit Page
-          navigateTo(PortkeyEntries.ADD_GUARDIAN_ENTRY, { targetScene: TargetScene.GUARDIAN_ACCELERATE });
+          navigateTo(PortkeyEntries.ADD_GUARDIAN_ENTRY, {
+            targetScene: TargetScene.GUARDIAN_ACCELERATE,
+            params: { accelerateChainId },
+          });
           OverlayModal.hide();
           // if (isDrawerOpen) {
           //   await sleep(250);
@@ -53,7 +51,7 @@ function AlertBody() {
         },
       },
     ];
-  }, [navigateTo]);
+  }, [accelerateChainId, navigateTo]);
 
   return (
     <View style={styles.alertBox}>

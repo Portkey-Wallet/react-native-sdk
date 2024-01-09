@@ -39,21 +39,24 @@ import { getBottomSpace } from 'utils/screen';
 import {
   Verifier,
   callAddGuardianMethod,
-  callAddGuardianMethodAccelerate,
   callEditGuardianMethod,
   callEditPaymentSecurityMethod,
   callRemoveGuardianMethod,
   getVerifierData,
 } from 'model/contract/handler';
+import { ChainId } from 'packages/types';
+import { getUnlockedWallet } from 'model/wallet';
 
 export default function GuardianApproval({
   guardianVerifyConfig: guardianListConfig,
   verifiedTime,
   onPageFinish,
+  accelerateChainId,
 }: {
   guardianVerifyConfig: GuardianVerifyConfig;
   verifiedTime: number;
   onPageFinish: (result: GuardianApprovalPageResult) => void;
+  accelerateChainId?: ChainId;
 }) {
   const {
     guardians: originalGuardians,
@@ -233,7 +236,21 @@ export default function GuardianApproval({
       case GuardianVerifyType.ADD_GUARDIAN_ACCELERATE: {
         if (!particularGuardian) throw new Error('guardian info is null!');
         Loading.show();
-        const result = await callAddGuardianMethodAccelerate(particularGuardian, getVerifiedGuardianInfo());
+        const { originChainId } = await getUnlockedWallet();
+        const result = await callAddGuardianMethod(particularGuardian, getVerifiedGuardianInfo());
+        if (accelerateChainId && accelerateChainId !== originChainId) {
+          try {
+            const accelerateReq = await callAddGuardianMethod(
+              particularGuardian,
+              getVerifiedGuardianInfo(),
+              accelerateChainId,
+            );
+            console.log('accelerateReq', accelerateReq);
+          } catch (error) {
+            console.log('accelerateReq error', error);
+          }
+          await callAddGuardianMethod(particularGuardian, getVerifiedGuardianInfo(), accelerateChainId);
+        }
         Loading.hide();
         onPageFinish({
           isVerified: !result?.error,

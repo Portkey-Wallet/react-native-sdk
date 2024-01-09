@@ -6,6 +6,7 @@ import React from 'react';
 import { AfterVerifiedConfig } from 'model/verify/core';
 import { SetPinPageProps, SetPinPageResult } from 'pages/Pin/SetPin';
 import CommonToast from 'components/CommonToast';
+import { ChainId } from 'packages/types';
 
 export default class GuardianApprovalEntryPage extends BaseContainer<
   GuardianApprovalPageProps,
@@ -74,6 +75,7 @@ export default class GuardianApprovalEntryPage extends BaseContainer<
           guardianVerifyConfig={socialRecoveryConfig}
           verifiedTime={verifiedTime}
           onPageFinish={this.onPageFinish}
+          accelerateChainId={this.props.accelerateChainId}
         />
       </>
     );
@@ -82,6 +84,7 @@ export default class GuardianApprovalEntryPage extends BaseContainer<
 
 export interface GuardianApprovalPageProps extends BaseContainerProps {
   deliveredGuardianListInfo: string; // GuardianVerifyConfig
+  accelerateChainId?: ChainId;
 }
 
 export interface GuardianApprovalPageState {
