@@ -1,6 +1,6 @@
 import { getContractBasic } from 'packages/contracts/utils';
 import { ContractBasic } from 'packages/contracts/utils/ContractBasic';
-import { timesDecimals } from 'packages/utils/converter';
+import { divDecimalsStr, timesDecimals } from 'packages/utils/converter';
 import { handleVerificationDoc } from 'packages/utils/guardian';
 import { PortkeyConfig } from 'global/constants';
 import { getCachedAllChainInfo, getCachedNetworkConfig } from 'model/chain';
@@ -13,8 +13,14 @@ import { getUnlockedWallet } from 'model/wallet';
 import { NetworkController } from 'network/controller';
 import { AElfChainStatusItemDTO, AElfWeb3SDK, ApprovedGuardianInfo } from 'network/dto/wallet';
 import { selectCurrentBackendConfig } from 'utils/commonUtil';
-import { addManager } from 'utils/wallet';
+import { addManager, isEqAddress } from 'utils/wallet';
 import { handleCachedValue } from 'service/storage/cache';
+import { ChainId } from '@portkey/provider-types';
+import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
+import { useCurrentWalletInfo } from 'components/WalletSecurityAccelerate/hook';
+import { request } from 'packages/api/api-did';
+import { useCallback } from 'react';
+import AElf from 'aelf-sdk';
 
 export interface Verifier {
   id: string;
@@ -22,12 +28,60 @@ export interface Verifier {
   imageUrl: string;
 }
 
+export type GetTransferFeeParams = {
+  isCross: boolean;
+  sendAmount: string;
+  decimals: string;
+  symbol: string;
+  tokenContractAddress: string;
+  toAddress: string;
+  chainId: ChainId;
+};
+
+export type CalculateTransactionFeeResponse = {
+  Success: boolean;
+  TransactionFee: FeeResponse | null;
+  ResourceFee: FeeResponse | null;
+  TransactionFees: {
+    ChargingAddress: string;
+    Fee: FeeResponse;
+  } | null;
+  ResourceFees: {
+    ChargingAddress: string;
+    Fee: FeeResponse;
+  } | null;
+  Error: string | null;
+};
+
+export type FeeResponse = {
+  [symbol: string]: string;
+};
+
+export const getTokenContract = async (targetChainId?: string): Promise<ContractBasic> => {
+  const tokenContractName = 'AElf.ContractNames.Token';
+  const { privateKey, originChainId } = (await getUnlockedWallet()) || {};
+  const chainId = targetChainId || originChainId || (await PortkeyConfig.currChainId());
+  const networkInfo = await findParticularNetworkByChainId(chainId);
+  const { endPoint: peerUrl } = networkInfo;
+  const wallet = AElfWeb3SDK.getWalletByPrivateKey(privateKey);
+  const aelf = new AElf(new AElf.providers.HttpProvider(peerUrl));
+  // first, we need to get the genesis contract address, since the only way to get any contract address is to call the genesis contract.
+  const chainStatus = await aelf.chain.getChainStatus();
+  const { GenesisContractAddress } = chainStatus || {};
+  if (!GenesisContractAddress) throw new Error('GenesisContractAddress is invalid');
+  // one particular method on the genesis contract could provide any contract address by its name.
+  const zeroContract = await aelf.chain.contractAt(GenesisContractAddress, wallet);
+  const tokenContractAddress = await zeroContract.GetContractAddressByName.call(AElf.utils.sha256(tokenContractName));
+  // finally, we can get the token contract instance by its contractAddress, it can also used on other contract.
+  return await aelf.chain.contractAt(tokenContractAddress, wallet);
+};
+
 /**
- * get a basic contract instance, which can be used to call contract method.
+ * get a basic contract instance for CA c, which can be used to call contract method.
  * @param allowTemplateWallet if true, a fake wallet will be used to create the contract instance, which can only be used on VIEW method.
  * @returns Contract Basic
  */
-export const getContractInstance = async (allowTemplateWallet = false): Promise<ContractBasic> => {
+export const getCAContractInstance = async (allowTemplateWallet = false): Promise<ContractBasic> => {
   try {
     let privateKey = '';
     if (allowTemplateWallet && !(await isWalletUnlocked())) {
@@ -60,7 +114,7 @@ export const getContractInstance = async (allowTemplateWallet = false): Promise<
  */
 export const callAddManagerMethod = async (extraData: string, managerAddress: string) => {
   if (!(await isWalletUnlocked())) throw new Error('wallet is not unlocked');
-  const contractInstance = await getContractInstance();
+  const contractInstance = await getCAContractInstance();
   const { address } = (await getUnlockedWallet()) || {};
   const {
     caInfo: { caHash },
@@ -92,7 +146,7 @@ export const getVerifierData = async (): Promise<{
       return `GetVerifierServers_${chainId}_${endPoint}`;
     },
     getValueIfNonExist: async () => {
-      const contractInstance = await getContractInstance(true);
+      const contractInstance = await getCAContractInstance(true);
       const result = await contractInstance.callViewMethod('GetVerifierServers', '');
       if (!result?.data) throw new Error('getOrReadCachedVerifierData: result is invalid');
       return result;
@@ -188,7 +242,7 @@ export const callRemoveGuardianMethod = async (
   particularGuardian: GuardianConfig,
   guardianList: Array<ApprovedGuardianInfo>,
 ) => {
-  const contractInstance = await getContractInstance();
+  const contractInstance = await getCAContractInstance();
   const {
     address,
     caInfo: { caHash },
@@ -211,7 +265,7 @@ export const callEditGuardianMethod = async (
   pastGuardian: GuardianConfig,
   guardianList: Array<ApprovedGuardianInfo>,
 ) => {
-  const contractInstance = await getContractInstance();
+  const contractInstance = await getCAContractInstance();
   const {
     address,
     caInfo: { caHash },
@@ -230,7 +284,7 @@ export const callEditGuardianMethod = async (
  * @see {@link attemptAccountCheck} for more details.
  */
 export const callCancelLoginGuardianMethod = async (particularGuardian: GuardianConfig) => {
-  const contractInstance = await getContractInstance();
+  const contractInstance = await getCAContractInstance();
   const { guardianIdentifier } = handleVerificationDoc(particularGuardian.verifiedDoc?.verificationDoc ?? '');
   const {
     address,
@@ -306,7 +360,7 @@ export const callEditPaymentSecurityMethod = async (
  * get the contract instance on target chain.
  * @param chainId the target chain's chain id, like ```AELF```
  */
-const getContractInstanceOnParticularChain = async (chainId: string) => {
+export const getContractInstanceOnParticularChain = async (chainId: string) => {
   const { privateKey } = (await getUnlockedWallet()) || {};
   const { caContractAddress, endPoint } = await findParticularNetworkByChainId(chainId);
   if (!caContractAddress || !endPoint)
@@ -330,7 +384,7 @@ const findParticularNetworkByChainId = async (chainId: string): Promise<AElfChai
  * @param amount the token amount you want to get, default is 100
  */
 export const callFaucetMethod = async (amount = 100) => {
-  const contractInstance = await getContractInstance();
+  const contractInstance = await getCAContractInstance();
   if ((await getCurrentNetworkType()) === 'MAIN') {
     throw new Error('faucet is not supported on mainnet');
   }
@@ -350,13 +404,32 @@ export const callFaucetMethod = async (amount = 100) => {
   });
 };
 
+export const checkManagerSyncState = async (chainId: string): Promise<boolean> => {
+  try {
+    const networkInfos = await NetworkController.getNetworkInfo();
+    const networkInfo = networkInfos.items.find(it => it.chainId === chainId);
+    if (!networkInfo) throw new Error('unknown chainId:' + chainId);
+    const { caContractAddress, endPoint } = networkInfo;
+    const {
+      address,
+      caInfo: { caHash },
+    } = (await getUnlockedWallet()) || {};
+    const result = await callGetHolderInfoMethod(caHash, caContractAddress, endPoint);
+    if (result?.error) return false;
+    return result?.data?.managerInfos?.some((item: any) => item.address === address);
+  } catch (e) {
+    console.error('error when checkManagerSyncState', e);
+    return false;
+  }
+};
+
 /**
  * calling this method will destroy the current wallet info and remove the manager created before.
  *
  * hope you know what you are doing.
  */
 export const callRemoveManagerMethod = async () => {
-  const contractInstance = await getContractInstance();
+  const contractInstance = await getCAContractInstance();
   const {
     address,
     caInfo: { caHash },
@@ -402,4 +475,90 @@ const parseVerifiedGuardianInfoToCaType = (guardianConfig: ApprovedGuardianInfo)
       verificationDoc,
     },
   };
+};
+
+export const useGetTransferFee = () => {
+  const { defaultToken } = useCommonNetworkInfo();
+  const wallet = useCurrentWalletInfo();
+
+  const getTransferFee = useCallback(
+    async ({
+      isCross,
+      sendAmount,
+      decimals,
+      symbol,
+      tokenContractAddress,
+      toAddress,
+      chainId = 'AELF',
+    }: GetTransferFeeParams) => {
+      const methodName = isCross ? 'ManagerTransfer' : 'ManagerForwardCall';
+      const calculateParams = isCross
+        ? {
+            contractAddress: tokenContractAddress,
+            caHash: wallet.caHash,
+            symbol,
+            to: wallet.caAddress,
+            amount: timesDecimals(sendAmount, decimals).toFixed(),
+            memo: '',
+          }
+        : {
+            caHash: wallet.caHash,
+            contractAddress: tokenContractAddress,
+            methodName: 'Transfer',
+            args: {
+              symbol: symbol,
+              to: toAddress,
+              amount: timesDecimals(sendAmount, decimals).toFixed(),
+              memo: '',
+            },
+          };
+
+      const caContract = await getContractInstanceOnParticularChain(chainId);
+
+      const req = await caContract.calculateTransactionFee(methodName, calculateParams);
+
+      if (req?.error) request.errorReport('calculateTransactionFee', calculateParams, req.error);
+
+      const { TransactionFees, TransactionFee } = (req.data as CalculateTransactionFeeResponse) || {};
+      // V2 calculateTransactionFee
+      if (TransactionFees) {
+        const { ChargingAddress, Fee } = TransactionFees;
+        const myPayFee = await isMyPayTransactionFee(ChargingAddress, chainId);
+        if (myPayFee) return divDecimalsStr(Fee?.[defaultToken.symbol], defaultToken.decimals).toString();
+        return '0';
+      }
+      // V1 calculateTransactionFee
+      if (TransactionFee)
+        return divDecimalsStr(TransactionFee?.[defaultToken.symbol], defaultToken.decimals).toString();
+      throw { code: 500, message: 'no enough fee' };
+    },
+    [defaultToken.decimals, defaultToken.symbol, wallet.caAddress, wallet.caHash],
+  );
+
+  return getTransferFee;
+};
+
+export const isMyPayTransactionFee = async (address: string, chainId?: ChainId) => {
+  // manager transaction fee hide
+  // const { walletInfo } = getWallet();
+  // if (isEqAddress(walletInfo?.address, address)) return true;
+  const {
+    caInfo: { caHash },
+    multiCaAddresses,
+  } = await getUnlockedWallet({ getMultiCaAddresses: true });
+  const caInfo = {
+    caHash,
+    caAddress: multiCaAddresses[chainId ?? 'AELF'],
+  };
+
+  if (chainId) {
+    if (!caInfo) return false;
+    return caInfo.caAddress && isEqAddress(caInfo.caAddress, address);
+  }
+
+  const addressList = Object.values(caInfo || {})
+    .map((item: any) => item?.caAddress)
+    .filter(i => !!i);
+
+  return addressList.some(i => isEqAddress(i, address));
 };

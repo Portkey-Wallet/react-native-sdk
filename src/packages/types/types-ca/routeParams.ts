@@ -1,5 +1,6 @@
 import { ChainId, ChainType } from '..';
 import type { SendType } from './send';
+import { LoginType } from './wallet';
 
 export interface IToSendHomeAssetParamsBaseType {
   symbol: string;
@@ -36,4 +37,17 @@ export interface IToSendHomeParamsType {
 export interface IToSendPreviewParamsType extends IToSendHomeParamsType {
   transactionFee: string | number;
   sendNumber: string | number;
+  successNavigateName?: any;
+  guardiansApproved?: GuardiansApprovedType[];
+  isAutoSend?: boolean;
 }
+
+export type GuardiansApprovedType = {
+  identifierHash: string;
+  type: LoginType;
+  verificationInfo: {
+    id: string | undefined;
+    signature: number[];
+    verificationDoc: string;
+  };
+};

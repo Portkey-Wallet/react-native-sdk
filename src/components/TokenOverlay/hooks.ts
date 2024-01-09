@@ -17,7 +17,7 @@ export function useSymbolImages() {
   return symbolImages;
 }
 
-export function useCommonNetworkInfo() {
+export function useCommonNetworkInfo(fromChain?: string) {
   const symbolImages = useSymbolImages();
   const [currentNetwork, setCurrentNetwork] = useState<NetworkType>('MAIN');
   const [defaultToken, setDefaultToken] = useState<Token>(DEFAULT_TOKEN);
@@ -31,7 +31,7 @@ export function useCommonNetworkInfo() {
       defaultToken: cachedDefaultToken,
       explorerUrl: cachedExplorerUrl,
       peerUrl: cachedPeerUrl,
-    } = await getCachedNetworkConfig();
+    } = await getCachedNetworkConfig(fromChain);
     setPeerUrl(cachedPeerUrl);
     setDefaultToken(cachedDefaultToken);
     setExplorerUrl(cachedExplorerUrl);
@@ -47,6 +47,7 @@ export function useCommonNetworkInfo() {
     peerUrl,
   };
 }
+
 export interface CommonInfo {
   symbolImages: Record<string, string>;
   currentNetwork: NetworkType;

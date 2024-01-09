@@ -2,7 +2,7 @@ import { defaultColors } from 'assets/theme';
 import GStyles from 'assets/theme/GStyles';
 import CommonButton, { CommonButtonProps } from 'components/CommonButton';
 import { TextM, TextS } from 'components/CommonText';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { pTd } from 'utils/unit';
@@ -222,7 +222,11 @@ export default function GuardianItem({
         </View>
       )}
       <View style={[GStyles.flexRowWrap, GStyles.itemCenter, GStyles.flex1]}>
-        <Svg iconStyle={styles.loginTypeIcon} icon={LoginGuardianTypeIcon[guardianItem.guardianType]} size={pTd(32)} />
+        <CommonSvg
+          iconStyle={styles.loginTypeIcon}
+          icon={LoginGuardianTypeIcon[guardianItem.guardianType]}
+          size={pTd(32)}
+        />
         <VerifierImage
           size={pTd(32)}
           label={guardianItem?.verifier?.name}

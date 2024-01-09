@@ -1,14 +1,32 @@
 import { SendOptions } from 'packages/contracts/types';
+import { GuardiansApprovedType } from 'packages/types/types-ca/routeParams';
 import { ContractBasic } from 'packages/utils/contract';
+import { managerForwardCall } from './managerForwardCall';
 
 export const managerTransfer = ({
-  contract,
-  paramsOption,
+  caContract,
+  tokenContractAddress,
+  caHash,
+  paramsArgs,
   sendOptions,
+  guardiansApproved,
 }: {
-  contract: ContractBasic;
+  caContract: ContractBasic;
+  tokenContractAddress: string;
+  caHash: string;
+  paramsArgs: { symbol: string; to: string; amount: number | string; memo?: string };
   sendOptions?: SendOptions;
-  paramsOption: { caHash: string; symbol: string; to: string; amount: number | string; memo?: string };
+  guardiansApproved?: GuardiansApprovedType[];
 }) => {
-  return contract.callSendMethod('ManagerTransfer', '', paramsOption, sendOptions);
+  return managerForwardCall({
+    contract: caContract,
+    paramsOption: {
+      caHash: caHash,
+      contractAddress: tokenContractAddress,
+      methodName: 'Transfer',
+      args: paramsArgs,
+      guardiansApproved,
+    },
+    sendOptions,
+  });
 };

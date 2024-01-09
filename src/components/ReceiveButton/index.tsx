@@ -1,7 +1,5 @@
 import React from 'react';
-import Svg from 'components/Svg';
-import { TouchableOpacity, View, StyleProp, ViewProps } from 'react-native';
-import { dashBoardBtnStyle, innerPageStyles } from '../SendButton/style';
+import CommonSvg from 'components/Svg';
 import { TextM } from 'components/CommonText';
 import { useLanguage } from 'i18n/hooks';
 import TokenOverlay from 'components/TokenOverlay';
@@ -13,6 +11,8 @@ import useBaseContainer from 'model/container/UseBaseContainer';
 import { useUnlockedWallet } from 'model/wallet';
 import { useCommonNetworkInfo } from '../TokenOverlay/hooks';
 import { useCurrentNetworkType } from 'model/hooks/network';
+import dashBoardBtnStyle, { innerPageStyles } from 'components/FaucetButton/style';
+import { StyleProp, ViewProps, View, TouchableOpacity } from 'react-native';
 
 interface SendButtonType {
   currentTokenInfo?: TokenItemShowType;
@@ -54,7 +54,7 @@ export default function ReceiveButton(props: SendButtonType) {
             });
           }
         }}>
-        <Svg icon={themeType === 'dashBoard' ? 'receive' : 'receive1'} size={pTd(46)} />
+        <CommonSvg icon={themeType === 'dashBoard' ? 'receive' : 'receive1'} size={pTd(46)} />
       </TouchableOpacity>
       <TextM style={styles.titleStyle}>{t('Receive')}</TextM>
     </View>

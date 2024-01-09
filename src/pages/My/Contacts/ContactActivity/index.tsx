@@ -5,8 +5,7 @@ import GStyles from 'assets/theme/GStyles';
 import { BGStyles, FontStyles } from 'assets/theme/styles';
 import { TextL, TextM, TextS } from 'components/CommonText';
 import CommonToast from 'components/CommonToast';
-import PageContainer from 'components/PageContainer';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { setStringAsync } from 'expo-clipboard';
 import { useLanguage } from 'i18n/hooks';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -17,7 +16,7 @@ import NoData from 'components/NoData';
 import SafeAreaBox from 'components/SafeAreaBox';
 import CustomHeader from 'components/CustomHeader';
 import { ActivityItemType } from 'packages/types/types-ca/activity';
-import { getUnlockedWallet } from 'model/wallet';
+import { getUnlockedWallet, useUnlockedWallet } from 'model/wallet';
 import { NFT_MIDDLE_SIZE } from 'packages/constants/constants-ca/assets';
 import myEvents from 'utils/deviceEvent';
 import { ON_END_REACHED_THRESHOLD } from 'packages/constants/constants-ca/activity';
@@ -25,6 +24,10 @@ import CommonAvatar from 'components/CommonAvatar';
 import { NetworkController } from 'network/controller';
 import useBaseContainer from 'model/container/UseBaseContainer';
 import { getStatusBarHeight } from 'utils/screen';
+import { PortkeyEntries } from 'config/entries';
+import { ActivityDetailPropsType } from 'pages/Activity/ActivityDetail';
+import { ViewOnWebViewProps } from 'pages/Activity/ViewOnWebView';
+import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
 
 interface ParamsType {
   fromChainId: ChainId;
@@ -38,9 +41,9 @@ const MAX_RESULT_COUNT = 10;
 
 const ContactActivity = ({ address, chainId, contactName, avatar }: ParamsType) => {
   const { t } = useLanguage();
-  const { onFinish } = useBaseContainer({});
-  // const { explorerUrl } = useCurrentChain(chainId) ?? {};
-  const explorerUrl = 'https://baidu.com';
+  const { navigateTo, onFinish } = useBaseContainer({});
+  const { wallet } = useUnlockedWallet({ getMultiCaAddresses: true });
+  const { explorerUrl } = useCommonNetworkInfo(chainId);
 
   const [addressName, setAddressName] = useState<string | undefined>(contactName);
   const [addressAvatar, setAddressAvatar] = useState<string | undefined>(avatar);
@@ -72,16 +75,17 @@ const ContactActivity = ({ address, chainId, contactName, avatar }: ParamsType) 
       if (isFetching) return;
       const newParams = {
         ...params,
-        caAddressInfos: Object.entries(multiCaAddresses).map(it => {
-          return { chainId: it[0], caAddress: it[1] };
-        }),
+        caAddressInfos: Object.entries(multiCaAddresses)
+          .map(it => {
+            return { chainId: it[0], caAddress: it[1] };
+          })
+          .filter(it => it.chainId === chainId),
         skipCount: skipActivityNumber,
       };
 
       setIsFetching(true);
 
       const result = await NetworkController.getActivityListWithAddress(newParams);
-      console.log('aaaa', JSON.stringify(result.data));
 
       if (skipActivityNumber === 0) {
         // init
@@ -93,7 +97,7 @@ const ContactActivity = ({ address, chainId, contactName, avatar }: ParamsType) 
       setTotalCount(result.totalRecordCount);
       setIsFetching(false);
     },
-    [activityList, isFetching, params],
+    [activityList, chainId, isFetching, params],
   );
 
   const copyAddress = useCallback(
@@ -104,20 +108,35 @@ const ContactActivity = ({ address, chainId, contactName, avatar }: ParamsType) 
     [t],
   );
 
-  const renderItem = useCallback(({ item }: { item: ActivityItemType }) => {
-    return <TransferItem item={item} onPress={() => navigationService.navigate('ActivityDetail', item)} />;
-  }, []);
+  const renderItem = useCallback(
+    ({ item }: { item: ActivityItemType }) => {
+      return (
+        <TransferItem
+          item={item}
+          onPress={() => {
+            if (!wallet) return;
+            const { multiCaAddresses } = wallet;
+            navigateTo<ActivityDetailPropsType>(PortkeyEntries.ACTIVITY_DETAIL_ENTRY, {
+              params: { item, caAddresses: Object.values(multiCaAddresses) },
+            });
+          }}
+        />
+      );
+    },
+    [navigateTo, wallet],
+  );
 
   const navToExplore = useCallback(
     (navAddress: string, navChainId: ChainId) => {
       if (!address) return;
-
-      navigationService.navigate('ViewOnWebView', {
-        title: t('View on Explorer'),
-        url: getExploreLink(explorerUrl || '', addressFormat(navAddress, navChainId), 'address'),
+      navigateTo<ViewOnWebViewProps>(PortkeyEntries.VIEW_ON_WEBVIEW, {
+        params: {
+          title: t('View on Explorer'),
+          url: getExploreLink(explorerUrl || '', addressFormat(navAddress, navChainId), 'address'),
+        },
       });
     },
-    [address, explorerUrl, t],
+    [address, explorerUrl, navigateTo, t],
   );
 
   useEffect(() => {
@@ -171,10 +190,10 @@ const ContactActivity = ({ address, chainId, contactName, avatar }: ParamsType) 
                 <TouchableOpacity
                   style={styles.handleIconItem}
                   onPress={() => copyAddress(addressFormat(address, chainId, 'aelf'))}>
-                  <Svg color={defaultColors.font4} icon="copy3" size={pTd(20)} />
+                  <CommonSvg color={defaultColors.font4} icon="copy3" size={pTd(20)} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.handleIconItem} onPress={() => navToExplore(address, chainId)}>
-                  <Svg icon="share2" size={pTd(20)} />
+                  <CommonSvg icon="share2" size={pTd(20)} />
                 </TouchableOpacity>
               </View>
             </View>

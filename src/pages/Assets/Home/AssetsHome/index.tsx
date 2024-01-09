@@ -17,7 +17,7 @@ import { ZERO } from 'packages/constants/misc';
 import { PortkeyEntries } from 'config/entries';
 import ActivityButton from '../ActivityButton';
 import { defaultColors } from 'assets/theme';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 
 const style = StyleSheet.create({
   scanQrCode: {
@@ -66,7 +66,7 @@ const AssetsHome: React.FC = () => {
               onPress={() => {
                 navigateTo(PortkeyEntries.SCAN_QR_CODE);
               }}>
-              <Svg icon="scan" size={22} color={defaultColors.font2} />
+              <CommonSvg icon="scan" size={22} color={defaultColors.font2} />
             </TouchableOpacity>
           }
           leftCallback={() => {

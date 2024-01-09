@@ -27,20 +27,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import finance.portkey.aar.wallet.PortkeyWallet
+import finance.portkey.aar.wallet.callCaContractMethodTest
+import finance.portkey.aar.wallet.runTestCases
 import finance.portkey.demo.ui.composable.ChoiceMaker
 import finance.portkey.demo.ui.composable.DialogProps
 import finance.portkey.demo.ui.composable.Loading
 import finance.portkey.demo.ui.composable.Loading.PortkeyLoading
-import finance.portkey.demo.ui.composable.PortkeyDialog
+import finance.portkey.demo.ui.composable.PortkeyDialogController
+import finance.portkey.demo.ui.composable.PortkeyDialogController.PortkeyDialog
 import finance.portkey.demo.ui.composable.SimpleChoiceMaker
 import finance.portkey.demo.ui.theme.MyRNApplicationTheme
 import finance.portkey.demo.ui.theme.Purple40
 import finance.portkey.lib.components.logic.PORTKEY_CONFIG_ENDPOINT_URL
 import finance.portkey.lib.components.logic.PortkeyMMKVStorage
 import finance.portkey.lib.entry.usePortkeyEntryWithParams
-import finance.portkey.aar.wallet.callCaContractMethodTest
-import finance.portkey.aar.wallet.runTestCases
-import finance.portkey.aar.wallet.PortkeyWallet
 import java.security.InvalidKeyException
 
 
@@ -119,7 +120,7 @@ class MainActivity : ComponentActivity() {
                                     .show()
                                 return@BigButton
                             }
-                            PortkeyDialog.show(
+                            PortkeyDialogController.show(
                                 DialogProps().apply {
                                     mainTitle = "Warning"
                                     subTitle =
@@ -136,12 +137,22 @@ class MainActivity : ComponentActivity() {
                                                 )
                                                     .show()
                                             } else {
-                                                Toast.makeText(
-                                                    this@MainActivity,
-                                                    "Wallet exit failed, reason: $reason",
-                                                    Toast.LENGTH_SHORT
-                                                )
-                                                    .show()
+                                                PortkeyDialogController.showFail(
+                                                    text = "Exit wallet failed, reason: $reason.\n If you hope so, you can reset the SDK storage entirely for test.",
+                                                    negativeButtonText = "⚠️ Reset",
+                                                ) {
+                                                    PortkeyMMKVStorage.clear(
+                                                        exceptStorageKey = mutableListOf(
+                                                            "endPointUrl",
+                                                            "devMode"
+                                                        )
+                                                    )
+                                                    Toast.makeText(
+                                                        this@MainActivity,
+                                                        "All data erased.",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
                                             }
                                         }
                                     }
@@ -197,7 +208,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     PortkeyLoading()
-                    PortkeyDialog.PortkeyDialog()
+                    PortkeyDialog()
                 }
             }
         }
@@ -276,7 +287,7 @@ class MainActivity : ComponentActivity() {
         subTitle: String = "",
         then: () -> Unit = {}
     ) {
-        PortkeyDialog.show(
+        PortkeyDialogController.show(
             DialogProps().apply {
                 this.mainTitle = mainTitle
                 this.subTitle = subTitle

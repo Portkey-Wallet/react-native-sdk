@@ -18,6 +18,7 @@ interface WalletInfo {
   caHash?: string;
   managerAddress?: string;
   originChainId: ChainId;
+  caAddress?: string;
 }
 export function useCurrentWalletInfo() {
   const [walletInfo, setWalletInfo] = useState<WalletInfo>({
@@ -32,6 +33,7 @@ export function useCurrentWalletInfo() {
         caHash: caInfo?.caHash,
         managerAddress,
         originChainId: originChainId as ChainId,
+        caAddress: caInfo?.caAddress,
       });
     })();
   }, []);
@@ -162,7 +164,7 @@ function useCheckTransferLimit() {
     };
   }, []);
 }
-// type for  TransferLimit check
+// type for TransferLimit check
 type CheckTransferLimitParams = {
   // caContract: ContractBasic;
   chainId: ChainId;

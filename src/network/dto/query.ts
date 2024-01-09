@@ -1,4 +1,4 @@
-import { AddressItem, BaseListResponse, RecentContactItemType } from '@portkey/services';
+import { AddressItem, BaseListResponse } from '@portkey/services';
 import { TransactionTypes } from 'packages/constants/constants-ca/activity';
 import { CaHolderInfo, IImInfo } from 'packages/im';
 import { ITokenInfoType, INftInfoType } from 'packages/store/store-ca/assets/type';
@@ -205,3 +205,29 @@ export type ActivityItemType = {
   listIcon?: string;
   isDelegated?: boolean;
 };
+
+export interface RecentContactItemType extends ContactItemType {
+  chainId: ChainId;
+  chainName: string;
+  caAddress: string;
+  address: string;
+  addressChainId: ChainId;
+  transactionTime: string;
+  name: string;
+  addresses: RecentAddressItem[];
+}
+
+export interface RecentAddressItem extends AddressItem {
+  transactionTime?: string;
+}
+
+export interface RecentContactItemType extends ContactItemType {
+  chainId: ChainId;
+  chainName: string;
+  caAddress: string;
+  address: string;
+  addressChainId: ChainId;
+  transactionTime: string;
+  name: string;
+  addresses: RecentAddressItem[];
+}

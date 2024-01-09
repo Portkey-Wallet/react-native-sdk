@@ -11,7 +11,7 @@ import CommonToast from 'components/CommonToast';
 import Touchable from 'components/Touchable';
 import isEqual from 'lodash/isEqual';
 import CommonAvatar from 'components/CommonAvatar';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { formatChainInfoToShow } from 'packages/utils';
 import NoData from 'components/NoData';
 import { ITransferLimitItem } from 'model/security';
@@ -54,7 +54,7 @@ const _renderPaymentSecurityItem = ({ item }: { item: ITransferLimitItem }) => {
           <TextL style={ItemStyles.symbolLabel}>{item.symbol || ''}</TextL>
           <TextM style={FontStyles.font7}>{formatChainInfoToShow(item.chainId, networkType)}</TextM>
         </View>
-        <Svg icon="right-arrow" size={pTd(20)} color={defaultColors.icon1} />
+        <CommonSvg icon="right-arrow" size={pTd(20)} color={defaultColors.icon1} />
       </View>
     </Touchable>
   );
