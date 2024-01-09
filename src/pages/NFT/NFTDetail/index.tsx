@@ -123,7 +123,6 @@ const NFTDetail: React.FC<TokenDetailProps> = ({ nftItem }: TokenDetailProps) =>
           style={styles.sendBtn}
           type="primary"
           onPress={() => {
-            // todo_wade: finish navigateTo
             navigateTo<IToSendHomeParamsType>(PortkeyEntries.SEND_TOKEN_HOME_ENTRY, {
               params: {
                 sendType: 'nft',
