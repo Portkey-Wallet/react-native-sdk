@@ -3,6 +3,7 @@ import { GuardianConfig } from '../guardian';
 import { CheckVerifyCodeResultDTO } from 'network/dto/guardian';
 import { ThirdPartyAccountInfo } from '../third-party-account';
 import { ITransferLimitItem } from 'model/security';
+import { ChainId } from 'packages/types';
 
 export interface GuardianVerifyConfig {
   guardianVerifyType: GuardianVerifyType;
@@ -14,6 +15,7 @@ export interface GuardianVerifyConfig {
   pastGuardian?: GuardianConfig;
   failHandler?: () => void;
   paymentSecurityConfig?: ITransferLimitItem;
+  accelerateChainId?: ChainId;
 }
 
 export enum GuardianVerifyType {
