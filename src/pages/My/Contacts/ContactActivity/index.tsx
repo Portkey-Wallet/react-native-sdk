@@ -129,10 +129,6 @@ const ContactActivity = ({ address, chainId, contactName, avatar }: ParamsType) 
   const navToExplore = useCallback(
     (navAddress: string, navChainId: ChainId) => {
       if (!address) return;
-      // navigationService.navigate('ViewOnWebView', {
-      //   title: t('View on Explorer'),
-      //   url: getExploreLink(explorerUrl || '', addressFormat(navAddress, navChainId), 'address'),
-      // });
       navigateTo<ViewOnWebViewProps>(PortkeyEntries.VIEW_ON_WEBVIEW, {
         params: {
           title: t('View on Explorer'),
