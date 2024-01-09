@@ -108,6 +108,7 @@ export const handleGuardiansApproval = async (config: GuardianVerifyConfig) => {
     PortkeyEntries.GUARDIAN_APPROVAL_ENTRY,
     {
       deliveredGuardianListInfo: JSON.stringify(config),
+      accelerateChainId: config.accelerateChainId,
     },
   );
   console.log('handleGuardiansApproval', option);

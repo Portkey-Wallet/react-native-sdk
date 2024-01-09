@@ -57,6 +57,7 @@ import { GuardianVerifyType, VerifiedGuardianInfo } from 'model/verify/social-re
 import { Buffer } from 'buffer';
 import { sleep } from 'packages/utils';
 import { TargetScene } from './type';
+import { ChainId } from 'packages/types';
 
 if (!global.Buffer) {
   global.Buffer = Buffer;
@@ -69,8 +70,8 @@ type thirdPartyInfoType = {
 
 type TypeItemType = (typeof LOGIN_TYPE_LIST)[number];
 
-const AddGuardian = (props: { targetScene?: string }) => {
-  const { targetScene = TargetScene.NORMAL } = props;
+const AddGuardian = (props: { targetScene?: string; accelerateChainId: ChainId }) => {
+  const { targetScene = TargetScene.NORMAL, accelerateChainId } = props;
   const { t } = useLanguage();
   const [userGuardiansList, setUserGuardiansList] = useState<Array<GuardianConfig>>([]);
   const [verifierMap, setVerifierMap] = useState<{
@@ -223,6 +224,7 @@ const AddGuardian = (props: { targetScene?: string }) => {
         },
       };
       handleGuardiansApproval({
+        accelerateChainId,
         guardianVerifyType:
           targetScene === TargetScene.NORMAL
             ? GuardianVerifyType.ADD_GUARDIAN
@@ -233,7 +235,7 @@ const AddGuardian = (props: { targetScene?: string }) => {
         particularGuardian: thisGuardian,
       });
     },
-    [selectedVerifier, targetScene, userGuardiansList, verifyToken],
+    [accelerateChainId, selectedVerifier, targetScene, userGuardiansList, verifyToken],
   );
 
   const onConfirm = useCallback(async () => {
@@ -344,6 +346,7 @@ const AddGuardian = (props: { targetScene?: string }) => {
                   Loading.hide();
                   await sleep(200);
                   handleGuardiansApproval({
+                    accelerateChainId,
                     guardianVerifyType:
                       targetScene === TargetScene.NORMAL
                         ? GuardianVerifyType.ADD_GUARDIAN
@@ -380,6 +383,7 @@ const AddGuardian = (props: { targetScene?: string }) => {
     t,
     country?.code,
     thirdPartyConfirm,
+    accelerateChainId,
     targetScene,
     userGuardiansList,
   ]);
