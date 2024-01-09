@@ -13,12 +13,12 @@ const INIT_TRANSACTION_FEE_ITEM: CheckTransactionFeeResult = ['AELF', 'tDVV', 't
   },
 }));
 
-export const useTransactionFee = () => {
+export const useTransactionFee = (fromChainId: string) => {
   const [transactionFee, setTransactionFee] = useState<CheckTransactionFeeResult>(INIT_TRANSACTION_FEE_ITEM);
   useIntervalPolling({
     fetcher: async () => {
       const result = await NetworkController.getTransactionFee({
-        chainIds: ['AELF', 'tDVV', 'tDVW'],
+        chainIds: [fromChainId],
       });
       return result;
     },

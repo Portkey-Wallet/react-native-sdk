@@ -7,7 +7,7 @@ import GStyles from 'assets/theme/GStyles';
 export const styles = StyleSheet.create({
   pageWrap: {
     backgroundColor: defaultColors.bg4,
-    height: ScreenHeight - pTd(130),
+    height: ScreenHeight - pTd(80),
     paddingLeft: 0,
     paddingRight: 0,
   },

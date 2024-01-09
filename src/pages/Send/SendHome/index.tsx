@@ -66,7 +66,7 @@ const SendHome = (props: IToSendHomeParamsType) => {
     return assetInfo?.chainId || 'AELF';
   }, [assetInfo?.chainId]);
   const currentNetworkInfo = useCommonNetworkInfo(fromChainId);
-  const transactionFees = useTransactionFee();
+  const transactionFees = useTransactionFee(fromChainId);
   const { max: maxFee, crossChain: crossFee } = useMemo(() => {
     const chainId = assetInfo?.chainId || 'AELF';
     return transactionFees.find(ele => ele.chainId === chainId)?.transactionFee || { max: '0.00', crossChain: '0.00' };
