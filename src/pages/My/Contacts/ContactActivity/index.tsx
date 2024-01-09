@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
   pageContainer: {
     width: '100%',
     flex: 1,
-    backgroundColor: defaultColors.bg1,
+    backgroundColor: defaultColors.bg4,
   },
   container: {
     ...GStyles.paddingArg(0, 0),
