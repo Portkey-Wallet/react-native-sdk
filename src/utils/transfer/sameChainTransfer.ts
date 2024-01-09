@@ -1,4 +1,5 @@
 import { SendOptions } from 'packages/contracts/types';
+import { GuardiansApprovedType } from 'packages/types/types-ca/routeParams';
 import { BaseToken } from 'packages/types/types-eoa/token';
 import { ContractBasic } from 'packages/utils/contract';
 import { managerForwardCall } from './managerForwardCall';
@@ -10,6 +11,7 @@ const sameChainTransfer = ({
   tokenInfo,
   memo = '',
   toAddress: to,
+  guardiansApproved,
 }: {
   contract: ContractBasic;
   tokenInfo: BaseToken;
@@ -18,6 +20,7 @@ const sameChainTransfer = ({
   toAddress: string;
   memo?: string;
   sendOptions?: SendOptions;
+  guardiansApproved?: GuardiansApprovedType[];
 }) => {
   return managerForwardCall({
     contract,
@@ -31,6 +34,7 @@ const sameChainTransfer = ({
         amount,
         memo,
       },
+      guardiansApproved,
     },
   });
 };

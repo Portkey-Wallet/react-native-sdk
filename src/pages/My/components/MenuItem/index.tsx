@@ -1,6 +1,6 @@
 import { defaultColors } from 'assets/theme';
 import { TextL, TextM } from 'components/CommonText';
-import Svg, { IconName } from 'components/Svg';
+import CommonSvg, { IconName } from 'components/Svg';
 import SvgUri from 'components/Svg/SvgUri';
 
 import React, { memo } from 'react';
@@ -44,13 +44,13 @@ const MenuItem: React.FC<MenuItemProps> = ({
       {icon && (
         <View style={styles.svgWrap}>
           {showWarningCycle && <View style={styles.warningCycle} />}
-          <Svg icon={icon} size={size} iconStyle={[styles.menuIcon, iconStyle]} />
+          <CommonSvg icon={icon} size={size} iconStyle={[styles.menuIcon, iconStyle]} />
         </View>
       )}
 
       <TextL style={styles.titleWrap}>{title}</TextL>
       {suffix !== undefined && <TextM style={styles.suffixWrap}>{suffix}</TextM>}
-      <Svg icon="right-arrow" size={arrowSize} color={defaultColors.icon1} />
+      <CommonSvg icon="right-arrow" size={arrowSize} color={defaultColors.icon1} />
     </TouchableOpacity>
   );
 };

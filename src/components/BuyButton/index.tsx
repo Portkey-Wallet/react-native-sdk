@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 
 import { View, StyleProp, ViewProps } from 'react-native';
 import { TextM } from 'components/CommonText';
@@ -38,7 +38,7 @@ const BuyButton = (props: SendButtonType) => {
         onPress={async () => {
           if (!isMainnet) return;
         }}>
-        <Svg icon={themeType === 'dashBoard' ? 'buy' : 'buy1'} size={pTd(46)} />
+        <CommonSvg icon={themeType === 'dashBoard' ? 'buy' : 'buy1'} size={pTd(46)} />
       </Touchable>
       <TextM style={[commonButtonStyle.commonTitleStyle, buttonTitleStyle]}>{t('Buy')}</TextM>
     </View>

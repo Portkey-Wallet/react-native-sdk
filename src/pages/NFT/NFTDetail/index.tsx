@@ -9,7 +9,7 @@ import { TextL, TextM, TextXXL } from 'components/CommonText';
 import { FontStyles } from 'assets/theme/styles';
 import fonts from 'assets/theme/fonts';
 import SafeAreaBox from 'components/SafeAreaBox';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import CommonAvatar from 'components/CommonAvatar';
 import { addressFormat, formatChainInfoToShow, formatStr2EllipsisStr } from 'packages/utils';
 import { ChainId } from 'packages/types';
@@ -18,6 +18,8 @@ import { bottomBarHeight } from 'packages/utils/mobile/device';
 import { copyText } from 'utils/commonUtil';
 import { getStatusBarHeight } from 'utils/screen';
 import useBaseContainer from 'model/container/UseBaseContainer';
+import { PortkeyEntries } from 'config/entries';
+import { IToSendHomeParamsType } from 'packages/types/types-ca/routeParams';
 
 export interface TokenDetailProps {
   nftItem: NftItemType;
@@ -41,7 +43,7 @@ interface NftItemType {
 
 const NFTDetail: React.FC<TokenDetailProps> = ({ nftItem }: TokenDetailProps) => {
   const { t } = useLanguage();
-  const { onFinish } = useBaseContainer({});
+  const { onFinish, navigateTo } = useBaseContainer();
 
   const {
     alias,
@@ -65,7 +67,7 @@ const NFTDetail: React.FC<TokenDetailProps> = ({ nftItem }: TokenDetailProps) =>
     <SafeAreaBox style={[styles.pageWrap, styles.pagePaddingTop]}>
       <StatusBar barStyle={'default'} />
       <TouchableOpacity style={styles.iconWrap} onPress={goBack}>
-        <Svg icon="left-arrow" size={20} />
+        <CommonSvg icon="left-arrow" size={20} />
       </TouchableOpacity>
 
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -93,7 +95,7 @@ const NFTDetail: React.FC<TokenDetailProps> = ({ nftItem }: TokenDetailProps) =>
             <TouchableOpacity
               style={[styles.marginLeft8, GStyles.flexCol, styles.copyIconWrap]}
               onPress={async () => await copyText(addressFormat(tokenContractAddress, chainId))}>
-              <Svg icon="copy" size={pTd(13)} />
+              <CommonSvg icon="copy" size={pTd(13)} />
             </TouchableOpacity>
           </View>
           <View style={[GStyles.flexRow, styles.rowWrap]}>
@@ -121,7 +123,16 @@ const NFTDetail: React.FC<TokenDetailProps> = ({ nftItem }: TokenDetailProps) =>
           style={styles.sendBtn}
           type="primary"
           onPress={() => {
-            // todo_wade: finish navigateTo
+            navigateTo<IToSendHomeParamsType>(PortkeyEntries.SEND_TOKEN_HOME_ENTRY, {
+              params: {
+                sendType: 'nft',
+                assetInfo: nftItem,
+                toInfo: {
+                  name: '',
+                  address: '',
+                },
+              },
+            });
           }}
         />
       </View>

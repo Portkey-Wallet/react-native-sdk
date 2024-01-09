@@ -1,7 +1,7 @@
 import GStyles from 'assets/theme/GStyles';
 import CommonButton from 'components/CommonButton';
 import { TextM, TextS } from 'components/CommonText';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { pTd } from 'utils/unit';
@@ -313,7 +313,7 @@ const ModifyGuardian = (config: { info: string }) => {
           titleTextStyle={[pageStyles.titleTextStyle, !selectedVerifier && FontStyles.font7]}
           style={pageStyles.verifierWrap}
           title={selectedVerifier?.name || t('Select guardian verifiers')}
-          rightElement={<Svg size={pTd(20)} icon="down-arrow" />}
+          rightElement={<CommonSvg size={pTd(20)} icon="down-arrow" />}
         />
         {guardianError.isError && <TextS style={pageStyles.errorTips}>{guardianError.errorMsg || ''}</TextS>}
       </View>

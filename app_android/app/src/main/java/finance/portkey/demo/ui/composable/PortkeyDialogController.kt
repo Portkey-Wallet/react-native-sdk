@@ -52,7 +52,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-internal object PortkeyDialog {
+internal object PortkeyDialogController {
 
     private var isActive by mutableStateOf(false)
     private var dialogProps by mutableStateOf(DialogProps())
@@ -69,7 +69,7 @@ internal object PortkeyDialog {
                         " better check it by isBusy() first."
             )
         }
-        PortkeyDialog.dialogProps = dialogProps
+        PortkeyDialogController.dialogProps = dialogProps
         isActive = true
     }
 
@@ -84,12 +84,18 @@ internal object PortkeyDialog {
         )
     }
 
-    internal fun showFail(text: String) {
+    internal fun showFail(
+        text: String,
+        negativeButtonText: String = "Cancel",
+        negativeCallback: () -> Unit = {}
+    ) {
         show(
             DialogProps().apply {
                 mainTitle = "Fail!"
                 subTitle = text
-                useSingleConfirmButton = true
+                positiveText = "OK"
+                this.negativeText = negativeButtonText
+                this.negativeCallback = negativeCallback
             }
         )
     }
@@ -282,7 +288,7 @@ private fun DialogPreview() {
         }
     }
     BigButton(text = "Show Dialog") {
-        PortkeyDialog.show(dialogProps = dialogProps)
+        PortkeyDialogController.show(dialogProps = dialogProps)
     }
-    PortkeyDialog.PortkeyDialog()
+    PortkeyDialogController.PortkeyDialog()
 }

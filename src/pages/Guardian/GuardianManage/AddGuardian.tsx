@@ -1,6 +1,6 @@
 import GStyles from 'assets/theme/GStyles';
 import { TextL, TextM, TextS } from 'components/CommonText';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 import { pTd } from 'utils/unit';
@@ -576,10 +576,12 @@ const AddGuardian = (props: { targetScene?: string }) => {
             titleTextStyle={[pageStyles.titleTextStyle, !selectedType && FontStyles.font7]}
             style={pageStyles.typeWrap}
             titleLeftElement={
-              selectedType?.icon && <Svg icon={selectedType.icon} size={pTd(28)} iconStyle={pageStyles.typeIcon} />
+              selectedType?.icon && (
+                <CommonSvg icon={selectedType.icon} size={pTd(28)} iconStyle={pageStyles.typeIcon} />
+              )
             }
             title={selectedType?.name || t('Select guardian types')}
-            rightElement={<Svg size={pTd(20)} icon="down-arrow" />}
+            rightElement={<CommonSvg size={pTd(20)} icon="down-arrow" />}
           />
         </>
 
@@ -609,7 +611,7 @@ const AddGuardian = (props: { targetScene?: string }) => {
           titleTextStyle={[pageStyles.titleTextStyle, !selectedVerifier && FontStyles.font7]}
           style={pageStyles.verifierWrap}
           title={selectedVerifier?.name || t('Select guardian verifiers')}
-          rightElement={<Svg size={pTd(20)} icon="down-arrow" />}
+          rightElement={<CommonSvg size={pTd(20)} icon="down-arrow" />}
         />
         {guardianError.isError && <TextS style={pageStyles.errorTips}>{guardianError.errorMsg || ''}</TextS>}
       </View>

@@ -6,7 +6,7 @@ import CommonInput, { CommonInputProps } from 'components/CommonInput';
 import { CountryItem } from 'packages/types/types-ca/country';
 import { pTd } from 'utils/unit';
 
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { defaultColors } from 'assets/theme';
 import { TextM } from 'components/CommonText';
 import { EntryResult, RouterOptions } from 'service/native-modules';
@@ -55,7 +55,7 @@ export default function PhoneInput({
       leftIcon={
         <Touchable style={inputStyles.countryRow} onPress={pushToSelectCountry}>
           <TextM>+ {selectCountry?.code}</TextM>
-          <Svg color={defaultColors.font3} size={12} icon="down-arrow" />
+          <CommonSvg color={defaultColors.font3} size={12} icon="down-arrow" />
         </Touchable>
       }
       type="general"

@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useMemo, useRef } from 'react';
 import { View, Text, FlatList, StatusBar } from 'react-native';
-import BuyButton from 'components/BuyButton';
 import SendButton from 'components/SendButton';
 import ReceiveButton from 'components/ReceiveButton';
 import FaucetButton from 'components/FaucetButton';
@@ -130,7 +129,7 @@ const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
   );
 
   // not support Buy function
-  const isBuyButtonShow = false;
+  // const isBuyButtonShow = false;
 
   const isFaucetButtonShow = useMemo(
     () => !isMainnet && tokenInfo.symbol === defaultToken.symbol && tokenInfo.chainId === 'AELF',
@@ -138,12 +137,9 @@ const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
   );
 
   const buttonCount = useMemo(() => {
-    let count = 3;
-    if (isBuyButtonShow) count++;
-    // FaucetButton
-    if (!isMainnet) count++;
-    return count;
-  }, [isBuyButtonShow, isMainnet]);
+    // SDK will only support send / receive / faucet(only for testnet)
+    return isMainnet ? 3 : 2;
+  }, [isMainnet]);
 
   const buttonGroupWrapStyle = useMemo(() => {
     if (buttonCount >= 5) {
@@ -209,8 +205,9 @@ const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
             )}`}</Text>
           )}
           <View style={[styles.buttonGroupWrap, buttonGroupWrapStyle]}>
-            {isBuyButtonShow && <BuyButton themeType="innerPage" wrapStyle={buttonWrapStyle} />}
-            <SendButton themeType="innerPage" sentToken={tokenInfo} wrapStyle={buttonWrapStyle} />
+            {/* Buy is not supported for now */}
+            {/* {isBuyButtonShow && <BuyButton themeType="innerPage" wrapStyle={buttonWrapStyle} />} */}
+            <SendButton themeType="tokenInnerPage" sentToken={tokenInfo} wrapStyle={buttonWrapStyle} />
             <ReceiveButton currentTokenInfo={tokenInfo} themeType="innerPage" wrapStyle={buttonWrapStyle} />
             {isFaucetButtonShow && <FaucetButton themeType="innerPage" wrapStyle={buttonWrapStyle} />}
           </View>

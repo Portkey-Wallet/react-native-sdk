@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useRef } from 'react';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { dashBoardBtnStyle, innerPageStyles } from './style';
 import { TokenItemShowType } from 'packages/types/types-ca/token';
 import { View, TouchableOpacity, StyleProp, ViewProps } from 'react-native';
@@ -52,7 +52,7 @@ const FaucetButton = (props: SendButtonType) => {
           if (networkType !== 'TESTNET') return;
           claimToken();
         }}>
-        <Svg icon={themeType === 'dashBoard' ? 'faucet' : 'faucet1'} size={pTd(46)} />
+        <CommonSvg icon={themeType === 'dashBoard' ? 'faucet' : 'faucet1'} size={pTd(46)} />
       </TouchableOpacity>
       <TextM style={styles.titleStyle}>{t('Faucet')}</TextM>
     </View>

@@ -26,7 +26,8 @@ const ActivityItem: React.FC<ActivityItemPropsType> = ({ item, onPress }) => {
   const { t } = useLanguage();
   const { currentNetwork } = useCommonNetworkInfo();
   const isMainnet = useMemo(() => currentNetwork === 'MAIN', [currentNetwork]);
-  const { tokenPrices = [] } = useTokenPrices([item?.symbol ?? '']);
+  const tokenList = useMemo(() => (item?.symbol ? [item.symbol] : []), [item?.symbol]);
+  const { tokenPrices = [] } = useTokenPrices(tokenList);
   const isTokenHasPrice = useMemo(() => {
     return tokenPrices.find(token => token.symbol === item?.symbol) ? true : false;
   }, [item?.symbol, tokenPrices]);

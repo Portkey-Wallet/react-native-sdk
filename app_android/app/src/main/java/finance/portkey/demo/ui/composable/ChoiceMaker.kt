@@ -23,8 +23,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import finance.portkey.demo.ui.theme.Purple40
 import finance.portkey.aar.wallet.PortkeyWallet
+import finance.portkey.demo.ui.theme.Purple40
+import finance.portkey.lib.components.logic.PortkeyMMKVStorage
 
 @Composable
 internal fun ChoiceMaker(
@@ -45,7 +46,7 @@ internal fun ChoiceMaker(
         { selection, text ->
             choice = selection
             afterChosen(selection)
-            PortkeyDialog.showSuccess(text)
+            PortkeyDialogController.showSuccess(text)
         }
     }
     Box(
@@ -82,7 +83,14 @@ internal fun ChoiceMaker(
                             changeChoice(it, "Now using $it.")
                             return@click
                         } else if (!PortkeyWallet.isWalletUnlocked()) {
-                            PortkeyDialog.showFail("You currently have a wallet without unlocking operations, Please unlock wallet first.")
+                            PortkeyDialogController.showFail(
+                                text = "You currently have a wallet without unlocking operations, Please unlock wallet first.\n" +
+                                        "If you hope so, you can reset the SDK storage entirely for test.",
+                                negativeButtonText = "⚠️ Reset",
+                            ) {
+                                PortkeyMMKVStorage.clear()
+                                changeChoice(it, "Now using $it. Wallet has been erased.")
+                            }
                             return@click
                         }
                         fun execute() {
@@ -98,7 +106,7 @@ internal fun ChoiceMaker(
                                                 "Now using $it. Wallet has been erased."
                                             )
                                         } else {
-                                            PortkeyDialog.showFail("Exit wallet failed, reason: $reason")
+                                            PortkeyDialogController.showFail("Exit wallet failed, reason: $reason")
                                         }
                                     }
                                 )
@@ -106,7 +114,7 @@ internal fun ChoiceMaker(
                                 changeChoice(it, "Now using $it.")
                             }
                         }
-                        PortkeyDialog.show(
+                        PortkeyDialogController.show(
                             DialogProps().apply {
                                 mainTitle = "Confirm"
                                 subTitle =

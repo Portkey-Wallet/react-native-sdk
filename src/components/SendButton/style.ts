@@ -34,7 +34,7 @@ export const commonButtonStyle = StyleSheet.create({
 export const dashBoardBtnStyle = StyleSheet.create({
   buttonWrap: {
     marginBottom: pTd(24),
-    width: pTd(54),
+    width: pTd(65),
   },
   iconWrapStyle: {
     display: 'flex',
@@ -42,7 +42,7 @@ export const dashBoardBtnStyle = StyleSheet.create({
     alignContent: 'center',
     justifyContent: 'center',
   },
-  titleStyle: {
+  commonTitleStyle: {
     width: '100%',
     marginTop: pTd(4),
     textAlign: 'center',
@@ -50,22 +50,10 @@ export const dashBoardBtnStyle = StyleSheet.create({
     fontSize: pTd(14),
     lineHeight: pTd(20),
   },
-});
-
-export const innerPageStyles = StyleSheet.create({
-  buttonWrap: {},
-  iconWrapStyle: {
-    display: 'flex',
-    alignContent: 'center',
-    justifyContent: 'center',
+  dashBoardTitleColorStyle: {
+    color: font2,
   },
-  titleStyle: {
-    marginTop: pTd(2),
-    textAlign: 'center',
+  innerPageTitleColorStyle: {
     color: font4,
-    fontSize: pTd(14),
-    lineHeight: pTd(20),
   },
 });
-
-export default dashBoardBtnStyle;

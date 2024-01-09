@@ -21,6 +21,7 @@ export const getELFChainBalance = async (tokenContract: any, symbol: string, own
       owner,
     });
   }
+  console.warn(balance, 'balance');
   return balance?.balance ?? balance?.amount ?? 0;
 };
 

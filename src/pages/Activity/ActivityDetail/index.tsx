@@ -6,7 +6,7 @@ import CommonButton from 'components/CommonButton';
 import { TextL, TextM, TextS } from 'components/CommonText';
 import CommonToast from 'components/CommonToast';
 import PageContainer from 'components/PageContainer';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import * as Clipboard from 'expo-clipboard';
 import useEffectOnce from 'hooks/useEffectOnce';
 import { useLanguage } from 'i18n/hooks';
@@ -42,7 +42,8 @@ const ActivityDetail = ({ item, caAddresses }: ActivityDetailPropsType) => {
   const { transactionId = '', blockHash = '' } = item;
   const [activityItem, setActivityItem] = useState<ActivityItemType>();
   const isTestnet = useMemo(() => currentNetwork === 'TESTNET', [currentNetwork]);
-  const { tokenPrices } = useTokenPrices([item.symbol]);
+  const tokenList = useMemo(() => [item.symbol], [item.symbol]);
+  const { tokenPrices } = useTokenPrices(tokenList);
   const { navigateTo, onFinish } = useBaseContainer({
     entryName: PortkeyEntries.ACTIVITY_DETAIL_ENTRY,
   });
@@ -88,7 +89,7 @@ const ActivityDetail = ({ item, caAddresses }: ActivityDetailPropsType) => {
       <TouchableOpacity
         style={[styles.marginLeft8, GStyles.flexCol, styles.copyIconWrap]}
         onPress={() => copyStr(content)}>
-        <Svg icon="copy" size={pTd(13)} />
+        <CommonSvg icon="copy" size={pTd(13)} />
       </TouchableOpacity>
     ),
     [copyStr],
@@ -180,7 +181,7 @@ const ActivityDetail = ({ item, caAddresses }: ActivityDetailPropsType) => {
       scrollViewProps={{ disabled: true }}>
       <StatusBar barStyle={'dark-content'} />
       <TouchableOpacity style={styles.closeWrap} onPress={() => onFinish({ status: 'success' })}>
-        <Svg icon="close" size={pTd(16)} />
+        <CommonSvg icon="close" size={pTd(16)} />
       </TouchableOpacity>
       <Text style={[styles.typeTitle]}>{activityItem?.transactionName}</Text>
 

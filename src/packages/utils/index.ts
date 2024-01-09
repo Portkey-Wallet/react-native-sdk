@@ -2,6 +2,8 @@ import { ChainId, ChainType, NetworkType } from 'packages/types';
 import { isAelfAddress } from './aelf';
 import * as uuid from 'uuid';
 import dayjs from 'dayjs';
+import { isValidNumber } from './reg';
+import BigNumber from 'bignumber.js';
 
 /**
  * format address like "aaa...bbb" to "ELF_aaa...bbb_AELF"
@@ -241,4 +243,9 @@ export function handlePhoneNumber(str?: string) {
     if (str[0] !== '+') str = '+' + str;
   }
   return str || '';
+}
+
+export function parseInputIntegerChange(value: string, _max: number | BigNumber = Infinity, _decimal = 8) {
+  if (!isValidNumber(value)) return '';
+  return value.trim().replace(/^(0+)|[^\d]+/g, '');
 }

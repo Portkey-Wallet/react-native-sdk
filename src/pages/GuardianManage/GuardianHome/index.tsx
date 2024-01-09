@@ -1,5 +1,5 @@
 import { defaultColors } from 'assets/theme';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import React, { useCallback, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { pTd } from 'utils/unit';
@@ -114,7 +114,7 @@ export default function GuardianHome({ containerId }: { containerId: any }) {
   }, []);
 
   const renderGuardianBtn = useCallback(
-    () => <Svg icon="right-arrow" color={defaultColors.icon1} size={pTd(16)} />,
+    () => <CommonSvg icon="right-arrow" color={defaultColors.icon1} size={pTd(16)} />,
     [],
   );
 
@@ -130,7 +130,7 @@ export default function GuardianHome({ containerId }: { containerId: any }) {
           onPress={() => {
             navigateTo(PortkeyEntries.ADD_GUARDIAN_ENTRY, {});
           }}>
-          <Svg icon="add1" size={pTd(20)} color={defaultColors.font2} />
+          <CommonSvg icon="add1" size={pTd(20)} color={defaultColors.font2} />
         </TouchableOpacity>
       }>
       <View>
