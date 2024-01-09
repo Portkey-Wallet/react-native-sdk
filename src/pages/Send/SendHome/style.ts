@@ -3,6 +3,7 @@ import { defaultColors } from 'assets/theme';
 import { pTd } from 'utils/unit';
 import { ScreenHeight } from '@rneui/base';
 import GStyles from 'assets/theme/GStyles';
+import { getBottomSpace } from 'utils/screen';
 
 export const styles = StyleSheet.create({
   pageWrap: {
@@ -10,6 +11,7 @@ export const styles = StyleSheet.create({
     height: ScreenHeight - pTd(80),
     paddingLeft: 0,
     paddingRight: 0,
+    paddingBottom: getBottomSpace(),
   },
   iconStyle: {
     paddingRight: pTd(24),
@@ -30,6 +32,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     width: pTd(375),
     ...GStyles.paddingArg(12, 20),
+    marginBottom: getBottomSpace(),
   },
   errorMessage: {
     lineHeight: pTd(16),
