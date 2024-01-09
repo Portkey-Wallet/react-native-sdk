@@ -18,6 +18,8 @@ import { bottomBarHeight } from 'packages/utils/mobile/device';
 import { copyText } from 'utils/commonUtil';
 import { getStatusBarHeight } from 'utils/screen';
 import useBaseContainer from 'model/container/UseBaseContainer';
+import { PortkeyEntries } from 'config/entries';
+import { IToSendHomeParamsType } from 'packages/types/types-ca/routeParams';
 
 export interface TokenDetailProps {
   nftItem: NftItemType;
@@ -41,7 +43,7 @@ interface NftItemType {
 
 const NFTDetail: React.FC<TokenDetailProps> = ({ nftItem }: TokenDetailProps) => {
   const { t } = useLanguage();
-  const { onFinish } = useBaseContainer({});
+  const { onFinish, navigateTo } = useBaseContainer();
 
   const {
     alias,
@@ -122,6 +124,16 @@ const NFTDetail: React.FC<TokenDetailProps> = ({ nftItem }: TokenDetailProps) =>
           type="primary"
           onPress={() => {
             // todo_wade: finish navigateTo
+            navigateTo<IToSendHomeParamsType>(PortkeyEntries.SEND_TOKEN_HOME_ENTRY, {
+              params: {
+                sendType: 'nft',
+                assetInfo: nftItem,
+                toInfo: {
+                  name: '',
+                  address: '',
+                },
+              },
+            });
           }}
         />
       </View>
