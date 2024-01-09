@@ -55,8 +55,9 @@ const SendButton = (props: SendButtonType) => {
           },
         },
       });
+    } else {
+      AssetsOverlay.showAssetList();
     }
-    AssetsOverlay.showAssetList();
   }, [navigateTo, sentToken, themeType]);
 
   return (
