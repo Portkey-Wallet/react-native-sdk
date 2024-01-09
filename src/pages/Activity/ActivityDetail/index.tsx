@@ -33,10 +33,10 @@ import { NetworkController } from 'network/controller';
 
 export interface ActivityDetailPropsType {
   item: ActivityItemType;
-  caAddresses: string[];
+  caAddressInfos: { chainId: string; caAddress: string; chainName?: string }[];
 }
 
-const ActivityDetail = ({ item, caAddresses }: ActivityDetailPropsType) => {
+const ActivityDetail = ({ item, caAddressInfos }: ActivityDetailPropsType) => {
   const { t } = useLanguage();
   const { defaultToken, currentNetwork, explorerUrl } = useCommonNetworkInfo(item.fromChainId);
   const { transactionId = '', blockHash = '' } = item;
@@ -54,7 +54,7 @@ const ActivityDetail = ({ item, caAddresses }: ActivityDetailPropsType) => {
 
   useEffectOnce(async () => {
     const fetchActivityItem = await NetworkController.getActivityInfo({
-      caAddresses,
+      caAddressInfos,
       transactionId,
       blockHash,
     });

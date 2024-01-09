@@ -146,7 +146,9 @@ export const NetworkTestCases: Array<TestCase> = [
         const them = await NetworkController.getActivityInfo({
           transactionId: activity.transactionId,
           blockHash: activity.blockHash,
-          caAddresses: Object.values(multiCaAddresses),
+          caAddressInfos: Object.entries(multiCaAddresses).map(([chainId, caAddress]) => {
+            return { chainId, caAddress };
+          }),
         });
         testContext.assert(!!them, 'activity info should not be falsy');
         testContext.log(them, 'getActivityInfo result');

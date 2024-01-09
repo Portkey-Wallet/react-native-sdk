@@ -515,11 +515,11 @@ export class NetworkControllerEntity {
    * check one particular activity item info
    */
   getActivityInfo = async (config: IActivityApiParams) => {
-    const { transactionId, blockHash, caAddresses } = config;
+    const { transactionId, blockHash, caAddressInfos } = config;
     const res = await this.realExecute<ActivityItemType>(await this.parseUrl(APIPaths.GET_ACTIVITY_INFO), 'POST', {
       transactionId,
       blockHash,
-      caAddresses,
+      caAddressInfos,
     });
     if (!res?.result) throw new Error('network failure');
     return res.result;

@@ -178,7 +178,7 @@ export interface IActivitiesApiResponse {
 export interface IActivityApiParams {
   transactionId: string;
   blockHash: string;
-  caAddresses: string[];
+  caAddressInfos: { chainId: string; caAddress: string }[];
 }
 
 export type ActivityItemType = {
