@@ -16,13 +16,12 @@ import Loading from 'components/Loading';
 import { useCheckTransferLimitWithJump } from 'components/WalletSecurityAccelerate/hook';
 import { useLanguage } from 'i18n/hooks';
 import { ZERO } from 'packages/constants/misc';
-import { useAppCommonDispatch } from 'packages/hooks';
-import { addFailedActivity } from 'packages/store/store-ca/activity/slice';
 import { IToSendPreviewParamsType } from 'packages/types/types-ca/routeParams';
 import { BaseToken } from 'packages/types/types-eoa/token';
 import { sleep, formatChainInfoToShow, formatStr2EllipsisStr, addressFormat } from 'packages/utils';
 import { isCrossChain } from 'packages/utils/aelf';
 import { timesDecimals, formatAmountShow, unitConverter } from 'packages/utils/converter';
+import { ScreenHeight } from '@rneui/base';
 import crossChainTransfer, {
   CrossChainTransferIntervalParams,
   intervalCrossChainTransfer,
@@ -394,7 +393,6 @@ const SendPreview = (props: IToSendPreviewParamsType) => {
           )}
         </View>
       </ScrollView>
-
       <View style={styles.buttonWrapStyle}>
         <CommonButton loading={isLoading} title={t('Send')} type="primary" onPress={onSend} />
       </View>
@@ -406,8 +404,10 @@ export default memo(SendPreview);
 
 export const styles = StyleSheet.create({
   pageWrap: {
-    backgroundColor: defaultColors.bg1,
-    flex: 1,
+    backgroundColor: defaultColors.bg4,
+    height: ScreenHeight - pTd(80),
+    paddingLeft: pTd(20),
+    paddingRight: pTd(20),
   },
   topWrap: {
     width: '100%',
