@@ -38,7 +38,7 @@ export interface ActivityDetailPropsType {
 
 const ActivityDetail = ({ item, caAddresses }: ActivityDetailPropsType) => {
   const { t } = useLanguage();
-  const { defaultToken, currentNetwork, explorerUrl } = useCommonNetworkInfo();
+  const { defaultToken, currentNetwork, explorerUrl } = useCommonNetworkInfo(item.fromChainId);
   const { transactionId = '', blockHash = '' } = item;
   const [activityItem, setActivityItem] = useState<ActivityItemType>();
   const isTestnet = useMemo(() => currentNetwork === 'TESTNET', [currentNetwork]);
