@@ -10,8 +10,17 @@
 
 const static NSString *kTermsOfServicePrefix = @"PortkeySDKTermsOfServicePrefix";
 const static NSString *kTermsOfServiceTitle = @"PortkeySDKTermsOfServiceTitle";
+const static NSString *kIsUseInNativeApp = @"PortkeySDKIsUseInNativeApp";
 
 @implementation PortkeySDKConfigModule
+
+- (BOOL)isUseInNativeApp {
+    return [PortkeySDKMMKVStorage getBool:(NSString *)kIsUseInNativeApp];
+}
+
+- (void)setUseInNativeApp:(BOOL)isUseInNativeApp {
+    [PortkeySDKMMKVStorage setBool:isUseInNativeApp forKey:(NSString *)kIsUseInNativeApp];
+}
 
 - (void)setNetwork:(PortkeySDKNetworkConfigItem *)network {
     

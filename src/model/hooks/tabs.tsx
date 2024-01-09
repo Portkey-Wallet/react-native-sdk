@@ -1,6 +1,6 @@
 import { AELFColors } from 'assets/theme';
 import React, { FC, useMemo, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
 export const RNTabView = (config: UseTabConfig) => {
@@ -39,8 +39,15 @@ const renderTabBar = (props: any) => {
       labelStyle={styles.labelFocused}
       indicatorStyle={styles.indicatorStyle}
       indicatorContainerStyle={styles.indicatorContainerStyle}
+      renderLabel={renderLabel}
     />
   );
+};
+
+const renderLabel = (props: { color: string; route: { title: string } }) => {
+  const { color, route } = props;
+  const { title } = route;
+  return <Text style={[styles.labelFocused, { color }]}>{title ?? ''}</Text>;
 };
 
 const styles = StyleSheet.create({
