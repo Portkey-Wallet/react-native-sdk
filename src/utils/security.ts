@@ -91,7 +91,10 @@ export async function checkSecuritySafe({
       targetChainId: accelerateChainId,
     });
 
-  console.log('checkSecurity', { isTransferSafe, isSynchronizing, isOriginChainSafe, accelerateGuardians });
+  console.log(
+    'checkSecurity',
+    JSON.stringify({ isTransferSafe, isSynchronizing, isOriginChainSafe, accelerateGuardians }),
+  );
   if (isTransferSafe) return true;
   if (isOrigin && isOriginChainSafe) return true;
 
