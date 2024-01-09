@@ -307,6 +307,7 @@ export const styles = StyleSheet.create({
     paddingTop: pTd(16),
     display: 'flex',
     alignItems: 'center',
+    height: '100%',
   },
   closeWrap: {
     width: '100%',
