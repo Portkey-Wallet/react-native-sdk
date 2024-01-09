@@ -321,7 +321,7 @@ export class NetworkControllerEntity {
       await this.parseUrl(APIPaths.GET_USER_TOKEN_STATUS),
       'POST',
       {
-        caAddresses: caAddressInfos.map(({ caAddress }) => caAddress),
+        caAddressInfos,
         skipCount,
         maxResultCount,
       },

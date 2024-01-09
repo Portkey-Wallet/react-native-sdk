@@ -27,6 +27,7 @@ import { useAccountTokenBalanceList } from 'model/hooks/balance';
 import { ActivityItemType } from 'network/dto/query';
 import { PortkeyEntries } from 'config/entries';
 import { getUnlockedWallet, useUnlockedWallet } from 'model/wallet';
+import { ActivityDetailPropsType } from 'pages/Activity/ActivityDetail';
 
 interface TokenDetailPageProps {
   tokenInfo: TokenItemShowType;
@@ -165,18 +166,20 @@ const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
   }, [onFinish]);
 
   const { wallet } = useUnlockedWallet({ getMultiCaAddresses: true });
-  const caAddresses = useMemo(() => {
-    if (!wallet) return {};
-    return Object.entries(wallet.multiCaAddresses).map(it => it[1]);
+  const caAddressInfos = useMemo(() => {
+    if (!wallet) return [];
+    return Object.values(wallet.multiCaAddresses).map(([itemChainId, caAddress]) => {
+      return { chainId: itemChainId, caAddress };
+    });
   }, [wallet]);
 
   const onNavigateActivityDetail = useCallback(
     (item: ActivityItemType) => {
-      navigateTo(PortkeyEntries.ACTIVITY_DETAIL_ENTRY, {
-        params: { item, caAddresses },
+      navigateTo<ActivityDetailPropsType>(PortkeyEntries.ACTIVITY_DETAIL_ENTRY, {
+        params: { item, caAddressInfos },
       });
     },
-    [caAddresses, navigateTo],
+    [caAddressInfos, navigateTo],
   );
 
   return (
