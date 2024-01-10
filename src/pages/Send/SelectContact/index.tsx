@@ -30,6 +30,11 @@ export default function SelectContact(props: SelectContactProps) {
 
   const { t } = useLanguage();
   const { items: userContactList } = useContact();
+  const contactList = useMemo(() => {
+    return userContactList.filter(item => {
+      return !item.isDeleted;
+    });
+  }, [userContactList]);
   const { wallet } = useUnlockedWallet({ getMultiCaAddresses: true });
   const caAddressInfos = useMemo(
     () =>
@@ -55,7 +60,7 @@ export default function SelectContact(props: SelectContactProps) {
     [chainId, onPress],
   );
 
-  const isExistContact = useMemo<boolean>(() => userContactList.length > 0, [userContactList]);
+  const isExistContact = useMemo<boolean>(() => contactList.length > 0, [contactList]);
 
   const myOtherAddressList = useMemo(() => {
     return caAddressInfos.filter(item => item.chainId !== chainId);
@@ -105,7 +110,7 @@ export default function SelectContact(props: SelectContactProps) {
             <ContactsList
               isReadOnly
               style={styles.contactWrap}
-              contactData={userContactList}
+              contactData={contactList}
               isIndexBarShow={false}
               isSearchShow={false}
               renderContactItem={(item: ContactItemType) => (
@@ -151,7 +156,7 @@ export default function SelectContact(props: SelectContactProps) {
     renderRecentItem,
     t,
     totalRecordCount,
-    userContactList,
+    contactList,
   ]);
 
   return useMemo(() => <RNTabView tabs={tabList} defaultTab={'Recents'} />, [tabList]);
