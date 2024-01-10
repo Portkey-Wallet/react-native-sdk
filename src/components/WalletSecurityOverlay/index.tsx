@@ -18,6 +18,8 @@ import { ChainId } from '@portkey/provider-types';
 import useBaseContainer from 'model/container/UseBaseContainer';
 import { PortkeyEntries } from 'config/entries';
 import { TargetScene } from 'pages/Guardian/GuardianManage/type';
+import { isIOS } from 'packages/utils/mobile/device';
+
 function AlertBody({ accelerateChainId }: { accelerateChainId: ChainId }) {
   // const dispatch = useAppDispatch();
   // const isDrawerOpen = useAppCASelector(state => state.discover.isDrawerOpen);
@@ -53,9 +55,17 @@ function AlertBody({ accelerateChainId }: { accelerateChainId: ChainId }) {
     ];
   }, [accelerateChainId, navigateTo]);
 
+  const securityWarningImage = useMemo(() => {
+    if (isIOS) {
+      return { uri: 'securityWarning' };
+    } else {
+      return securityWarning;
+    }
+  }, []);
+
   return (
     <View style={styles.alertBox}>
-      <Image resizeMode="cover" source={securityWarning} style={styles.img} />
+      <Image resizeMode="cover" source={securityWarningImage} style={styles.img} />
       <TextXL style={styles.alertTitle}>Upgrade Wallet Security Level</TextXL>
       <TextM style={styles.alertMessage}>
         {`You have too few guardians to protect your wallet. Please add at least one more guardian before proceeding.
