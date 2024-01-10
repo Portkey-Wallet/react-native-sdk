@@ -92,7 +92,7 @@ const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
         managerAddresses: [address],
         chainId: tokenInfo.chainId,
         symbol: tokenInfo.symbol,
-        skipCount: isInit ? 0 : skipCount + maxResultCount,
+        skipCount: isInit ? 0 : skipCount,
         maxResultCount,
       });
       setCurrentActivity({
