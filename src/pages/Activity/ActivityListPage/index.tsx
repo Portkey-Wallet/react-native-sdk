@@ -47,12 +47,12 @@ const ActivityListPage = () => {
       }),
       managerAddresses: [address],
       chainId: originChainId,
-      skipCount,
+      skipCount: isInit ? 0 : skipCount + maxResultCount,
       maxResultCount,
     });
     setCurrentActivity({
       activityList: isInit ? data : activityList.concat(data),
-      skipCount: skipCount + maxResultCount,
+      skipCount: (isInit ? 0 : skipCount) + maxResultCount,
       totalRecordCount,
     });
     setRefreshing(false);
