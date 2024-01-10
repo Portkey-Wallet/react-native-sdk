@@ -35,6 +35,7 @@ import { getContractInstanceOnParticularChain, getTokenContract } from 'model/co
 import { ContractBasic } from 'packages/utils/contract';
 import useBaseContainer from 'model/container/UseBaseContainer';
 import { PortkeyEntries } from 'config/entries';
+import { getBottomSpace } from 'utils/screen';
 
 const SendPreview = (props: IToSendPreviewParamsType) => {
   const { navigateTo } = useBaseContainer({ entryName: PortkeyEntries.SEND_TOKEN_CONFIRM_ENTRY });
@@ -463,6 +464,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     paddingBottom: pTd(12),
     paddingTop: pTd(12),
+    marginBottom: getBottomSpace(),
   },
   errorMessage: {
     lineHeight: pTd(16),
