@@ -51,7 +51,7 @@ const ContactsList: React.FC<ContactsListProps> = ({
     <View style={[contactListStyles.listWrap, style]}>
       <ContactFlashList
         dataArray={contactData}
-        contactIndexList={[{ index: 'A', contacts: contactData }]}
+        contactIndexList={[{ index: '', contacts: contactData }]}
         sectionHeight={contactListStyles.sectionIndex.height}
         itemHeight={itemHeight || contactItemStyles.itemWrap.height}
         renderContactIndex={_renderSection}
