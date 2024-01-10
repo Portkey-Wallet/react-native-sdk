@@ -42,7 +42,7 @@ export const attemptAccountCheck = async (accountIdentifier: string): Promise<Ac
         hasRegistered: false,
       };
     }
-  } else if (registerResultDTO?.errCode === '3002') {
+  } else if (registerResultDTO?.errCode === '3002' || registerResultDTO?.errCode === '3003') {
     return {
       hasRegistered: false,
     };
@@ -157,11 +157,14 @@ export const requestSocialRecoveryOrRegister = async (params: NormalVerifyPathIn
   const publicKey = keyPair.getPublic('hex');
   const { fromRecovery, accountIdentifier, verifiedGuardians, chainId, extraData } = params;
   let sessionId = '';
+  const networkInfo = await NetworkController.getNetworkInfo();
+  const sideChainId = networkInfo.items.find(it => it.chainId !== 'AELF')?.chainId ?? 'tDVW';
   if (fromRecovery) {
     const socialRecoveryParams: RequestSocialRecoveryParams = {
       loginGuardianIdentifier: accountIdentifier,
       manager: address,
-      chainId,
+      // chainId,
+      chainId: sideChainId,
       context: {
         clientId: address,
         requestId: randomId(),
