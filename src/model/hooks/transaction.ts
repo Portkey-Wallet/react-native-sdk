@@ -2,6 +2,7 @@ import { CheckTransactionFeeResult } from 'network/dto/transaction';
 import { useState } from 'react';
 import { useIntervalPolling } from './interval';
 import { NetworkController } from 'network/controller';
+import isDeepEqual from 'fast-deep-equal/react';
 
 const INIT_TRANSACTION_FEE_ITEM: CheckTransactionFeeResult = ['AELF', 'tDVV', 'tDVW'].map(chainId => ({
   chainId,
@@ -22,7 +23,11 @@ export const useTransactionFee = (fromChainId: string) => {
       });
       return result;
     },
-    updater: setTransactionFee,
+    updater: result => {
+      if (!isDeepEqual(transactionFee, result)) {
+        setTransactionFee(result);
+      }
+    },
   });
   return transactionFee;
 };
