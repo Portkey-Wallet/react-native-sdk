@@ -47,7 +47,7 @@ const ActivityListPage = () => {
       }),
       managerAddresses: [address],
       chainId: originChainId,
-      skipCount: isInit ? 0 : skipCount + maxResultCount,
+      skipCount: isInit ? 0 : skipCount,
       maxResultCount,
     });
     setCurrentActivity({
