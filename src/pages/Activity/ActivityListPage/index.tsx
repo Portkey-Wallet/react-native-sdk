@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef, useMemo } from 'react';
-import { StyleSheet, FlatList } from 'react-native';
+import { StyleSheet, FlatList, Platform } from 'react-native';
 import PageContainer from 'components/PageContainer';
 import { pTd } from 'utils/unit';
 import useEffectOnce from 'hooks/useEffectOnce';
@@ -112,6 +112,7 @@ export const pageStyles = StyleSheet.create({
   pageWrap: {
     paddingLeft: 0,
     paddingRight: 0,
+    paddingBottom: Platform.OS === 'android' ? 75 : 0,
   },
   noResult: {},
 });
