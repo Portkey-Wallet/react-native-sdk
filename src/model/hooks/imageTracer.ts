@@ -9,7 +9,7 @@ export const useImageTracer = (imageList: Array<string> = []) => {
         if (status) setTargetImageUrl(url);
       });
     });
-  }, [imageList, targetImageUrl]);
+  }, [imageList]);
   return {
     targetImageUrl,
   };
