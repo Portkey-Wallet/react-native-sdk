@@ -320,6 +320,7 @@ export class NetworkControllerEntity {
       await this.parseUrl(APIPaths.GET_USER_TOKEN_STATUS),
       'POST',
       {
+        caAddresses: caAddressInfos.map(item => item.caAddress),
         caAddressInfos,
         skipCount,
         maxResultCount,
@@ -364,6 +365,7 @@ export class NetworkControllerEntity {
       'POST',
       {
         caAddressInfos,
+        caAddresses: caAddressInfos.map(item => item.caAddress),
         skipCount,
         maxResultCount,
         width: DEFAULT_IMAGE_SIZE,
@@ -381,6 +383,7 @@ export class NetworkControllerEntity {
       'POST',
       {
         caAddressInfos,
+        caAddresses: caAddressInfos.map(item => item.caAddress),
         skipCount,
         symbol,
         maxResultCount,
@@ -402,6 +405,7 @@ export class NetworkControllerEntity {
       'POST',
       {
         caAddressInfos,
+        caAddresses: caAddressInfos.map(item => item.caAddress),
         skipCount,
         keyword,
         maxResultCount,
@@ -423,6 +427,7 @@ export class NetworkControllerEntity {
       'POST',
       {
         caAddressInfos,
+        caAddresses: caAddressInfos.map(item => item.caAddress),
         skipCount,
         maxResultCount,
       },
@@ -480,6 +485,7 @@ export class NetworkControllerEntity {
         maxResultCount,
         skipCount,
         caAddressInfos,
+        caAddresses: caAddressInfos.map(item => item.caAddress),
         managerAddresses,
         transactionTypes,
         chainId,
@@ -510,6 +516,7 @@ export class NetworkControllerEntity {
     const res = await this.realExecute<ActivityItemType>(await this.parseUrl(APIPaths.GET_ACTIVITY_INFO), 'POST', {
       transactionId,
       blockHash,
+      caAddresses: caAddressInfos.map(item => item.caAddress),
       caAddressInfos,
     });
     if (!res?.result) throw new Error('network failure');
