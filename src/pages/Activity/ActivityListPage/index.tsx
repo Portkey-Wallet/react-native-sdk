@@ -54,7 +54,7 @@ const ActivityListPage = () => {
     });
     setCurrentActivity({
       activityList: isInit ? data : activityList.concat(data),
-      skipCount: (isInit ? 0 : skipCount) + maxResultCount,
+      skipCount: (isInit ? 0 : skipCount) + data.length,
       totalRecordCount,
     });
     setRefreshing(false);
