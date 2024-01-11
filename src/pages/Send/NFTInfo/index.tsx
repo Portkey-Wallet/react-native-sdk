@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { pTd } from 'utils/unit';
 // import { parseInputChange } from '@portkey/utils/input';
@@ -9,6 +9,7 @@ import { useLanguage } from 'i18n/hooks';
 import { TextL, TextS } from 'components/CommonText';
 import CommonAvatar from 'components/CommonAvatar';
 import { FontStyles } from 'assets/theme/styles';
+import { useImageTracer } from 'model/hooks/imageTracer';
 
 interface AmountNFT {
   nftItem: any;
@@ -16,12 +17,17 @@ interface AmountNFT {
 
 export default function NFTInfo({ nftItem = { alias: '', balance: 0 } }: AmountNFT) {
   const { t } = useLanguage();
+  const { imageUrl, imageLargeUrl } = nftItem;
+  const imageUrlList = useMemo(() => {
+    return [imageUrl, imageLargeUrl];
+  }, [imageUrl, imageLargeUrl]);
+  const { targetImageUrl } = useImageTracer(imageUrlList);
 
   return (
     <View style={styles.wrap}>
       <CommonAvatar
         shapeType="square"
-        imageUrl={nftItem?.imageUrl}
+        imageUrl={targetImageUrl}
         title={nftItem?.alias || ''}
         avatarSize={pTd(56)}
         style={styles.avatar}
