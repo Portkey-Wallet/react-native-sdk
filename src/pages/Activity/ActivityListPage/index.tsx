@@ -17,9 +17,11 @@ import { ActivityDetailPropsType } from '../ActivityDetail';
 const ActivityListPage = () => {
   const { t } = useLanguage();
   const { wallet } = useUnlockedWallet({ getMultiCaAddresses: true });
-  const caAddresses = useMemo(() => {
+  const caAddressInfos = useMemo(() => {
     if (!wallet) return {};
-    return Object.entries(wallet.multiCaAddresses).map(it => it[1]);
+    return Object.entries(wallet.multiCaAddresses ?? {}).map(it => {
+      return { chainId: it[0], caAddress: it[1] };
+    });
   }, [wallet]);
   const { navigateTo } = useBaseContainer({
     entryName: PortkeyEntries.ACTIVITY_LIST_ENTRY,
@@ -52,7 +54,7 @@ const ActivityListPage = () => {
     });
     setCurrentActivity({
       activityList: isInit ? data : activityList.concat(data),
-      skipCount: (isInit ? 0 : skipCount) + maxResultCount,
+      skipCount: (isInit ? 0 : skipCount) + data.length,
       totalRecordCount,
     });
     setRefreshing(false);
@@ -70,13 +72,13 @@ const ActivityListPage = () => {
           item={item}
           onPress={() =>
             navigateTo(PortkeyEntries.ACTIVITY_DETAIL_ENTRY, {
-              params: { item, caAddresses } as Partial<ActivityDetailPropsType>,
+              params: { item, caAddressInfos } as Partial<ActivityDetailPropsType>,
             })
           }
         />
       );
     },
-    [caAddresses, navigateTo],
+    [caAddressInfos, navigateTo],
   );
 
   const [refreshing, setRefreshing] = useState(false);

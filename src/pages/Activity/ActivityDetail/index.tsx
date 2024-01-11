@@ -14,7 +14,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { pTd } from 'utils/unit';
 import CommonAvatar from 'components/CommonAvatar';
-import { ActivityItemType } from 'network/dto/query';
+import { ActivityItemType, CaAddressInfoType } from 'network/dto/query';
 import { SHOW_FROM_TRANSACTION_TYPES, ELF_DECIMAL, TransactionTypes } from 'packages/constants/constants-ca/activity';
 import { TransactionStatus } from 'packages/types/types-ca/activity';
 import {
@@ -33,10 +33,10 @@ import { NetworkController } from 'network/controller';
 
 export interface ActivityDetailPropsType {
   item: ActivityItemType;
-  caAddresses: string[];
+  caAddressInfos: Array<CaAddressInfoType>;
 }
 
-const ActivityDetail = ({ item, caAddresses }: ActivityDetailPropsType) => {
+const ActivityDetail = ({ item, caAddressInfos }: ActivityDetailPropsType) => {
   const { t } = useLanguage();
   const { defaultToken, currentNetwork, explorerUrl } = useCommonNetworkInfo(item.fromChainId);
   const { transactionId = '', blockHash = '' } = item;
@@ -54,7 +54,7 @@ const ActivityDetail = ({ item, caAddresses }: ActivityDetailPropsType) => {
 
   useEffectOnce(async () => {
     const fetchActivityItem = await NetworkController.getActivityInfo({
-      caAddresses,
+      caAddressInfos,
       transactionId,
       blockHash,
     });
