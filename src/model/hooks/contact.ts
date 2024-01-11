@@ -67,8 +67,8 @@ export const useRecent = (removeDuplicateResult = true) => {
 
 const sortByFirstLetter = (list: Array<RecentContactItemType>) => {
   return list.sort((a, b) => {
-    const aName = a.name || '';
-    const bName = b.name || '';
+    const aName = a.name[0].toLowerCase();
+    const bName = b.name[0].toLowerCase();
     return aName.localeCompare(bName);
   });
 };
