@@ -10,7 +10,8 @@ import { CheckTransactionFeeResult } from 'network/dto/transaction';
 export const useTokenPrices = (tokenList: string[] = []) => {
   const [tokenPrices, setTokenPrices] = useState<Array<{ symbol: string; priceInUsd: number }>>([]);
   const updateTokenPrices = useCallback(async () => {
-    const result = await NetworkController.checkTokenPrices(tokenList);
+    if (tokenList.length === 0) return;
+    const result = await NetworkController.fetchTokenPrices(tokenList);
     result && setTokenPrices(result.items);
   }, [tokenList]);
   useEffect(() => {

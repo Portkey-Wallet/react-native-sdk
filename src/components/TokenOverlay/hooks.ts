@@ -6,13 +6,22 @@ import { getCurrentNetworkType } from 'model/hooks/network';
 import { getTempWalletConfig } from 'model/verify/core';
 import { NetworkController } from 'network/controller';
 import { useState } from 'react';
+import { handleCachedValue } from 'service/storage/cache';
 
 export function useSymbolImages() {
   const [symbolImages, setSymbolImages] = useState<Record<string, string>>({});
-  useEffectOnce(() => {
-    NetworkController.getSymbolImage().then(result => {
-      setSymbolImages(result.result?.symbolImages || {});
+  useEffectOnce(async () => {
+    const imageData = await handleCachedValue({
+      target: 'TEMP',
+      getIdentifier: async () => {
+        return 'symbolImages';
+      },
+      getValueIfNonExist: async () => {
+        const result = await NetworkController.getSymbolImage();
+        return result.result?.symbolImages || {};
+      },
     });
+    setSymbolImages(imageData);
   });
   return symbolImages;
 }
