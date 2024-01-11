@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useState } from 'react';
 import PageContainer from 'components/PageContainer';
-import { StyleSheet, FlatList, View } from 'react-native';
+import { StyleSheet, FlatList, View, Platform } from 'react-native';
 import { defaultColors } from 'assets/theme';
 import GStyles from 'assets/theme/GStyles';
 import { TextL, TextM } from 'components/CommonText';
@@ -137,6 +137,7 @@ const pageStyles = StyleSheet.create({
   pageWrap: {
     backgroundColor: defaultColors.bg4,
     paddingHorizontal: 0,
+    paddingBottom: Platform.OS === 'android' ? 75 : 0,
   },
   listWrap: {
     ...GStyles.paddingArg(24, 20, 18),
