@@ -1,7 +1,7 @@
 import useEffectOnce from 'hooks/useEffectOnce';
 import { getUnlockedWallet } from 'model/wallet';
 import { NetworkController } from 'network/controller';
-import { GetContractListApiType, RecentTransactionResponse } from 'network/dto/query';
+import { GetContractListApiType, RecentContactItemType, RecentTransactionResponse } from 'network/dto/query';
 import { useCallback, useMemo, useState } from 'react';
 
 export const useContact = () => {
@@ -26,8 +26,10 @@ export const useRecent = (removeDuplicateResult = true) => {
     return {
       ...recent,
       data: removeDuplicateResult
-        ? recent.data.filter((item, index, array) => array.findIndex(i => i.address === item.address) === index)
-        : recent.data,
+        ? sortByFirstLetter(
+            recent.data.filter((item, index, array) => array.findIndex(i => i.address === item.address) === index),
+          )
+        : sortByFirstLetter(recent.data),
     };
   }, [recent, removeDuplicateResult]);
   const loadMoreRecent = useCallback(
@@ -61,6 +63,14 @@ export const useRecent = (removeDuplicateResult = true) => {
     [recent],
   );
   return { recent: filteredRecent, loadMoreRecent };
+};
+
+const sortByFirstLetter = (list: Array<RecentContactItemType>) => {
+  return list.sort((a, b) => {
+    const aName = a.name || '';
+    const bName = b.name || '';
+    return aName.localeCompare(bName);
+  });
 };
 
 export interface RefreshHandler {
