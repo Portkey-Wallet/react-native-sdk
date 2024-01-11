@@ -11,12 +11,12 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import okhttp3.FormBody
 import okhttp3.Headers
-import okhttp3.Interceptor
 import okhttp3.JavaNetCookieJar
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import org.json.JSONArray
 import org.json.JSONObject
 import java.net.CookieManager
 import java.net.CookiePolicy
@@ -152,6 +152,36 @@ internal object NetworkConnector {
             dealWithResponse(response, printBody = response.code != 200)
         } catch (e: Throwable) {
             Log.e("NetworkConnector", "postRequest", e)
+            ResultWrapper(-1)
+        }
+    }
+
+    fun headRequest(url: String, header: ReadableMap, options: ReadableMap?): ResultWrapper {
+        return try {
+            val request = okhttp3.Request.Builder()
+                .url(url)
+                .headers(header.toHeaders())
+                .head()
+                .tag<TimeOutConfig>(
+                    TimeOutConfig(
+                        options?.getDouble("maxWaitingTime")?.toInt() ?: 5000
+                    )
+                )
+                .build()
+            val response = okHttpClient
+                .newCall(request)
+                .execute()
+            if (!response.isSuccessful) {
+                Log.e(
+                    "NetworkConnector",
+                    "Network failed ! url:${url}, headers:${header.toHashMap()}, status:${response.code}"
+                )
+            }
+            return ResultWrapper(
+                response.code,
+            )
+        } catch (e: Throwable) {
+            Log.e("NetworkConnector", "headRequest", e)
             ResultWrapper(-1)
         }
     }
