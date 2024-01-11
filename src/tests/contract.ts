@@ -25,4 +25,31 @@ export const ContractMethodTestCases: Array<TestCase> = [
       });
     },
   },
+  {
+    describe: 'sort contracts well',
+    run: textContext => {
+      const sortByFirstLetter = (list: Array<{ name: string }>) => {
+        return list.sort((a, b) => {
+          const aName = a.name[0].toLowerCase();
+          const bName = b.name[0].toLowerCase();
+          return aName.localeCompare(bName);
+        });
+      };
+      const sortList: Array<{ name: string }> = [
+        {
+          name: 'Zwb31s1o2',
+        },
+        {
+          name: 'gooleliu1',
+        },
+        {
+          name: 'meil',
+        },
+      ];
+      const sortedList = sortByFirstLetter(sortList);
+      textContext.assert(sortedList[0].name === 'gooleliu1', 'first item should be gooleliu1');
+      textContext.log(sortedList, 'sortedList');
+    },
+    useDetailsReport: true,
+  },
 ];
