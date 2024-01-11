@@ -201,16 +201,16 @@ internal object NetworkConnector {
     }
 
     private fun ReadableMap.toRequestBody(contentType: String = "application/json"): okhttp3.RequestBody {
-        if (contentType == "application/json") {
+        return if (contentType == "application/json") {
             val json = this.toJson().toString()
-            return json.toRequestBody(contentType.toMediaTypeOrNull())
+            json.toRequestBody(contentType.toMediaTypeOrNull())
         } else {
             val formBody = FormBody.Builder()
             this.toHashMap().forEach {
                 val (key, value) = it
                 formBody.add(key, "$value")
             }
-            return formBody.build()
+            formBody.build()
         }
     }
 

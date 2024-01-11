@@ -1,7 +1,7 @@
 import useEffectOnce from 'hooks/useEffectOnce';
 import { getUnlockedWallet } from 'model/wallet';
 import { NetworkController } from 'network/controller';
-import { GetContractListApiType, RecentContactItemType, RecentTransactionResponse } from 'network/dto/query';
+import { ContactItemType, GetContractListApiType, RecentTransactionResponse } from 'network/dto/query';
 import { useCallback, useMemo, useState } from 'react';
 
 export const useContact = () => {
@@ -11,7 +11,12 @@ export const useContact = () => {
   });
   useEffectOnce(async () => {
     const result = await NetworkController.getContractInfo();
-    result && setContact(result);
+    if (result) {
+      setContact({
+        totalCount: result.totalCount,
+        items: sortByFirstLetter(result.items),
+      });
+    }
   });
   return contact;
 };
@@ -26,10 +31,8 @@ export const useRecent = (removeDuplicateResult = true) => {
     return {
       ...recent,
       data: removeDuplicateResult
-        ? sortByFirstLetter(
-            recent.data.filter((item, index, array) => array.findIndex(i => i.address === item.address) === index),
-          )
-        : sortByFirstLetter(recent.data),
+        ? recent.data.filter((item, index, array) => array.findIndex(i => i.address === item.address) === index)
+        : recent.data,
     };
   }, [recent, removeDuplicateResult]);
   const loadMoreRecent = useCallback(
@@ -65,10 +68,13 @@ export const useRecent = (removeDuplicateResult = true) => {
   return { recent: filteredRecent, loadMoreRecent };
 };
 
-const sortByFirstLetter = (list: Array<RecentContactItemType>) => {
+const sortByFirstLetter = (list: Array<ContactItemType>) => {
   return list.sort((a, b) => {
-    const aName = a.name[0].toLowerCase();
-    const bName = b.name[0].toLowerCase();
+    const getRealName = (it: ContactItemType) => {
+      return it.name ?? it.caHolderInfo?.walletName ?? '';
+    };
+    const aName = getRealName(a).toLowerCase();
+    const bName = getRealName(b).toLowerCase();
     return aName.localeCompare(bName);
   });
 };

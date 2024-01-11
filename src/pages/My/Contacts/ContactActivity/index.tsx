@@ -60,7 +60,6 @@ const ContactActivity = ({ address, chainId, contactName, avatar }: ParamsType) 
         {
           caAddress: address,
           chainId: chainId,
-          chainName: '',
         },
       ],
       width: NFT_MIDDLE_SIZE,
