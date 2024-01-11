@@ -31,7 +31,6 @@ import { getCachedNetworkToken } from 'network/token';
 import { isWalletUnlocked } from 'model/verify/core';
 import { SymbolImages } from 'model/symbolImage';
 import {
-  FetchTokenPriceResult,
   SearchTokenListParams,
   GetUserTokenListResult,
   FetchBalanceConfig,
@@ -321,19 +320,12 @@ export class NetworkControllerEntity {
       await this.parseUrl(APIPaths.GET_USER_TOKEN_STATUS),
       'POST',
       {
-        caAddresses: caAddressInfos.map(({ caAddress }) => caAddress),
+        caAddressInfos,
         skipCount,
         maxResultCount,
       },
     );
     if (!res?.result) throw new Error('network failure');
-    return res.result;
-  };
-
-  checkTokenPrices = async (symbols: string[]): Promise<FetchTokenPriceResult | null | undefined> => {
-    const res = await this.realExecute<FetchTokenPriceResult>(await this.parseUrl(APIPaths.GET_TOKEN_PRICES), 'GET', {
-      symbols,
-    });
     return res.result;
   };
 
@@ -487,7 +479,6 @@ export class NetworkControllerEntity {
       {
         maxResultCount,
         skipCount,
-        caAddresses: caAddressInfos.map(it => it.caAddress),
         caAddressInfos,
         managerAddresses,
         transactionTypes,
@@ -515,11 +506,11 @@ export class NetworkControllerEntity {
    * check one particular activity item info
    */
   getActivityInfo = async (config: IActivityApiParams) => {
-    const { transactionId, blockHash, caAddresses } = config;
+    const { transactionId, blockHash, caAddressInfos } = config;
     const res = await this.realExecute<ActivityItemType>(await this.parseUrl(APIPaths.GET_ACTIVITY_INFO), 'POST', {
       transactionId,
       blockHash,
-      caAddresses,
+      caAddressInfos,
     });
     if (!res?.result) throw new Error('network failure');
     return res.result;
