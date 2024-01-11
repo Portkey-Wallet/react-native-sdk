@@ -3,6 +3,7 @@ import { defaultColors } from 'assets/theme';
 import { pTd } from 'utils/unit';
 import GStyles from 'assets/theme/GStyles';
 import { windowHeight } from 'packages/utils/mobile/device';
+import { getBottomSpace } from 'utils/screen';
 
 const { bg1, font3, bg4, error } = defaultColors;
 
@@ -71,5 +72,8 @@ export const pageStyles = StyleSheet.create({
     paddingHorizontal: pTd(16),
     justifyContent: 'center',
     marginBottom: pTd(24),
+  },
+  confirmBtn: {
+    marginBottom: getBottomSpace(),
   },
 });

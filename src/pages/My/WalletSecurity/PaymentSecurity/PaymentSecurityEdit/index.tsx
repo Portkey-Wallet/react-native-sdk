@@ -19,6 +19,7 @@ import { ITransferLimitItem } from 'model/security';
 import { handleGuardiansApproval } from 'model/verify/entry/hooks';
 import { GuardianVerifyType } from 'model/verify/social-recovery';
 import CommonToast from 'components/CommonToast';
+import { getBottomSpace } from 'utils/screen';
 
 export interface PaymentSecurityEditProps {
   transferLimitDetail?: ITransferLimitItem;
@@ -186,7 +187,7 @@ const PaymentSecurityEdit: React.FC = (props: PaymentSecurityEditProps) => {
           <TextM style={FontStyles.font3}>No limit for transfer</TextM>
         )}
       </View>
-      <CommonButton disabled={isButtonDisabled} type="solid" onPress={save}>
+      <CommonButton style={pageStyles.bottomButton} disabled={isButtonDisabled} type="solid" onPress={save}>
         Send Request
       </CommonButton>
     </PageContainer>
@@ -209,6 +210,9 @@ const pageStyles = StyleSheet.create({
     height: pTd(56),
     alignItems: 'center',
     borderRadius: pTd(6),
+  },
+  bottomButton: {
+    marginBottom: getBottomSpace(),
   },
 });
 

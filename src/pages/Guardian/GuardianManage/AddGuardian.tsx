@@ -619,7 +619,7 @@ const AddGuardian = (props: { targetScene?: string; accelerateChainId: ChainId }
         />
         {guardianError.isError && <TextS style={pageStyles.errorTips}>{guardianError.errorMsg || ''}</TextS>}
       </View>
-      <View>
+      <View style={pageStyles.confirmBtn}>
         <CommonButton disabled={isConfirmDisable} type="primary" onPress={onConfirm}>
           {t('Confirm')}
         </CommonButton>

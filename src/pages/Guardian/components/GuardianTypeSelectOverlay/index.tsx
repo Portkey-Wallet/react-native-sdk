@@ -46,7 +46,7 @@ const SelectList = <ItemType extends ItemTypeBase<ItemValueType>, ItemValueType 
               }}>
               <View style={[GStyles.paddingLeft(20), styles.itemRow]}>
                 <View style={styles.itemContent}>
-                  {item.icon && <CommonSvg icon={item.icon} size={pTd(28)} iconStyle={styles.leftIcon} />}
+                  {item.icon && <CommonSvg icon={item.icon} size={pTd(32)} iconStyle={styles.leftIcon} />}
                   <TextL>{item[labelAttrName]}</TextL>
                   {value !== undefined && value === item.value && (
                     <CommonSvg iconStyle={styles.itemIcon} icon="selected" size={pTd(24)} />
