@@ -37,7 +37,7 @@ const FaucetButton = (props: SendButtonType) => {
       }
       CommonToast.success(`Token successfully requested`);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       CommonToast.warn(`Today's limit has been reached`);
     }
     isLoading.current = false;

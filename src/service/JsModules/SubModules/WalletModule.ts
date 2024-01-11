@@ -97,7 +97,7 @@ const WalletModule: BaseJSModule = {
         data: { result: res.data },
       });
     } catch (e) {
-      console.log('error when callRemoveManagerMethod', e);
+      console.error('error when callRemoveManagerMethod', e);
       return emitJSMethodResult(eventId, {
         status: 'fail',
         error: e,
