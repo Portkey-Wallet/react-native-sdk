@@ -78,9 +78,6 @@ const AssetsHome: React.FC = () => {
             });
           }}
         />
-        <View style={styles.refreshWrap}>
-          <Text style={styles.block} />
-        </View>
         <Text style={styles.usdtBalance}>{isMainnet ? `$${balanceUSD.toFixed(2)}` : 'Dev Mode'}</Text>
         <TextM style={styles.accountName}>{wallet?.name}</TextM>
         <View style={styles.buttonGroupWrap}>

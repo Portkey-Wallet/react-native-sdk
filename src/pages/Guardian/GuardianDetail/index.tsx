@@ -310,12 +310,12 @@ export default function GuardianDetail(config: { info: string }) {
               label={guardian?.verifier?.name}
               uri={guardian?.verifier?.imageUrl}
             />
-            <TextL>{guardian?.verifier?.name || ''}</TextL>
+            <TextM>{guardian?.verifier?.name || ''}</TextM>
           </View>
         </View>
 
         <View style={pageStyles.loginSwitchWrap}>
-          <TextM>{t('Login account')}</TextM>
+          <TextL>{t('Login account')}</TextL>
           <CommonSwitch
             value={guardian === undefined ? false : guardian.isLoginAccount}
             onValueChange={onLoginAccountChange}
