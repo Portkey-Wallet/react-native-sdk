@@ -1,6 +1,6 @@
 {
   "name": "@portkey/react-native-sdk",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0-alpha.5",
   "author": "Carbon.lv <130360750+carbon-portkey@users.noreply.github.com>",
   "license": "MIT",
   "main": "./dist/index.js",
