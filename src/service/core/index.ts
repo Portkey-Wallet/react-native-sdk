@@ -2,6 +2,7 @@ import { myContainer } from './inversify.config';
 import { IPortkeyAccountService, IPortkeyUIManagerService } from './base';
 import { TYPES } from './type';
 import { CallCaMethodProps } from 'service/JsModules/SubModules/WalletModule';
+import { AssetsState } from './assets';
 export * from './type';
 
 class Portkey implements IPortkeyAccountService, IPortkeyUIManagerService {
@@ -10,6 +11,9 @@ class Portkey implements IPortkeyAccountService, IPortkeyUIManagerService {
   constructor() {
     this._portkeyAccountService = myContainer.get<IPortkeyAccountService>(TYPES.AccountModule);
     this._portkeyUIManagerService = myContainer.get<IPortkeyUIManagerService>(TYPES.UIManagerModule);
+  }
+  async getAssetsInfo(): Promise<AssetsState> {
+    return this._portkeyAccountService.getAssetsInfo();
   }
   async login() {
     return this._portkeyUIManagerService.login();
