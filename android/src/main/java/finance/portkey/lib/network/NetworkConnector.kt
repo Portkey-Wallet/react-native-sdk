@@ -94,7 +94,7 @@ internal object NetworkConnector {
                 .url(url)
                 .headers(header.toHeaders())
                 .get()
-                .tag<TimeOutConfig>(
+                .tag(
                     TimeOutConfig(
                         options?.getDouble("maxWaitingTime")?.toInt() ?: 5000
                     )
@@ -127,7 +127,7 @@ internal object NetworkConnector {
                 .url(url)
                 .headers(header.toHeaders())
                 .post(body.toRequestBody(header.getString("Content-Type") ?: "application/json"))
-                .tag<TimeOutConfig>(
+                .tag(
                     TimeOutConfig(
                         options?.getDouble("maxWaitingTime")?.toInt() ?: 5000
                     )
@@ -145,6 +145,36 @@ internal object NetworkConnector {
             dealWithResponse(response, printBody = response.code != 200)
         } catch (e: Throwable) {
             Log.e("NetworkConnector", "postRequest", e)
+            ResultWrapper(-1)
+        }
+    }
+
+    fun headRequest(url: String, header: ReadableMap, options: ReadableMap?): ResultWrapper {
+        return try {
+            val request = okhttp3.Request.Builder()
+                .url(url)
+                .headers(header.toHeaders())
+                .head()
+                .tag(
+                    TimeOutConfig(
+                        options?.getDouble("maxWaitingTime")?.toInt() ?: 5000
+                    )
+                )
+                .build()
+            val response = okHttpClient
+                .newCall(request)
+                .execute()
+            if (!response.isSuccessful) {
+                Log.e(
+                    "NetworkConnector",
+                    "Network failed ! url:${url}, headers:${header.toHashMap()}, status:${response.code}"
+                )
+            }
+            return ResultWrapper(
+                response.code,
+            )
+        } catch (e: Throwable) {
+            Log.e("NetworkConnector", "headRequest", e)
             ResultWrapper(-1)
         }
     }
