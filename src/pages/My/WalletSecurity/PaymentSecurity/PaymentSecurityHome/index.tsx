@@ -137,6 +137,7 @@ const pageStyles = StyleSheet.create({
   pageWrap: {
     backgroundColor: defaultColors.bg4,
     paddingHorizontal: 0,
+    height: '100%',
     paddingBottom: 75,
   },
   listWrap: {

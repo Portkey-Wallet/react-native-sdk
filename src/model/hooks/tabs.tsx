@@ -66,7 +66,8 @@ const styles = StyleSheet.create({
     backgroundColor: AELFColors.AELF,
   },
   indicatorContainerStyle: {
-    backgroundColor: AELFColors.AELF,
+    backgroundColor: 'transparent',
+    zIndex: 999,
   },
   tabStyle: {
     backgroundColor: 'white',

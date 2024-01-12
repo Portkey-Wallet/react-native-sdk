@@ -21,7 +21,7 @@ import { GlobalStorage } from 'service/storage';
 import { CURRENT_USING_COUNTRY_CODE } from 'model/global';
 
 const IndexHeight = 56,
-  SectionHeight = 20;
+  SectionHeight = 40;
 
 export default function SelectCountry({
   selectCountry,
@@ -126,6 +126,7 @@ const styles = StyleSheet.create({
     paddingRight: pTd(40),
   },
   sectionRow: {
+    paddingTop: pTd(20),
     paddingHorizontal: pTd(20),
     height: SectionHeight,
     backgroundColor: defaultColors.bg1,

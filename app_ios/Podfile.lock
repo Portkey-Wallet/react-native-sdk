@@ -527,6 +527,7 @@ PODS:
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
   - SocketRocket (0.6.1)
+  - SVProgressHUD (2.2.5)
   - Toast (4.0.0)
   - Yoga (1.14.0)
   - YYKit (1.0.9):
@@ -619,6 +620,7 @@ DEPENDENCIES:
   - RNSpringScrollView (from `../node_modules/react-native-spring-scrollview`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
+  - SVProgressHUD
   - Toast (= 4.0.0)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
   - YYKit (from `https://github.com/SAGESSE-CN/YYKit.git`)
@@ -638,6 +640,7 @@ SPEC REPOS:
     - SDWebImage
     - SDWebImageWebPCoder
     - SocketRocket
+    - SVProgressHUD
     - Toast
     - ZXingObjC
 
@@ -894,11 +897,12 @@ SPEC CHECKSUMS:
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
+  SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   Yoga: 11d7931afb89721f39cf553a78767b81c7fbea1f
   YYKit: 9ac092a14e3d5af709b707479bdb76b96a62fb41
   ZXingObjC: 8898711ab495761b2dbbdec76d90164a6d7e14c5
 
-PODFILE CHECKSUM: 86b43f0b7f950c06438ef1cfd1b6498402fcd504
+PODFILE CHECKSUM: 4f49a96a6a42e4ccac455ac3edc541ad61e1155b
 
 COCOAPODS: 1.12.1
