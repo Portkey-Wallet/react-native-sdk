@@ -17,6 +17,7 @@ import { PortkeyEntries } from 'config/entries';
 import { PaymentSecurityEditProps } from '../PaymentSecurityEdit';
 import { GuardiansApprovalIntent } from 'pages/GuardianManage/GuardianHome';
 import CommonToast from 'components/CommonToast';
+import { getBottomSpace } from 'utils/screen';
 
 export interface PaymentSecurityDetailProps {
   transferLimitDetail?: ITransferLimitItem;
@@ -107,6 +108,7 @@ const PaymentSecurityDetail: React.FC = (props: PaymentSecurityDetailProps) => {
         )}
       </View>
       <CommonButton
+        style={pageStyles.editButton}
         type="solid"
         onPress={() => {
           navigateForResult<GuardiansApprovalIntent, PaymentSecurityEditProps>(
@@ -148,6 +150,9 @@ const pageStyles = StyleSheet.create({
     height: pTd(56),
     alignItems: 'center',
     borderRadius: pTd(6),
+  },
+  editButton: {
+    marginBottom: getBottomSpace(),
   },
 });
 

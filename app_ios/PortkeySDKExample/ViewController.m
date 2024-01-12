@@ -18,6 +18,7 @@
 #import <PortkeySDK/PortkeySDKContractModule.h>
 #import <PortkeySDK/NSDictionary+PortkeySDK.h>
 #import <PortkeySDK/PortkeySDKPortkey.h>
+#import <SVProgressHUD/SVProgressHUD.h>
 
 @interface PortkeyPageConfig : NSObject
 
@@ -249,7 +250,9 @@
 - (void)exitWallet {
     NSString *walletConfig = [PortkeySDKMMKVStorage readTempString:@"walletConfig"];
     if ([walletConfig isKindOfClass:NSString.class] && walletConfig.length) {
+        [SVProgressHUD show];
         [[PortkeySDKPortkey portkey].wallet exitWallet:^(BOOL success, NSString * _Nullable errorMsg) {
+            [SVProgressHUD dismiss];
             if (success) {
                 [PortkeySDKMMKVStorage clear];
                 [self.view makeToast:@"Exit Wallet Successfully"];

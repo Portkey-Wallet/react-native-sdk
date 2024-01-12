@@ -626,8 +626,9 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   confirmedButtonText: {
-    color: '#20CD85',
+    color: '#34C759',
     fontSize: 12,
+    fontWeight: '500',
     lineHeight: 16,
     backgroundColor: '#fff',
   },
