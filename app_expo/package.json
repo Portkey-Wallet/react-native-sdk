@@ -9,7 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@portkey/react-native-sdk": "^1.0.0-alpha.3",
+    "@portkey/react-native-sdk": "^1.0.0-alpha.5",
     "expo": "~49.0.15",
     "expo-dev-client": "~2.4.12",
     "expo-splash-screen": "~0.20.5",
