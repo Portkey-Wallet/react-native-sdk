@@ -137,6 +137,7 @@ export default function Referral({
           onPress={onGoogleSign}
           title={TitleMap[type].google}
           icon={<CommonSvg icon="google" size={24} />}
+          buttonStyle={pageStyles.buttonStyle}
           containerStyle={pageStyles.outlineContainerStyle}
           titleStyle={[FontStyles.font3, pageStyles.outlineTitleStyle]}
         />
@@ -146,6 +147,7 @@ export default function Referral({
           onPress={onAppleSign}
           title={TitleMap[type].apple}
           icon={<CommonSvg icon="apple" size={24} />}
+          buttonStyle={pageStyles.buttonStyle}
           containerStyle={pageStyles.outlineContainerStyle}
           titleStyle={[FontStyles.font3, pageStyles.outlineTitleStyle]}
         />
@@ -169,11 +171,13 @@ export default function Referral({
 const pageStyles = StyleSheet.create({
   outlineContainerStyle: {
     marginTop: 20,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: defaultColors.border1,
   },
   outlineTitleStyle: {
     marginLeft: 12,
+  },
+  buttonStyle: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: defaultColors.border1,
   },
   dividerStyle: {
     marginVertical: 16,
