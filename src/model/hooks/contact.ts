@@ -1,7 +1,7 @@
 import useEffectOnce from 'hooks/useEffectOnce';
 import { getUnlockedWallet } from 'model/wallet';
 import { NetworkController } from 'network/controller';
-import { GetContractListApiType, RecentTransactionResponse } from 'network/dto/query';
+import { ContactItemType, GetContractListApiType, RecentTransactionResponse } from 'network/dto/query';
 import { useCallback, useMemo, useState } from 'react';
 
 export const useContact = () => {
@@ -11,7 +11,12 @@ export const useContact = () => {
   });
   useEffectOnce(async () => {
     const result = await NetworkController.getContractInfo();
-    result && setContact(result);
+    if (result) {
+      setContact({
+        totalCount: result.totalCount,
+        items: sortByFirstLetter(result.items),
+      });
+    }
   });
   return contact;
 };
@@ -61,6 +66,17 @@ export const useRecent = (removeDuplicateResult = true) => {
     [recent],
   );
   return { recent: filteredRecent, loadMoreRecent };
+};
+
+const sortByFirstLetter = (list: Array<ContactItemType>) => {
+  return list.sort((a, b) => {
+    const getRealName = (it: ContactItemType) => {
+      return it.name ?? it.caHolderInfo?.walletName ?? '';
+    };
+    const aName = getRealName(a).toLowerCase();
+    const bName = getRealName(b).toLowerCase();
+    return aName.localeCompare(bName);
+  });
 };
 
 export interface RefreshHandler {

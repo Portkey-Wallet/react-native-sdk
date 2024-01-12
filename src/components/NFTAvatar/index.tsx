@@ -1,10 +1,11 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { pTd } from 'utils/unit';
 import { TextM, TextS } from 'components/CommonText';
 import { defaultColors } from 'assets/theme';
 import GStyles from 'assets/theme/GStyles';
 import CommonAvatar from 'components/CommonAvatar';
+import { useImageTracer } from 'model/hooks/imageTracer';
 
 export type NoDataPropsType = {
   style?: ViewStyle | ViewStyle[];
@@ -13,6 +14,7 @@ export type NoDataPropsType = {
     balance: string;
     chainId: string;
     imageUrl: string;
+    imageLargeUrl: string;
     symbol: string;
     tokenContractAddress: string;
     tokenId: string;
@@ -23,23 +25,29 @@ export type NoDataPropsType = {
 const NFTAvatar: React.FC<NoDataPropsType> = props => {
   const {
     style = {},
-    data: { imageUrl, tokenId, alias },
+    data: { imageUrl, imageLargeUrl, tokenId, alias },
     onPress,
   } = props;
+
+  const imageUrlList = useMemo(() => {
+    return [imageUrl, imageLargeUrl];
+  }, [imageUrl, imageLargeUrl]);
+
+  const { targetImageUrl } = useImageTracer(imageUrlList);
 
   const outStyles = Array.isArray(style) ? style : [style];
 
   return (
     <TouchableOpacity style={[styles.wrap, ...outStyles]} onPress={onPress}>
-      {imageUrl && <CommonAvatar shapeType="square" imageUrl={imageUrl} style={styles.img} />}
+      {targetImageUrl && <CommonAvatar shapeType="square" imageUrl={targetImageUrl} style={styles.img} />}
       <TextM
-        numberOfLines={imageUrl ? 1 : 2}
+        numberOfLines={targetImageUrl ? 1 : 2}
         ellipsizeMode="tail"
-        style={[styles.title, !!imageUrl && styles.titleNoPic]}>
+        style={[styles.title, !!targetImageUrl && styles.titleNoPic]}>
         {alias}
       </TextM>
-      <TextS style={[styles.id, !!imageUrl && styles.idNoPic]}>{`# ${tokenId}`}</TextS>
-      {imageUrl && <View style={styles.mask} />}
+      <TextS style={[styles.id, !!targetImageUrl && styles.idNoPic]}>{`# ${tokenId}`}</TextS>
+      {targetImageUrl && <View style={styles.mask} />}
     </TouchableOpacity>
   );
 };

@@ -23,7 +23,7 @@ export const NetworkTestCases: Array<TestCase> = [
   {
     describe: 'run GetTokenPrice well',
     run: async testContext => {
-      const it = await NetworkController.checkTokenPrices(['ELF']);
+      const it = await NetworkController.fetchTokenPrices(['ELF']);
       testContext.assert(!!it, 'it should not be falsy');
       testContext.log(it, 'getTokenPrice result');
     },
@@ -146,7 +146,10 @@ export const NetworkTestCases: Array<TestCase> = [
         const them = await NetworkController.getActivityInfo({
           transactionId: activity.transactionId,
           blockHash: activity.blockHash,
-          caAddresses: Object.values(multiCaAddresses),
+          caAddressInfos: Object.entries(multiCaAddresses).map(([chainId, caAddress]) => ({
+            chainId,
+            caAddress,
+          })),
         });
         testContext.assert(!!them, 'activity info should not be falsy');
         testContext.log(them, 'getActivityInfo result');

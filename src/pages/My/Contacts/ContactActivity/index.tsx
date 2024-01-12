@@ -60,7 +60,6 @@ const ContactActivity = ({ address, chainId, contactName, avatar }: ParamsType) 
         {
           caAddress: address,
           chainId: chainId,
-          chainName: '',
         },
       ],
       width: NFT_MIDDLE_SIZE,
@@ -117,7 +116,15 @@ const ContactActivity = ({ address, chainId, contactName, avatar }: ParamsType) 
             if (!wallet) return;
             const { multiCaAddresses } = wallet;
             navigateTo<ActivityDetailPropsType>(PortkeyEntries.ACTIVITY_DETAIL_ENTRY, {
-              params: { item, caAddresses: Object.values(multiCaAddresses) },
+              params: {
+                item,
+                caAddressInfos: Object.entries(multiCaAddresses).map(([itemChainId, caAddress]) => {
+                  return {
+                    chainId: itemChainId,
+                    caAddress,
+                  };
+                }),
+              },
             });
           }}
         />

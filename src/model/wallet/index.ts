@@ -23,7 +23,7 @@ export const getUnlockedWallet = async ({
     caInfo: originalCaInfo,
   } = (await getTempWalletConfig()) || {};
   let checkedOriginalChainId = originalChainId;
-  if (accountIdentifier) {
+  if (accountIdentifier && !originalChainId) {
     const chainInfo = await NetworkController.getRegisterResult(accountIdentifier);
     checkedOriginalChainId = chainInfo.result?.originChainId || originalChainId;
   }
