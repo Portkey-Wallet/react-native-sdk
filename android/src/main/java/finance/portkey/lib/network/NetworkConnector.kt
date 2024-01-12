@@ -16,7 +16,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import org.json.JSONArray
 import org.json.JSONObject
 import java.net.CookieManager
 import java.net.CookiePolicy
@@ -101,7 +100,7 @@ internal object NetworkConnector {
                 .url(url)
                 .headers(header.toHeaders())
                 .get()
-                .tag<TimeOutConfig>(
+                .tag(
                     TimeOutConfig(
                         options?.getDouble("maxWaitingTime")?.toInt() ?: 5000
                     )
@@ -134,7 +133,7 @@ internal object NetworkConnector {
                 .url(url)
                 .headers(header.toHeaders())
                 .post(body.toRequestBody(header.getString("Content-Type") ?: "application/json"))
-                .tag<TimeOutConfig>(
+                .tag(
                     TimeOutConfig(
                         options?.getDouble("maxWaitingTime")?.toInt() ?: 5000
                     )
@@ -162,7 +161,7 @@ internal object NetworkConnector {
                 .url(url)
                 .headers(header.toHeaders())
                 .head()
-                .tag<TimeOutConfig>(
+                .tag(
                     TimeOutConfig(
                         options?.getDouble("maxWaitingTime")?.toInt() ?: 5000
                     )
