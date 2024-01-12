@@ -13,9 +13,41 @@ import { SendResult, ViewResult } from 'packages/contracts/types';
 import { BaseMethodResult } from 'service/JsModules/types';
 import { AccountError, errorMap } from 'service/error';
 import { WalletState } from './type';
+import { AssetsState } from './assets';
+import { NetworkController } from 'network/controller';
+import { ZERO } from 'packages/constants/misc';
+import BigNumber from 'bignumber.js';
 
 @injectable()
 export class PortkeyAccountService implements IPortkeyAccountService {
+  async getAssetsInfo(): Promise<AssetsState> {
+    try {
+      if (!(await isWalletUnlocked())) {
+        throw new AccountError(1001);
+      }
+      const { multiCaAddresses } = await getUnlockedWallet({ getMultiCaAddresses: true });
+      const result = await NetworkController.fetchUserTokenBalance({
+        maxResultCount: 100,
+        skipCount: 0,
+        caAddressInfos: Object.entries(multiCaAddresses).map(([chainId, caAddress]) => ({
+          chainId,
+          caAddress,
+        })),
+      });
+      const { data: tokenList = [] } = result || {};
+      return {
+        tokens: tokenList,
+        balanceInUsd: tokenList
+          .reduce((prev, it) => {
+            const { balanceInUsd } = it;
+            return BigNumber(prev).plus(balanceInUsd);
+          }, ZERO)
+          .toString(),
+      };
+    } catch (e: any) {
+      throw new AccountError(9999, e?.message || e);
+    }
+  }
   async callCaContractMethod(props: CallCaMethodProps) {
     const { contractMethodName: methodName, params, isViewMethod } = props;
     if (!(await isWalletUnlocked())) {
