@@ -312,7 +312,7 @@
                                 launchMode:@""],
         [PortkeyPageConfig configWithTitle:@"Guardian Home"
                                  entryName:@"portkey_guardian_home_entry"
-                                launchMode:@""],
+                                launchMode:@"single_task"],
         [PortkeyPageConfig configWithTitle:@"Account Setting"
                                  entryName:@"portkey_account_setting_entry"
                                 launchMode:@"single_task"],
