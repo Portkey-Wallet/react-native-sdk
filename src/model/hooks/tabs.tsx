@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   tabBar: {
+    backgroundColor: defaultColors.bg1,
     shadowColor: defaultColors.border1,
     shadowOffset: {
       height: pTd(3),
