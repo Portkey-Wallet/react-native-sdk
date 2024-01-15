@@ -10,6 +10,7 @@ node_modules/
 output/
 tools/
 uml/
+tests/
 .env
 .eslintignore
 .eslintrc.json
