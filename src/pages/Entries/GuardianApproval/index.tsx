@@ -29,10 +29,12 @@ export default class GuardianApprovalEntryPage extends BaseContainer<
 
   onPageFinish = (result: GuardianApprovalPageResult) => {
     const { guardianVerifyType } = this.state.config;
-    const { deliveredVerifiedData, isVerified } = result || {};
+    const { deliveredVerifiedData, isVerified, errorMessage } = result || {};
     if (guardianVerifyType === GuardianVerifyType.CREATE_WALLET) {
       if (!deliveredVerifiedData || !isVerified) {
-        CommonToast.fail('verification failed, please try again.');
+        CommonToast.fail(
+          errorMessage && errorMessage?.length > 0 ? errorMessage : 'verification failed, please try again.',
+        );
         return;
       } else {
         this.dealWithSetPin(deliveredVerifiedData);
