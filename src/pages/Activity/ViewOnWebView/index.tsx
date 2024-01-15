@@ -26,19 +26,21 @@ export interface AchSellParams {
   orderNo?: string;
 }
 
+export interface ViewOnWebViewProps {
+  url: string;
+  title?: string;
+  webViewPageType?: WebViewPageType;
+  injectedJavaScript?: string;
+  params?: any;
+}
+
 const ViewOnWebView = ({
   title = '',
   url,
   webViewPageType = 'default',
   injectedJavaScript,
   params,
-}: {
-  url: string;
-  title?: string;
-  webViewPageType?: WebViewPageType;
-  injectedJavaScript?: string;
-  params?: any;
-}) => {
+}: ViewOnWebViewProps) => {
   const [browserInfo] = useState({ url, title });
 
   const webViewRef = React.useRef<WebView>(null);

@@ -2,7 +2,7 @@ export interface CallCaMethodProps {
   contractMethodName: string;
   isViewMethod: boolean;
   params?: { [key: string | symbol]: any };
-  eventId: string;
+  eventId?: string;
 }
 export interface BaseMethodResult {
   status: 'success' | 'fail';

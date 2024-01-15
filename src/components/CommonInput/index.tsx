@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import { Input, InputProps } from '@rneui/themed';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { generalStyles, searchStyle, bgWhiteStyles } from './style';
 import { pTd } from 'utils/unit';
 import { useLanguage } from 'i18n/hooks';
@@ -36,7 +36,7 @@ const CommonInput = forwardRef(function CommonInput(props: CommonInputProps, for
         leftIconContainerStyle={[searchStyle.leftIconContainerStyle, leftIconContainerStyle]}
         placeholder={placeholder || t('Please enter')}
         placeholderTextColor={defaultColors.font7}
-        leftIcon={<Svg icon="search" size={pTd(16)} />}
+        leftIcon={<CommonSvg icon="search" size={pTd(16)} />}
         {...inputProps}
         ref={forwardedRef}
       />

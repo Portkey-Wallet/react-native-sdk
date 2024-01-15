@@ -11,11 +11,14 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import okhttp3.FormBody
 import okhttp3.Headers
+import okhttp3.JavaNetCookieJar
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONObject
+import java.net.CookieManager
+import java.net.CookiePolicy
 
 
 internal fun JsonObject.toPrettyJson(): String {
@@ -86,6 +89,9 @@ private fun Number.toFixedType(): Number {
 internal object NetworkConnector {
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(TimeOutInterceptor())
+        .cookieJar(JavaNetCookieJar(CookieManager().apply {
+            setCookiePolicy(CookiePolicy.ACCEPT_ALL)
+        }))
         .build()
 
     fun getRequest(url: String, header: ReadableMap, options: ReadableMap?): ResultWrapper {
@@ -94,7 +100,7 @@ internal object NetworkConnector {
                 .url(url)
                 .headers(header.toHeaders())
                 .get()
-                .tag<TimeOutConfig>(
+                .tag(
                     TimeOutConfig(
                         options?.getDouble("maxWaitingTime")?.toInt() ?: 5000
                     )
@@ -127,7 +133,7 @@ internal object NetworkConnector {
                 .url(url)
                 .headers(header.toHeaders())
                 .post(body.toRequestBody(header.getString("Content-Type") ?: "application/json"))
-                .tag<TimeOutConfig>(
+                .tag(
                     TimeOutConfig(
                         options?.getDouble("maxWaitingTime")?.toInt() ?: 5000
                     )
@@ -149,6 +155,36 @@ internal object NetworkConnector {
         }
     }
 
+    fun headRequest(url: String, header: ReadableMap, options: ReadableMap?): ResultWrapper {
+        return try {
+            val request = okhttp3.Request.Builder()
+                .url(url)
+                .headers(header.toHeaders())
+                .head()
+                .tag(
+                    TimeOutConfig(
+                        options?.getDouble("maxWaitingTime")?.toInt() ?: 5000
+                    )
+                )
+                .build()
+            val response = okHttpClient
+                .newCall(request)
+                .execute()
+            if (!response.isSuccessful) {
+                Log.e(
+                    "NetworkConnector",
+                    "Network failed ! url:${url}, headers:${header.toHashMap()}, status:${response.code}"
+                )
+            }
+            return ResultWrapper(
+                response.code,
+            )
+        } catch (e: Throwable) {
+            Log.e("NetworkConnector", "headRequest", e)
+            ResultWrapper(-1)
+        }
+    }
+
     private fun ReadableMap.toHeaders(): Headers {
         val headers = Headers.Builder()
         this.toHashMap().forEach lambda@{
@@ -164,16 +200,16 @@ internal object NetworkConnector {
     }
 
     private fun ReadableMap.toRequestBody(contentType: String = "application/json"): okhttp3.RequestBody {
-        if (contentType == "application/json") {
+        return if (contentType == "application/json") {
             val json = this.toJson().toString()
-            return json.toRequestBody(contentType.toMediaTypeOrNull())
+            json.toRequestBody(contentType.toMediaTypeOrNull())
         } else {
             val formBody = FormBody.Builder()
             this.toHashMap().forEach {
                 val (key, value) = it
                 formBody.add(key, "$value")
             }
-            return formBody.build()
+            formBody.build()
         }
     }
 

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import Svg, { IconName } from 'components/Svg';
+import CommonSvg, { IconName } from 'components/Svg';
 import { pTd } from 'utils/unit';
 import { Text } from 'react-native';
 import { StyleSheet } from 'react-native';
@@ -46,7 +46,7 @@ export default function CommonAvatar(props: CommonAvatarProps) {
   );
   if (svgName)
     return (
-      <Svg
+      <CommonSvg
         size={avatarSize}
         icon={svgName}
         color={color}

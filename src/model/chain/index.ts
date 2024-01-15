@@ -1,4 +1,6 @@
 import { PortkeyConfig } from 'global/constants';
+import { isWalletUnlocked } from 'model/verify/core';
+import { getUnlockedWallet } from 'model/wallet';
 import { NetworkController } from 'network/controller';
 import { AElfChainStatusItemDTO } from 'network/dto/wallet';
 import { handleCachedValue } from 'service/storage/cache';
@@ -13,8 +15,12 @@ export interface Token {
 }
 export const getCachedNetworkConfig = async (
   targetChainId?: string,
-): Promise<{ peerUrl: string; caContractAddress: string; defaultToken: Token }> => {
-  const chain = targetChainId || (await PortkeyConfig.currChainId());
+): Promise<{ peerUrl: string; caContractAddress: string; defaultToken: Token; explorerUrl: string }> => {
+  let originChainId;
+  if (await isWalletUnlocked()) {
+    originChainId = (await getUnlockedWallet()).originChainId;
+  }
+  const chain = targetChainId || originChainId || (await PortkeyConfig.currChainId());
   return await handleCachedValue({
     target: 'TEMP',
     getIdentifier: async () => {
@@ -25,10 +31,12 @@ export const getCachedNetworkConfig = async (
       const networkInfo = await NetworkController.getNetworkInfo();
       const chainInfo = networkInfo.items.find(it => it.chainId === chain);
       if (!chainInfo) throw new Error('network failure');
+      const { endPoint: peerUrl, caContractAddress, defaultToken, explorerUrl } = chainInfo;
       const config = {
-        peerUrl: chainInfo.endPoint,
-        caContractAddress: chainInfo.caContractAddress,
-        defaultToken: chainInfo.defaultToken,
+        peerUrl,
+        caContractAddress,
+        defaultToken,
+        explorerUrl,
       };
       return config;
     },

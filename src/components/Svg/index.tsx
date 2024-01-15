@@ -18,7 +18,7 @@ export interface SvgProps {
   oblongSize?: [string | number, string | number];
 }
 
-const Svg: React.FC<SvgProps> = (props: SvgProps) => {
+const CommonSvg: React.FC<SvgProps> = (props: SvgProps) => {
   const { icon, color, size = 24, borderRadius = 0, iconStyle, oblongSize = [] } = props;
   const svgXmlData = (svgs as Svgs)[icon];
 
@@ -38,7 +38,7 @@ const Svg: React.FC<SvgProps> = (props: SvgProps) => {
   );
 };
 
-export default Svg;
+export default CommonSvg;
 
 const defaultStyle = StyleSheet.create({
   svgWrap: {

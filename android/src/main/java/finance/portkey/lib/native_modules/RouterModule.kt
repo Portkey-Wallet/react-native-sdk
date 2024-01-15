@@ -96,8 +96,9 @@ class RouterModule(reactContext: ReactApplicationContext) :
     }
 
     @ReactMethod(isBlockingSynchronousMethod = true)
-    fun navigateBack(result: ReadableMap) {
+    fun navigateBack(result: ReadableMap, from: String) {
         val activity = NavigationHolder.getTopComponent()
         activity?.navigateBackWithResult(result)
+        println("navigateBack invoke, from is $from")
     }
 }

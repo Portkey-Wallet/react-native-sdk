@@ -38,7 +38,7 @@ export default function CommonQRCodeStyled(props: CommonQRCodeStyledPropsType) {
         pieceBorderRadius={2}
         color={'#000000'}
         logo={{
-          href: 'assets/image/pngs/portkeyBlackBorderRadius.png',
+          href: require('assets/image/pngs/portkeyBlackBorderRadius.png'),
           scale: 1.5,
           padding: pTd(5),
           hidePieces: false,

@@ -3,7 +3,7 @@ export interface BaseJSModule {
 }
 
 export interface BaseMethodParams {
-  eventId: string;
+  eventId?: string;
 }
 
 export interface BaseMethodResult {

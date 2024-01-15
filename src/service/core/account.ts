@@ -7,7 +7,7 @@ import {
   exitWallet as exitInternalWallet,
 } from 'model/verify/core';
 import { injectable } from 'inversify';
-import { callRemoveManagerMethod, getContractInstance } from 'model/contract/handler';
+import { callRemoveManagerMethod, getCAContractInstance } from 'model/contract/handler';
 import { getUnlockedWallet } from 'model/wallet';
 import { SendResult, ViewResult } from 'packages/contracts/types';
 import { BaseMethodResult } from 'service/JsModules/types';
@@ -53,13 +53,13 @@ export class PortkeyAccountService implements IPortkeyAccountService {
     if (!(await isWalletUnlocked())) {
       throw new AccountError(1001);
     }
-    const contract = await getContractInstance();
+    const contract = await getCAContractInstance();
     const { address } = await getUnlockedWallet();
     const isParamsEmpty = Object.values(params ?? {}).length === 0;
     try {
       const result: ViewResult | SendResult = isViewMethod
-        ? await contract.callSendMethod(methodName, address, isParamsEmpty ? null : params)
-        : await contract.callViewMethod(methodName, isParamsEmpty ? null : params);
+        ? await contract.callViewMethod(methodName, isParamsEmpty ? '' : params)
+        : await contract.callSendMethod(methodName, address, isParamsEmpty ? '' : params);
       if (!result) throw new AccountError(1002);
       const { data, error } = result;
       let jsData: BaseMethodResult = {
@@ -112,7 +112,7 @@ export class PortkeyAccountService implements IPortkeyAccountService {
       if (!res.error) {
         exitInternalWallet();
       } else {
-        console.warn(res.error);
+        console.warn('exitWallet', JSON.stringify(res.error));
         return false;
       }
       return true;

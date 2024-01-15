@@ -1,6 +1,7 @@
 import { NetworkTestCases } from 'tests/network';
 import { BaseJSModule, BaseMethodParams, TestCase, TestContext, TestReport } from '../types';
 import { emitJSMethodResult } from './WalletModule';
+import { ContractMethodTestCases } from 'tests/contract';
 
 export const TestCases: Array<TestCase> = [];
 
@@ -14,6 +15,7 @@ export const addTestCases = (testCase: TestCase | Array<TestCase>) => {
 
 if (__DEV__) {
   addTestCases(NetworkTestCases);
+  addTestCases(ContractMethodTestCases);
 }
 
 export const testRunner = async (): Promise<TestReport> => {
@@ -85,8 +87,7 @@ export const testRunner = async (): Promise<TestReport> => {
 
 const TestModule: BaseJSModule = {
   runTestCases: async (props: BaseMethodParams) => {
-    const { eventId } = props;
-    console.log('runTestCases called ', 'eventId: ', eventId);
+    const { eventId = '' } = props;
     const testReport = await testRunner();
     console.log('testReport : ', JSON.stringify(testReport));
     return emitJSMethodResult(eventId, {

@@ -3,7 +3,7 @@ import { Keyboard, StyleSheet, View } from 'react-native';
 import { TextL } from 'components/CommonText';
 import OverlayModal from 'components/OverlayModal';
 import Touchable from 'components/Touchable';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { pTd } from 'utils/unit';
 import { NetworkItem } from 'packages/types/types-ca/network';
 import { BorderStyles } from 'assets/theme/styles';
@@ -43,13 +43,13 @@ function Network({
       onPress={press}
       style={[styles.itemRow, !network.isActive ? styles.disableItem : undefined]}
       key={network.name}>
-      <Svg size={32} icon={network.networkType === 'MAIN' ? 'mainnet' : 'testnet'} />
+      <CommonSvg size={32} icon={network.networkType === 'MAIN' ? 'mainnet' : 'testnet'} />
       <View style={[styles.nameRow, BorderStyles.border4, !hideBorder ? styles.borderBottom1 : undefined]}>
         <TextL numberOfLines={1} style={styles.nameText}>
           {network.name}
         </TextL>
       </View>
-      {isSelect && <Svg iconStyle={styles.selectIconStyle} icon="selected" size={21} />}
+      {isSelect && <CommonSvg iconStyle={styles.selectIconStyle} icon="selected" size={21} />}
     </Touchable>
   );
 }
