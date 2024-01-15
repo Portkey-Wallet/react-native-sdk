@@ -73,34 +73,30 @@ export default function GuardianApproval({
 
   const { t } = useLanguage();
 
-  let operationType = OperationTypeEnum.communityRecovery;
-  switch (guardianVerifyType) {
-    case GuardianVerifyType.ADD_GUARDIAN:
-    case GuardianVerifyType.ADD_GUARDIAN_ACCELERATE: {
-      operationType = OperationTypeEnum.addGuardian;
-      break;
+  const operationType = useMemo(() => {
+    switch (guardianVerifyType) {
+      case GuardianVerifyType.ADD_GUARDIAN:
+      case GuardianVerifyType.ADD_GUARDIAN_ACCELERATE: {
+        return OperationTypeEnum.addGuardian;
+      }
+      case GuardianVerifyType.REMOVE_GUARDIAN: {
+        return OperationTypeEnum.deleteGuardian;
+      }
+      case GuardianVerifyType.CHANGE_LOGIN_GUARDIAN: {
+        return OperationTypeEnum.setLoginAccount;
+      }
+      case GuardianVerifyType.MODIFY_GUARDIAN: {
+        return OperationTypeEnum.editGuardian;
+      }
+      case GuardianVerifyType.EDIT_PAYMENT_SECURITY: {
+        return OperationTypeEnum.modifyTransferLimit;
+      }
+      case GuardianVerifyType.CREATE_WALLET:
+      default: {
+        return OperationTypeEnum.communityRecovery;
+      }
     }
-    case GuardianVerifyType.REMOVE_GUARDIAN: {
-      operationType = OperationTypeEnum.deleteGuardian;
-      break;
-    }
-    case GuardianVerifyType.CHANGE_LOGIN_GUARDIAN: {
-      operationType = OperationTypeEnum.setLoginAccount;
-      break;
-    }
-    case GuardianVerifyType.MODIFY_GUARDIAN: {
-      operationType = OperationTypeEnum.editGuardian;
-      break;
-    }
-    case GuardianVerifyType.EDIT_PAYMENT_SECURITY: {
-      operationType = OperationTypeEnum.modifyTransferLimit;
-      break;
-    }
-    case GuardianVerifyType.CREATE_WALLET:
-    default: {
-      operationType = OperationTypeEnum.communityRecovery;
-    }
-  }
+  }, [guardianVerifyType]);
 
   const guardians = useMemo(() => {
     return originalGuardians?.map(item => {
@@ -276,6 +272,7 @@ export default function GuardianApproval({
         console.log('MODIFY_GUARDIAN result', result);
         onPageFinish({
           isVerified: !result.error,
+          errorMessage: handlePaymentSecurityRuleSpecial(result?.error),
         });
         break;
       }
@@ -595,6 +592,18 @@ export default function GuardianApproval({
     </PageContainer>
   );
 }
+
+const handlePaymentSecurityRuleSpecial = (error?: { message?: string }) => {
+  const chainProcessingErrorMsg = 'Processing on the chain';
+  const validateFailedErrorMsg = 'JudgementStrategy validate failed';
+  if (chainProcessingErrorMsg === error?.message) {
+    return 'This operation cannot be done before guardian info syncing is completed. Please try again later.';
+  } else if (validateFailedErrorMsg === error?.message) {
+    return 'The allowance should exceed the combined total of the transfer amount and transaction fee. Please set a higher value.';
+  } else {
+    return error?.message;
+  }
+};
 
 const { primaryColor } = defaultColors;
 
