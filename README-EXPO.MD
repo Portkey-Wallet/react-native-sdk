@@ -76,6 +76,53 @@ yarn add @portkey/react-native-sdk
     GOOGLE_ANDROID_CLIENT_ID = "your google android client id"
     ```
 
+5. deal with the version gap
+
+      Since both our SDK project and your project are using particular versions of several dependencies that are common in react-native development, there may be version conflicts, which will cause runtime errors.
+
+      For example, if your project is using react-native version 0.63.4, but our SDK project is using react-native version 0.63.3, then there will be a version conflict. The only way to stop this conflict is to make sure that both projects are using the same version of react-native.
+
+      You can solve this problem by those instructions:
+
+      a. check the SDK's dependencies
+
+      Please refer to the package.json file in the dictionary of `<Your Project Root>/node_modules/@portkey/react-native-sdk`, and check the dependencies' and 'devDependencies' field. You can ignore those dependencies marked with "peerDependencies" since they have no version code.
+
+      b. check your project's dependencies and compare
+
+      Check your project's package.json file, and compare the dependencies' and 'devDependencies' field with the SDK's. Record the version code of those dependencies that are different from the SDK's.
+
+      c. make a decision
+
+      We recommend you to use the same version of conflicting dependencies as the SDK's. You can do that by changing your project's dependencies' version code to the SDK's version code.
+
+      But if for some reason you can't do that, you can try to use your project's version code and make the SDK's version code the same as yours. But this may cause some unexpected errors.
+
+      You can use the ```resolutions``` field or ```overrides``` field in your project's package.json file to solve this problem. the ```resolutions``` field will only work on ```yarn```, and the ```overrides``` field will only work on ```npm``` (although they all looks the same).
+
+      ```JSON
+      {
+        "dependencies": {
+          "react-native": "0.63.4", // and SDK is using 0.63.3
+          ...
+        },
+
+        // use resolutions field for yarn
+        "resolutions": {
+          "react-native": "0.63.3"
+        },
+
+        // use overrides field for npm
+        "overrides": {
+          "react-native": "0.63.3"
+        }
+      }
+      ```
+
+      This will force the react-native version to be 0.63.3, which is the same as the SDK's.
+
+      To make sure there are no other version conflicts, you can check that there are no matching dependencies under `<Your Project Root>/node_modules/@portkey/react-native-sdk/node_modules`, since dependency conflicts will make a different version of the same dependency coexists in there.
+
 Once you finish installing the APPs compiled by those generated projects, open it on your device and run ```yarn start``` to start the metro bundler, and press ```R``` button to start reloading bundles.
 
 Now, all configuration is complete and you can use the portkey service freely.
