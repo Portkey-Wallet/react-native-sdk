@@ -18,7 +18,6 @@
     "android/src/main/res",
     "android/src/main/AndroidManifest.xml",
     "android/build.gradle",
-    "ios/Assets",
     "ios/Classes",
     "native-dependencies.js",
     "tsconfig.json",

@@ -328,6 +328,7 @@ export default function GuardianDetail(config: { info: string }) {
       </View>
       {userGuardiansList && userGuardiansList.length > 1 && (
         <CommonButton
+          style={pageStyles.bottomButton}
           type="primary"
           onPress={() => {
             navigateTo(PortkeyEntries.MODIFY_GUARDIAN_ENTRY, {
