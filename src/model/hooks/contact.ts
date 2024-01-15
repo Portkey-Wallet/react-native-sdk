@@ -71,7 +71,7 @@ export const useRecent = (removeDuplicateResult = true) => {
 const sortByFirstLetter = (list: Array<ContactItemType>) => {
   return list.sort((a, b) => {
     const getRealName = (it: ContactItemType) => {
-      return it.name ?? it.caHolderInfo?.walletName ?? '';
+      return (it.name ? it.name : it.caHolderInfo?.walletName) ?? '';
     };
     const aName = getRealName(a).toLowerCase();
     const bName = getRealName(b).toLowerCase();
