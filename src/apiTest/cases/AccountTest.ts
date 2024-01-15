@@ -5,7 +5,7 @@ import { WalletState, portkey } from 'service/core';
 //This array stores test cases where the wallet is the unlocked state
 export const UnLockedWalletTestCases: Array<TestCaseApi> = [
   {
-    describe: 'Test ContractMethod GetVerifierServers',
+    describe: 'Test callCaContractMethod: GetVerifierServers',
     run: async (testContext, caseName) => {
       try {
         const result = await portkey.callCaContractMethod({
@@ -20,7 +20,7 @@ export const UnLockedWalletTestCases: Array<TestCaseApi> = [
     },
   },
   {
-    describe: 'Test ContractMethod GetHolderInfo',
+    describe: 'Test callCaContractMethod: GetHolderInfo',
     run: async (testContext, caseName) => {
       try {
         const {
@@ -38,7 +38,7 @@ export const UnLockedWalletTestCases: Array<TestCaseApi> = [
     },
   },
   {
-    describe: 'Test GetWalletInfo',
+    describe: 'Test getWalletInfo',
     run: async (testContext, caseName) => {
       try {
         const walletInfo = await portkey.getWalletInfo();
@@ -49,7 +49,7 @@ export const UnLockedWalletTestCases: Array<TestCaseApi> = [
     },
   },
   {
-    describe: 'Test WalletState is unlocked',
+    describe: 'Test getWalletState: WalletState is unlocked',
     run: async (testContext, caseName) => {
       try {
         const walletState = await portkey.getWalletState();
@@ -59,11 +59,23 @@ export const UnLockedWalletTestCases: Array<TestCaseApi> = [
       }
     },
   },
+  {
+    describe: 'Test getAssetsInfo',
+    run: async (testContext, caseName) => {
+      try {
+        const assetsState = await portkey.getAssetsInfo();
+        testContext.log(JSON.stringify(assetsState));
+        testContext.assert(caseName, !!assetsState, 'invoke failed');
+      } catch (e: any) {
+        testContext.assert(caseName, false, e?.toString() ?? 'failed');
+      }
+    },
+  },
 ];
 //This array stores test cases where the wallet is the locked state
 export const LockedWalletTestCases: Array<TestCaseApi> = [
   {
-    describe: 'Test WalletState is locked',
+    describe: 'Test getWalletState: WalletState is locked',
     run: async (testContext, caseName) => {
       try {
         const walletState = await portkey.getWalletState();
@@ -77,7 +89,7 @@ export const LockedWalletTestCases: Array<TestCaseApi> = [
 //This array stores test cases without wallet
 export const NoneWalletTestCases: Array<TestCaseApi> = [
   {
-    describe: 'Test Wallet is none',
+    describe: 'Test getWalletState: Wallet is none',
     run: async (testContext, caseName) => {
       try {
         const walletState = await portkey.getWalletState();
@@ -91,7 +103,7 @@ export const NoneWalletTestCases: Array<TestCaseApi> = [
 //Special case， lock wallet op
 export const LockWalletCase: Array<TestCaseApi> = [
   {
-    describe: 'Test LockWallet',
+    describe: 'Test lockWallet',
     run: async (testContext, caseName) => {
       try {
         const result = await portkey.lockWallet();
@@ -105,7 +117,7 @@ export const LockWalletCase: Array<TestCaseApi> = [
 //Special case， exit wallet op
 export const ExitWalletCase: Array<TestCaseApi> = [
   {
-    describe: 'Test ExitWallet',
+    describe: 'Test exitWallet',
     run: async (testContext, caseName) => {
       try {
         const result = await portkey.exitWallet();
