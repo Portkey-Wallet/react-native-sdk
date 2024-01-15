@@ -3,13 +3,13 @@ import { portkey } from 'service/core';
 /*
 NOTE: 
 1. UI op need to open a new page, so a UI op needs to be placed in an array 
-2. The name of ui cases must start with 'UI' string,  example: UITestLoginCases, UIAbc
+2. The name of ui cases must start with 'UI' string,  example: UITestLoginCases, UITestAssetsDashboardCases
 */
 
 // open login page
 export const UITestLoginCases: Array<TestCaseApi> = [
   {
-    describe: 'Test Open Login',
+    describe: 'Test login',
     run: async (testContext, caseName) => {
       try {
         const result = await portkey.login();
@@ -24,7 +24,7 @@ export const UITestLoginCases: Array<TestCaseApi> = [
 // open asset dashboard page
 export const UITestAssetsDashboardCases: Array<TestCaseApi> = [
   {
-    describe: 'Test Open AssetsDashboard',
+    describe: 'Test openAssetsDashboard',
     run: async (testContext, caseName) => {
       try {
         await portkey.openAssetsDashboard();
@@ -38,7 +38,7 @@ export const UITestAssetsDashboardCases: Array<TestCaseApi> = [
 // open guardians manager page
 export const UITestGuardiansManagerCases: Array<TestCaseApi> = [
   {
-    describe: 'Test Open GuardiansManager',
+    describe: 'Test guardiansManager',
     run: async (testContext, caseName) => {
       try {
         await portkey.guardiansManager();
@@ -52,7 +52,7 @@ export const UITestGuardiansManagerCases: Array<TestCaseApi> = [
 // open settings manager page
 export const UITestSettingsManagerCases: Array<TestCaseApi> = [
   {
-    describe: 'Test Open SettingsManager',
+    describe: 'Test settingsManager',
     run: async (testContext, caseName) => {
       try {
         await portkey.settingsManager();
@@ -66,7 +66,7 @@ export const UITestSettingsManagerCases: Array<TestCaseApi> = [
 // open paymentSecurity manager page
 export const UITestPaymentSecurityManagerCases: Array<TestCaseApi> = [
   {
-    describe: 'Test Open PaymentSecurityManager',
+    describe: 'Test paymentSecurityManager',
     run: async (testContext, caseName) => {
       try {
         await portkey.paymentSecurityManager();
@@ -80,7 +80,7 @@ export const UITestPaymentSecurityManagerCases: Array<TestCaseApi> = [
 // open scanQRCode page
 export const UITestScanQRCodeManagerCases: Array<TestCaseApi> = [
   {
-    describe: 'Test Open ScanQRCodeManager',
+    describe: 'Test scanQRCodeManager',
     run: async (testContext, caseName) => {
       try {
         await portkey.scanQRCodeManager();
@@ -94,7 +94,7 @@ export const UITestScanQRCodeManagerCases: Array<TestCaseApi> = [
 // open check pin page, unlock wallet
 export const UITestUnlockWalletCases: Array<TestCaseApi> = [
   {
-    describe: 'Test UnlockWallet',
+    describe: 'Test unlockWallet',
     run: async (testContext, caseName) => {
       try {
         const result = await portkey.unlockWallet();
@@ -109,7 +109,7 @@ export const UITestUnlockWalletCases: Array<TestCaseApi> = [
 // open send token page, unlock wallet
 export const UITestSendTokenCases: Array<TestCaseApi> = [
   {
-    describe: 'Test Open SendToken',
+    describe: 'Test openSendToken',
     run: async (testContext, caseName) => {
       try {
         await portkey.openSendToken();
