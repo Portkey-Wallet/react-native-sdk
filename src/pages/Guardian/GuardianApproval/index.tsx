@@ -22,7 +22,7 @@ import { UserGuardianItem } from 'packages/store/store-ca/guardians/type';
 import { GuardianApprovalPageResult } from 'pages/Entries/GuardianApproval';
 import Loading from 'components/Loading';
 import { verifyHumanMachine } from 'components/VerifyHumanMachine';
-import { guardianTypeStrToEnum, isReacptchaOpen } from 'model/global';
+import { guardianTypeStrToEnum, isRecaptchaOpen } from 'model/global';
 import { NetworkController } from 'network/controller';
 import { VerifierDetailsPageProps } from 'pages/Entries/VerifierDetails';
 import { PortkeyEntries } from 'config/entries';
@@ -437,7 +437,7 @@ export default function GuardianApproval({
             onPress: async () => {
               try {
                 Loading.show();
-                const needRecaptcha = await isReacptchaOpen(operationType);
+                const needRecaptcha = await isRecaptchaOpen(operationType);
                 let token: string | undefined;
                 if (needRecaptcha) {
                   token = (await verifyHumanMachine('en')) as string;
