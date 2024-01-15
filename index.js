@@ -13,7 +13,10 @@ initEntries();
 // init js services for Android/iOS native
 initJsMethodService();
 
-registerTestModule();
+if (__DEV__) {
+  // register test module
+  registerTestModule();
+}
 
 // export for npm
 export * from './src/service/core';
