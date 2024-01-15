@@ -318,7 +318,7 @@ const ModifyGuardian = (config: { info: string }) => {
         {guardianError.isError && <TextS style={pageStyles.errorTips}>{guardianError.errorMsg || ''}</TextS>}
       </View>
 
-      <View>
+      <View style={pageStyles.confirmBtn}>
         <>
           <CommonButton disabled={isApprovalDisable} type="primary" onPress={onApproval}>
             {t('Send Request')}
