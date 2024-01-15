@@ -22,7 +22,7 @@ import { GuardianConfig } from 'model/verify/guardian';
 import { PortkeyConfig } from 'global/constants';
 import useEffectOnce from 'hooks/useEffectOnce';
 import { getCAContractInstance, getVerifierData } from 'model/contract/handler';
-import { guardianEnumToTypeStr, guardianTypeStrToEnum, isReacptchaOpen, parseGuardianInfo } from 'model/global';
+import { guardianEnumToTypeStr, guardianTypeStrToEnum, isRecaptchaOpen, parseGuardianInfo } from 'model/global';
 import { AccountOriginalType } from 'model/verify/core';
 import { getUnlockedWallet } from 'model/wallet';
 import { NetworkController } from 'network/controller';
@@ -144,7 +144,7 @@ export default function GuardianDetail(config: { info: string }) {
     try {
       const originChainId = await PortkeyConfig.currChainId();
       Loading.show();
-      const needRecaptcha = await isReacptchaOpen(OperationTypeEnum.setLoginAccount);
+      const needRecaptcha = await isRecaptchaOpen(OperationTypeEnum.setLoginAccount);
       let token: string | undefined;
       if (needRecaptcha) {
         token = (await verifyHumanMachine('en')) as string;
