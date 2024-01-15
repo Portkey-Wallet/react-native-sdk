@@ -46,7 +46,6 @@ export default function GuardianHome({ containerId }: { containerId: any }) {
   const { navigateTo, navigateForResult } = useBaseContainer({
     entryName: PortkeyEntries.GUARDIAN_HOME_ENTRY,
     onNewIntent: async (intent: GuardiansApprovalIntent) => {
-      console.log('GuardianHome onNewIntent', intent);
       switch (intent.type) {
         case GuardianVerifyType.ADD_GUARDIAN: {
           if (intent.result === 'success') {
