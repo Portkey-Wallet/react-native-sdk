@@ -1,7 +1,9 @@
 import { AELFColors } from 'assets/theme';
 import React, { FC, useMemo, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { pTd } from 'utils/unit';
+import { defaultColors } from 'assets/theme';
 
 export const RNTabView = (config: UseTabConfig) => {
   const { tabs } = config;
@@ -30,6 +32,7 @@ const renderTabBar = (props: any) => {
   return (
     <TabBar
       {...props}
+      style={styles.tabBar}
       getLabelText={scene => {
         return scene.route.title;
       }}
@@ -39,8 +42,15 @@ const renderTabBar = (props: any) => {
       labelStyle={styles.labelFocused}
       indicatorStyle={styles.indicatorStyle}
       indicatorContainerStyle={styles.indicatorContainerStyle}
+      renderLabel={renderLabel}
     />
   );
+};
+
+const renderLabel = (props: { color: string; route: { title: string } }) => {
+  const { color, route } = props;
+  const { title } = route;
+  return <Text style={[styles.labelFocused, { color }]}>{title ?? ''}</Text>;
 };
 
 const styles = StyleSheet.create({
@@ -56,10 +66,18 @@ const styles = StyleSheet.create({
     backgroundColor: AELFColors.AELF,
   },
   indicatorContainerStyle: {
-    backgroundColor: AELFColors.AELF,
+    backgroundColor: 'transparent',
+    zIndex: 999,
   },
   tabStyle: {
     backgroundColor: 'white',
+  },
+  tabBar: {
+    shadowColor: defaultColors.border1,
+    shadowOffset: {
+      height: pTd(3),
+      width: 0,
+    },
   },
 });
 

@@ -18,7 +18,7 @@ You can generate client ids for each of the platforms that are needed for Portke
 
 Complete the content below and add it to the `.env` file in the root directory of your react-native project.
 
-``` properties
+```properties
 GOOGLE_WEB_CLIENT_ID = "your google web client id"
 GOOGLE_IOS_CLIENT_ID = "your google ios client id"
 GOOGLE_ANDROID_CLIENT_ID = "your google android client id"

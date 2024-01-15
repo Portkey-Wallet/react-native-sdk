@@ -10,8 +10,11 @@ enum JSModuleIdentifier {
 
 export const JsModuleEntries: { [key: string]: BaseJSModule } = {
   [JSModuleIdentifier.WALLET_MODULE]: WalletModule,
-  [JSModuleIdentifier.TEST_MODULE]: TestModule,
 };
+
+if (__DEV__) {
+  JsModuleEntries[JSModuleIdentifier.TEST_MODULE] = TestModule;
+}
 
 /**
  * Init JS BatchedBridge Modules.

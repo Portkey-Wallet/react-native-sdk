@@ -5,7 +5,7 @@ import { TextL, TextM, TextS } from 'components/CommonText';
 import Touchable from 'components/Touchable';
 import { defaultColors } from 'assets/theme';
 import CommonSwitch from 'components/CommonSwitch';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { TextStyleType, ViewStyleType } from 'types/styles';
 
 export type ListItemProps = {
@@ -58,7 +58,7 @@ const ListItem: React.FC<ListItemProps> = props => {
       );
     }
 
-    return <Svg icon="right-arrow" size={18} color={defaultColors.font7} iconStyle={styles.iconStyle} />;
+    return <CommonSvg icon="right-arrow" size={18} color={defaultColors.font7} iconStyle={styles.iconStyle} />;
   }, [switching, switchStyles, switchValue, onValueChange]);
   return (
     <Touchable disabled={disabled} onPress={onPress} style={[styles.container, style]}>

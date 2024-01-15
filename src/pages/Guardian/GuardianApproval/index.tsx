@@ -7,7 +7,7 @@ import { ScrollView, StyleSheet, View, Text } from 'react-native';
 import GStyles from 'assets/theme/GStyles';
 import CommonButton from 'components/CommonButton';
 import { BorderStyles, FontStyles } from 'assets/theme/styles';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { pTd } from 'utils/unit';
 import { getApprovalCount } from 'packages/utils/guardian';
 import { ApprovalType, OperationTypeEnum, VerifyStatus } from 'packages/types/verifier';
@@ -44,15 +44,19 @@ import {
   callRemoveGuardianMethod,
   getVerifierData,
 } from 'model/contract/handler';
+import { ChainId } from 'packages/types';
+import { getUnlockedWallet } from 'model/wallet';
 
 export default function GuardianApproval({
   guardianVerifyConfig: guardianListConfig,
   verifiedTime,
   onPageFinish,
+  accelerateChainId,
 }: {
   guardianVerifyConfig: GuardianVerifyConfig;
   verifiedTime: number;
   onPageFinish: (result: GuardianApprovalPageResult) => void;
+  accelerateChainId?: ChainId;
 }) {
   const {
     guardians: originalGuardians,
@@ -71,7 +75,8 @@ export default function GuardianApproval({
 
   let operationType = OperationTypeEnum.communityRecovery;
   switch (guardianVerifyType) {
-    case GuardianVerifyType.ADD_GUARDIAN: {
+    case GuardianVerifyType.ADD_GUARDIAN:
+    case GuardianVerifyType.ADD_GUARDIAN_ACCELERATE: {
       operationType = OperationTypeEnum.addGuardian;
       break;
     }
@@ -228,7 +233,30 @@ export default function GuardianApproval({
         });
         break;
       }
-
+      case GuardianVerifyType.ADD_GUARDIAN_ACCELERATE: {
+        if (!particularGuardian) throw new Error('guardian info is null!');
+        Loading.show();
+        const { originChainId } = await getUnlockedWallet();
+        const result = await callAddGuardianMethod(particularGuardian, getVerifiedGuardianInfo());
+        if (accelerateChainId && accelerateChainId !== originChainId) {
+          try {
+            const accelerateReq = await callAddGuardianMethod(
+              particularGuardian,
+              getVerifiedGuardianInfo(),
+              accelerateChainId,
+            );
+            console.log('accelerateReq', accelerateReq);
+          } catch (error) {
+            console.log('accelerateReq error', error);
+          }
+          await callAddGuardianMethod(particularGuardian, getVerifiedGuardianInfo(), accelerateChainId);
+        }
+        Loading.hide();
+        onPageFinish({
+          isVerified: !result?.error,
+        });
+        break;
+      }
       case GuardianVerifyType.REMOVE_GUARDIAN: {
         if (!particularGuardian) throw new Error('guardian info is null!');
         Loading.show();
@@ -520,7 +548,7 @@ export default function GuardianApproval({
                     buttons: [{ title: 'OK' }],
                   })
                 }>
-                <Svg color={FontStyles.font3.color} size={pTd(16)} icon="question-mark" />
+                <CommonSvg color={FontStyles.font3.color} size={pTd(16)} icon="question-mark" />
               </Touchable>
             </View>
             <TextM>
@@ -598,8 +626,9 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   confirmedButtonText: {
-    color: '#20CD85',
+    color: '#34C759',
     fontSize: 12,
+    fontWeight: '500',
     lineHeight: 16,
     backgroundColor: '#fff',
   },

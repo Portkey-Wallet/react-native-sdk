@@ -21,7 +21,7 @@ import { useAppleAuthentication, useGoogleAuthentication } from 'model/hooks/aut
 import { GuardianConfig } from 'model/verify/guardian';
 import { PortkeyConfig } from 'global/constants';
 import useEffectOnce from 'hooks/useEffectOnce';
-import { getContractInstance, getVerifierData } from 'model/contract/handler';
+import { getCAContractInstance, getVerifierData } from 'model/contract/handler';
 import { guardianEnumToTypeStr, guardianTypeStrToEnum, isReacptchaOpen, parseGuardianInfo } from 'model/global';
 import { AccountOriginalType } from 'model/verify/core';
 import { getUnlockedWallet } from 'model/wallet';
@@ -98,7 +98,7 @@ export default function GuardianDetail(config: { info: string }) {
       )?.identifierHash;
       if (identifierHash) guardian.identifierHash = identifierHash;
       console.log('identifierHash', userGuardiansList);
-      const caContract = await getContractInstance();
+      const caContract = await getCAContractInstance();
       const req = await cancelLoginAccount(caContract, managerAddress, caHash, guardian);
       if (req && !req.error) {
         changeLoginAccountStatus(false);
@@ -125,7 +125,7 @@ export default function GuardianDetail(config: { info: string }) {
         item => item.sendVerifyCodeParams.guardianIdentifier === guardian.guardianAccount,
       )?.identifierHash;
       if (identifierHash) guardian.identifierHash = identifierHash;
-      const caContract = await getContractInstance();
+      const caContract = await getCAContractInstance();
       const req = await setLoginAccount(caContract, managerAddress, caHash, guardian);
       if (req && !req.error) {
         changeLoginAccountStatus(true);
@@ -310,12 +310,12 @@ export default function GuardianDetail(config: { info: string }) {
               label={guardian?.verifier?.name}
               uri={guardian?.verifier?.imageUrl}
             />
-            <TextL>{guardian?.verifier?.name || ''}</TextL>
+            <TextM>{guardian?.verifier?.name || ''}</TextM>
           </View>
         </View>
 
         <View style={pageStyles.loginSwitchWrap}>
-          <TextM>{t('Login account')}</TextM>
+          <TextL>{t('Login account')}</TextL>
           <CommonSwitch
             value={guardian === undefined ? false : guardian.isLoginAccount}
             onValueChange={onLoginAccountChange}
@@ -328,6 +328,7 @@ export default function GuardianDetail(config: { info: string }) {
       </View>
       {userGuardiansList && userGuardiansList.length > 1 && (
         <CommonButton
+          style={pageStyles.bottomButton}
           type="primary"
           onPress={() => {
             navigateTo(PortkeyEntries.MODIFY_GUARDIAN_ENTRY, {

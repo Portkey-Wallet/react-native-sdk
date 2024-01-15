@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import <PortkeySDK/PortkeySDKPortkey.h>
 
 @implementation AppDelegate
 
@@ -14,6 +15,7 @@
 {
     // Override point for customization after application launch.
     [[UIBarButtonItem appearance] setTintColor:[UIColor darkGrayColor]];
+    [[PortkeySDKPortkey portkey].config setUseInNativeApp:YES];
     return YES;
 }
 

@@ -22,7 +22,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-internal var entered = false
 
 abstract class BasePortkeyReactActivity : ReactActivity() {
 
@@ -31,10 +30,6 @@ abstract class BasePortkeyReactActivity : ReactActivity() {
 
     private var permissionCallback: (Boolean) -> Unit = {}
     private var imageChooseCallback: (String?) -> Unit = {}
-
-    init {
-        entered = true
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,11 +95,11 @@ abstract class BasePortkeyReactActivity : ReactActivity() {
     fun navigateBackWithResult(result: ReadableMap? = null, thenFinish: Boolean = true) {
         if (!callbackAccessed) {
             callbackAccessed = true
+            NavigationHolder.popTopComponent()
             NavigationHolder.invokeAnnotatedCallback(
                 getCallbackId(),
                 result?.toWriteableNativeMap()
             )
-            NavigationHolder.popTopComponent()
         }
         if (thenFinish) {
             this.finish()
