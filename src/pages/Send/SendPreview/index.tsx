@@ -52,6 +52,9 @@ const SendPreview = (props: IToSendPreviewParamsType) => {
 
   const tokenList = useMemo(() => [assetInfo.symbol], [assetInfo]);
   const tokenPriceList = useTokenPrices(tokenList);
+  const tokenContractAddress = useMemo(() => {
+    return assetInfo.tokenContractAddress || assetInfo.address;
+  }, [assetInfo]);
 
   const { txFee } = useGetTxFee(fromChainId);
   const { crossChain: crossDefaultFee } = useMemo(
@@ -130,7 +133,7 @@ const SendPreview = (props: IToSendPreviewParamsType) => {
 
     if (isCrossChainTransfer) {
       if (!tokenContractRef.current) {
-        tokenContractRef.current = await getTokenContract(fromChainId);
+        tokenContractRef.current = await getTokenContract(fromChainId, tokenContractAddress);
       }
       const tokenContract = tokenContractRef.current;
 
@@ -141,7 +144,7 @@ const SendPreview = (props: IToSendPreviewParamsType) => {
         contract,
         chainType: 'aelf',
         managerAddress: wallet.address,
-        tokenInfo: { ...assetInfo, address: assetInfo.tokenContractAddress } as unknown as BaseToken,
+        tokenInfo: { ...assetInfo, address: assetInfo.address } as unknown as BaseToken,
         caHash: caHash || '',
         amount,
         crossDefaultFee: typeof crossDefaultFee === 'string' ? Number(crossDefaultFee) : crossDefaultFee,
@@ -185,6 +188,7 @@ const SendPreview = (props: IToSendPreviewParamsType) => {
     navigateTo,
     sendNumber,
     toInfo.address,
+    tokenContractAddress,
     wallet,
   ]);
 
@@ -193,7 +197,7 @@ const SendPreview = (props: IToSendPreviewParamsType) => {
       Loading.show();
       try {
         if (!tokenContractRef.current) {
-          tokenContractRef.current = await getTokenContract(fromChainId);
+          tokenContractRef.current = await getTokenContract(fromChainId, tokenContractAddress);
         }
         const tokenContract = tokenContractRef.current;
         await intervalCrossChainTransfer(tokenContract, data);
@@ -207,7 +211,7 @@ const SendPreview = (props: IToSendPreviewParamsType) => {
       }
       Loading.hide();
     },
-    [fromChainId, navigateTo, showRetry],
+    [fromChainId, navigateTo, showRetry, tokenContractAddress],
   );
 
   const onSend = useCallback(async () => {
