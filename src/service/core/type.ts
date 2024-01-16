@@ -28,6 +28,7 @@ export type UnlockedWallet = {
 const TYPES = {
   AccountModule: Symbol.for('AccountModule'),
   UIManagerModule: Symbol.for('UIManagerModule'),
+  ConfigModule: Symbol.for('ConfigModule'),
 };
 export { TYPES };
 

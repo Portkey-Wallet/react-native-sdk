@@ -1,5 +1,7 @@
 import { UnlockedWallet, CallCaMethodProps, BaseMethodResult, WalletState } from './type';
 import { AssetsState } from './assets';
+import { NetworkType } from 'packages/types';
+import { UserNetworkType } from 'service/config';
 
 export interface IPortkeyAccountService {
   callCaContractMethod(props: CallCaMethodProps): Promise<BaseMethodResult>;
@@ -8,6 +10,11 @@ export interface IPortkeyAccountService {
   getAssetsInfo(): Promise<AssetsState>;
   lockWallet(): Promise<boolean>;
   exitWallet(): Promise<boolean>;
+}
+
+export interface IPortkeyConfigService {
+  getCurrentNetworkType(): Promise<NetworkType>;
+  setCurrentNetworkType(networkType: UserNetworkType): Promise<boolean>;
 }
 
 export interface IPortkeyUIManagerService {
