@@ -8,6 +8,7 @@ export interface BaseToken {
   address: string; // "ArPnUb5FtxG2oXTaWX2DxNZowDEruJLs2TEkhRCzDdrRDfg8B",        token address  contract address
   symbol: string; // "ELF"   the name showed
   name: string;
+  tokenContractAddress?: string; // used for cross chain transfer
 }
 
 export interface TokenItemType extends BaseToken {
