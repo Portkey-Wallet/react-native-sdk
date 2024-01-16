@@ -98,7 +98,7 @@ const crossChainTransfer = async ({
 
     managerTransferResult = await managerTransfer({
       caContract: contract,
-      tokenContractAddress: tokenInfo.address,
+      tokenContractAddress: tokenInfo.tokenContractAddress || tokenInfo.address,
       caHash,
       paramsArgs: {
         symbol: tokenInfo.symbol,
