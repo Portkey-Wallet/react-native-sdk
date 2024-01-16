@@ -137,8 +137,8 @@ const pageStyles = StyleSheet.create({
   pageWrap: {
     backgroundColor: defaultColors.bg4,
     paddingHorizontal: 0,
-    height: '100%',
-    paddingBottom: 75,
+    display: 'flex',
+    flex: 1,
   },
   listWrap: {
     ...GStyles.paddingArg(24, 20, 18),

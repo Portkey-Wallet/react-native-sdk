@@ -199,7 +199,8 @@ const pageStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: defaultColors.bg4,
     justifyContent: 'space-between',
-    ...GStyles.paddingArg(24, 20, 18),
+    ...GStyles.paddingArg(24, 20, 22),
+    display: 'flex',
   },
   switchWrap: {
     flexDirection: 'row',
