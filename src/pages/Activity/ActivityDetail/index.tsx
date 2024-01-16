@@ -305,9 +305,11 @@ export const styles = StyleSheet.create({
     paddingLeft: pTd(20),
     paddingRight: pTd(20),
     paddingTop: pTd(16),
+    paddingBottom: pTd(16),
     display: 'flex',
     alignItems: 'center',
-    height: '100%',
+    // height: '100%',
+    flex: 1,
   },
   closeWrap: {
     width: '100%',

@@ -45,6 +45,12 @@ export default function PageContainer({
   pageSafeBottomPadding?: boolean;
 }) {
   const themeType = useMemo(() => safeAreaColor[0], [safeAreaColor]);
+  const wrappedContainerStyle = useMemo(() => {
+    return Object.assign({}, containerStyles, {
+      display: 'flex',
+      flex: 1,
+    });
+  }, [containerStyles]);
   return (
     <SafeAreaBox
       {...safeAreaProps}
@@ -62,10 +68,10 @@ export default function PageContainer({
         {themeType === 'white' && <StatusBar barStyle="dark-content" />}
         {scrollViewProps?.disabled ? (
           hideTouchable ? (
-            <View style={containerStyles}>{children}</View>
+            <View style={wrappedContainerStyle}>{children}</View>
           ) : (
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-              <View style={containerStyles}>{children}</View>
+              <View style={wrappedContainerStyle}>{children}</View>
             </TouchableWithoutFeedback>
           )
         ) : (
