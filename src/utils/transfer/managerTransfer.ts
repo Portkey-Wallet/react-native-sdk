@@ -18,17 +18,6 @@ export const managerTransfer = ({
   sendOptions?: SendOptions;
   guardiansApproved?: GuardiansApprovedType[];
 }) => {
-  console.log({
-    contract: caContract,
-    paramsOption: {
-      caHash: caHash,
-      contractAddress: tokenContractAddress,
-      methodName: 'Transfer',
-      args: paramsArgs,
-      guardiansApproved,
-    },
-    sendOptions,
-  });
   return managerForwardCall({
     contract: caContract,
     paramsOption: {
