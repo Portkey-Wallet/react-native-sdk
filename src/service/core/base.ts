@@ -14,7 +14,7 @@ export interface IPortkeyAccountService {
 
 export interface IPortkeyConfigService {
   getCurrentNetworkType(): Promise<NetworkType>;
-  setCurrentNetworkType(networkType: UserNetworkType): Promise<boolean>;
+  setCurrentNetworkType(networkType: UserNetworkType, clearWalletAndIgnoreDataLoss?: boolean): Promise<boolean>;
 }
 
 export interface IPortkeyUIManagerService {

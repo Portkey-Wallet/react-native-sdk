@@ -19,8 +19,8 @@ class Portkey implements IPortkeyAccountService, IPortkeyUIManagerService, IPort
   async getCurrentNetworkType(): Promise<NetworkType> {
     return this._portkeyConfigService.getCurrentNetworkType();
   }
-  async setCurrentNetworkType(networkType: UserNetworkType): Promise<boolean> {
-    return this._portkeyConfigService.setCurrentNetworkType(networkType);
+  async setCurrentNetworkType(networkType: UserNetworkType, clearWalletAndIgnoreDataLoss = false): Promise<boolean> {
+    return this._portkeyConfigService.setCurrentNetworkType(networkType, clearWalletAndIgnoreDataLoss);
   }
   async getAssetsInfo(): Promise<AssetsState> {
     return this._portkeyAccountService.getAssetsInfo();
