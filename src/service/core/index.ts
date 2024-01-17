@@ -1,16 +1,26 @@
 import { myContainer } from './inversify.config';
-import { IPortkeyAccountService, IPortkeyUIManagerService } from './base';
+import { IPortkeyAccountService, IPortkeyConfigService, IPortkeyUIManagerService } from './base';
 import { TYPES } from './type';
 import { CallCaMethodProps } from 'service/JsModules/SubModules/WalletModule';
 import { AssetsState } from './assets';
+import { NetworkType } from 'packages/types';
+import { UserNetworkType } from 'service/config';
 export * from './type';
 
-class Portkey implements IPortkeyAccountService, IPortkeyUIManagerService {
+class Portkey implements IPortkeyAccountService, IPortkeyUIManagerService, IPortkeyConfigService {
   private _portkeyAccountService: IPortkeyAccountService;
   private _portkeyUIManagerService: IPortkeyUIManagerService;
+  private _portkeyConfigService: IPortkeyConfigService;
   constructor() {
     this._portkeyAccountService = myContainer.get<IPortkeyAccountService>(TYPES.AccountModule);
     this._portkeyUIManagerService = myContainer.get<IPortkeyUIManagerService>(TYPES.UIManagerModule);
+    this._portkeyConfigService = myContainer.get<IPortkeyConfigService>(TYPES.ConfigModule);
+  }
+  async getCurrentNetworkType(): Promise<NetworkType> {
+    return this._portkeyConfigService.getCurrentNetworkType();
+  }
+  async setCurrentNetworkType(networkType: UserNetworkType, clearWalletAndIgnoreDataLoss = false): Promise<boolean> {
+    return this._portkeyConfigService.setCurrentNetworkType(networkType, clearWalletAndIgnoreDataLoss);
   }
   async getAssetsInfo(): Promise<AssetsState> {
     return this._portkeyAccountService.getAssetsInfo();
