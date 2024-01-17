@@ -122,8 +122,6 @@ const PaymentSecurityDetail: React.FC = (props: PaymentSecurityDetailProps) => {
               const { status } = intent;
               if (status === 'success') {
                 CommonToast.success('edit success');
-              } else {
-                CommonToast.fail('edit failed');
               }
             },
           );
@@ -139,7 +137,8 @@ const pageStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: defaultColors.bg4,
     justifyContent: 'space-between',
-    ...GStyles.paddingArg(24, 20, 18),
+    ...GStyles.paddingArg(24, 20, 22),
+    display: 'flex',
   },
   labelWrap: {
     flexDirection: 'row',
