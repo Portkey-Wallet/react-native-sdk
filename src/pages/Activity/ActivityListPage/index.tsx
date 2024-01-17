@@ -112,6 +112,7 @@ export const pageStyles = StyleSheet.create({
   pageWrap: {
     paddingLeft: 0,
     paddingRight: 0,
+    flex: 1,
   },
   noResult: {},
 });
