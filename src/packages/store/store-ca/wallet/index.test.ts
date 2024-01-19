@@ -35,11 +35,11 @@ describe('changeNetworkType', () => {
     walletAvatar: 'master6',
     walletType: 'aelf' as WalletType,
     walletName: 'Wallet 01',
-    currentNetwork: 'MAIN' as NetworkType,
+    currentNetwork: 'MAINNET' as NetworkType,
     chainList: [],
   };
   test('Pre network is MAIN. set current network MAIN', () => {
-    expect(reducer(state, changeNetworkType('MAIN'))).toEqual(state);
+    expect(reducer(state, changeNetworkType('MAINNET'))).toEqual(state);
   });
   test('Pre network is MAIN. set current network TESTNET', () => {
     expect(reducer(state, changeNetworkType('TESTNET'))).toEqual({ ...state, currentNetwork: 'TESTNET' });
@@ -60,7 +60,7 @@ describe('resetWallet', () => {
   test('WalletInfo will be reset', () => {
     const res = reducer(curState, resetWallet());
     expect(res.walletName).toEqual('Wallet 01');
-    expect(res.currentNetwork).toEqual('MAIN');
+    expect(res.currentNetwork).toEqual('MAINNET');
   });
 });
 
@@ -487,7 +487,7 @@ describe('resetCaInfo', () => {
       currentNetwork: 'TESTNET' as NetworkType,
       chainList: [],
     };
-    const payload = 'MAIN';
+    const payload = 'MAINNET';
     expect(() => reducer(mockState, resetCaInfo(payload))).toThrow(WalletError.noCreateWallet);
   });
 

@@ -41,7 +41,7 @@ const INIT_PAGE_INFO = {
 const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
   const { t } = useLanguage();
   const { onFinish, navigateTo } = useBaseContainer({});
-  const isMainnet = useCurrentNetworkType() === 'MAIN';
+  const isMainnet = useCurrentNetworkType() === 'MAINNET';
   const { defaultToken } = useCommonNetworkInfo();
   const [tokenPrice, setTokenPrice] = useState<number>(0);
   const { balanceList } = useAccountTokenBalanceList();

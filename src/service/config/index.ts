@@ -9,7 +9,7 @@ import { IPortkeyConfigService } from 'service/core/base';
 export class PortkeyConfigService implements IPortkeyConfigService {
   async getCurrentNetworkType(): Promise<NetworkType> {
     const networkUrl = await PortkeyConfig.endPointUrl();
-    return Object.values(BackEndNetWorkMap).find(it => it.apiUrl === networkUrl)?.networkType || 'MAIN';
+    return Object.values(BackEndNetWorkMap).find(it => it.apiUrl === networkUrl)?.networkType || 'MAINNET';
   }
   async setCurrentNetworkType(networkType: UserNetworkType, clearWalletAndIgnoreDataLoss = false): Promise<boolean> {
     const walletExists = await isWalletExists();
@@ -26,4 +26,4 @@ export class PortkeyConfigService implements IPortkeyConfigService {
   }
 }
 
-export type UserNetworkType = 'MAIN' | 'TESTNET';
+export type UserNetworkType = 'MAINNET' | 'TESTNET';

@@ -1,4 +1,5 @@
-import { ChainType, NetworkType } from 'packages/types';
+import { ChainType, NetworkType } from '..';
+
 export type NetworkItem = {
   name: string;
   walletType: ChainType;
@@ -12,6 +13,7 @@ export type NetworkItem = {
   cmsUrl?: string;
   s3Url?: string;
   portkeyFinanceUrl?: string; // portkey website url
+  portkeyOpenLoginUrl?: string; // web page
   buyConfig?: {
     ach?: {
       appId?: string;
@@ -21,4 +23,6 @@ export type NetworkItem = {
   imApiUrl?: string;
   imWsUrl?: string;
   imS3Bucket?: string;
+  eBridgeUrl?: string;
+  eTransferUrl?: string;
 };
