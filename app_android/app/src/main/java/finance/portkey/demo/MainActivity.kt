@@ -47,7 +47,7 @@ import java.security.InvalidKeyException
 
 val environment = mapOf(
     Pair("MAIN NET", "https://did-portkey.portkey.finance"),
-    Pair("TEST NET", "https://did-portkey-test.portkey.finance"),
+    Pair("TEST NET", "https://aa-portkey-test.portkey.finance"), // V2
     Pair("Test1", "https://localtest-applesign.portkey.finance")
 )
 
