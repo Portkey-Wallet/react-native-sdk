@@ -1,6 +1,6 @@
 import { NetworkTestCases } from 'tests/network';
-import { BaseJSModule, BaseMethodParams, TestCase, TestContext, TestReport } from '../types';
-import { emitJSMethodResult } from './WalletModule';
+import { BaseJSModule, BaseMethodParams, TestCase, TestContext, TestReport } from '../service/JsModules/types';
+import { emitJSMethodResult } from '../service/JsModules/SubModules/WalletModule';
 import { ContractMethodTestCases } from 'tests/contract';
 
 export const TestCases: Array<TestCase> = [];

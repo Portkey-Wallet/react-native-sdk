@@ -11,7 +11,7 @@ import * as Clipboard from 'expo-clipboard';
 import useEffectOnce from 'hooks/useEffectOnce';
 import { useLanguage } from 'i18n/hooks';
 import React, { useCallback, useMemo, useState } from 'react';
-import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { pTd } from 'utils/unit';
 import CommonAvatar from 'components/CommonAvatar';
 import { ActivityItemType, CaAddressInfoType } from 'network/dto/query';
@@ -305,9 +305,10 @@ export const styles = StyleSheet.create({
     paddingLeft: pTd(20),
     paddingRight: pTd(20),
     paddingTop: pTd(16),
+    paddingBottom: Platform.select({ android: pTd(16), ios: pTd(0) }),
     display: 'flex',
     alignItems: 'center',
-    height: '100%',
+    flex: 1,
   },
   closeWrap: {
     width: '100%',

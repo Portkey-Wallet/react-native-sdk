@@ -29,5 +29,7 @@ export const useQrScanPermissionAndToast = () => {
 };
 
 const requireXPermission = async (permission: PermissionType) => {
-  return PortkeyModulesEntity.PermissionModule.isPermissionGranted(permission);
+  return (await PortkeyModulesEntity.PermissionModule.isPermissionGranted(permission))
+    ? true
+    : await PortkeyModulesEntity.PermissionModule.requestPermission(permission);
 };

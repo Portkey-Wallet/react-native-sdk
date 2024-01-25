@@ -57,7 +57,7 @@ export type FeeResponse = {
   [symbol: string]: string;
 };
 
-export const getTokenContract = async (targetChainId?: string): Promise<ContractBasic> => {
+export const getTokenContract = async (targetChainId?: string, tokenAddress?: string): Promise<ContractBasic> => {
   const tokenContractName = 'AElf.ContractNames.Token';
   const { privateKey, originChainId } = (await getUnlockedWallet()) || {};
   const chainId = targetChainId || originChainId || (await PortkeyConfig.currChainId());
@@ -65,15 +65,27 @@ export const getTokenContract = async (targetChainId?: string): Promise<Contract
   const { endPoint: peerUrl } = networkInfo;
   const wallet = AElfWeb3SDK.getWalletByPrivateKey(privateKey);
   const aelf = new AElf(new AElf.providers.HttpProvider(peerUrl));
-  // first, we need to get the genesis contract address, since the only way to get any contract address is to call the genesis contract.
-  const chainStatus = await aelf.chain.getChainStatus();
-  const { GenesisContractAddress } = chainStatus || {};
-  if (!GenesisContractAddress) throw new Error('GenesisContractAddress is invalid');
-  // one particular method on the genesis contract could provide any contract address by its name.
-  const zeroContract = await aelf.chain.contractAt(GenesisContractAddress, wallet);
-  const tokenContractAddress = await zeroContract.GetContractAddressByName.call(AElf.utils.sha256(tokenContractName));
-  // finally, we can get the token contract instance by its contractAddress, it can also used on other contract.
-  return await aelf.chain.contractAt(tokenContractAddress, wallet);
+  if (!tokenAddress) {
+    // first, we need to get the genesis contract address, since the only way to get any contract address is to call the genesis contract.
+    const chainStatus = await aelf.chain.getChainStatus();
+    const { GenesisContractAddress } = chainStatus || {};
+    if (!GenesisContractAddress) throw new Error('GenesisContractAddress is invalid');
+    // one particular method on the genesis contract could provide any contract address by its name.
+    const zeroContract = await aelf.chain.contractAt(GenesisContractAddress, wallet);
+    const tokenContractAddress = await zeroContract.GetContractAddressByName.call(AElf.utils.sha256(tokenContractName));
+    // finally, we can get the token contract instance by its contractAddress, it can also used on other contract.
+    return await getContractBasic({
+      contractAddress: tokenContractAddress,
+      rpcUrl: peerUrl,
+      account: wallet,
+    });
+  } else {
+    return await getContractBasic({
+      contractAddress: tokenAddress,
+      rpcUrl: peerUrl,
+      account: wallet,
+    });
+  }
 };
 
 /**
@@ -497,7 +509,7 @@ export const useGetTransferFee = () => {
             contractAddress: tokenContractAddress,
             caHash: wallet.caHash,
             symbol,
-            to: wallet.caAddress,
+            to: wallet.managerAddress,
             amount: timesDecimals(sendAmount, decimals).toFixed(),
             memo: '',
           }
@@ -528,11 +540,12 @@ export const useGetTransferFee = () => {
         return '0';
       }
       // V1 calculateTransactionFee
-      if (TransactionFee)
+      if (TransactionFee) {
         return divDecimalsStr(TransactionFee?.[defaultToken.symbol], defaultToken.decimals).toString();
+      }
       throw { code: 500, message: 'no enough fee' };
     },
-    [defaultToken.decimals, defaultToken.symbol, wallet.caAddress, wallet.caHash],
+    [defaultToken.decimals, defaultToken.symbol, wallet.caHash, wallet.managerAddress],
   );
 
   return getTransferFee;

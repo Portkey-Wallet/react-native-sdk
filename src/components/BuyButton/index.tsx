@@ -9,7 +9,8 @@ import GStyles from 'assets/theme/GStyles';
 import { useCurrentNetworkType } from 'model/hooks/network';
 import { commonButtonStyle } from '../SendButton/style';
 import Touchable from 'components/Touchable';
-import { dashBoardBtnStyle, innerPageStyles } from '../SendButton/style';
+import { dashBoardBtnStyle } from '../SendButton/style';
+import { innerPageStyles } from './style';
 
 interface SendButtonType {
   themeType?: 'dashBoard' | 'innerPage';
