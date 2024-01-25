@@ -105,17 +105,18 @@ const SendHome = (props: IToSendHomeParamsType) => {
         symbol: assetInfo.symbol,
         tokenContractAddress: assetInfo.tokenContractAddress,
         toAddress: getEntireDIDAelfAddress(selectedToContact.address, undefined, assetInfo.chainId),
-        chainId: assetInfo.chainId,
+        chainId: fromChainId,
       });
     },
     [
-      assetInfo.chainId,
-      debounceSendNumber,
       getTransferFee,
+      debounceSendNumber,
       assetInfo.decimals,
       assetInfo.symbol,
       assetInfo.tokenContractAddress,
+      assetInfo.chainId,
       selectedToContact.address,
+      fromChainId,
     ],
   );
 
@@ -428,6 +429,7 @@ const SendHome = (props: IToSendHomeParamsType) => {
       console.log('fee', fee);
       setTransactionFee(fee || '0');
     } catch (err: any) {
+      console.error('getTransactionFee', err);
       if (err?.code === 500) {
         setErrorMessage([TransactionError.FEE_NOT_ENOUGH]);
         Loading.hide();

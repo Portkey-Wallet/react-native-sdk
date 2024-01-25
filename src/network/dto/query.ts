@@ -122,6 +122,7 @@ export interface IAssetItemType {
   address: string;
   tokenInfo?: ITokenInfoType;
   nftInfo?: INftInfoType;
+  tokenContractAddress: string;
 }
 
 export type GetRecentTransactionParams = {
