@@ -1,14 +1,14 @@
 import { myContainer } from 'api/inversify.config';
 import { IBaseService, IServices, TYPES, WalletState } from 'api/types';
-import { IAccountService } from 'api/types/account';
-import { IActivityService } from 'api/types/activity';
-import { IAssetsService } from 'api/types/assets';
-import { IContractService } from 'api/types/contract';
-import { IDataService } from 'api/types/data';
-import { IGuardianService } from 'api/types/guardians';
-import { IRampService } from 'api/types/ramp';
-import { IScanService } from 'api/types/scan';
-import { ISettingsService } from 'api/types/settings';
+import type { IAccountService } from 'api/types/account';
+import type { IActivityService } from 'api/types/activity';
+import type { IAssetsService } from 'api/types/assets';
+import type { IContractService } from 'api/types/contract';
+import type { IDataService } from 'api/types/data';
+import type { IGuardianService } from 'api/types/guardians';
+import type { IRampService } from 'api/types/ramp';
+import type { IScanService } from 'api/types/scan';
+import type { ISettingsService } from 'api/types/settings';
 import { PortkeyEntries } from 'config/entries';
 import { LaunchMode, LaunchModeSet } from 'global/init/entries';
 import { inject, injectable } from 'inversify';
@@ -27,7 +27,6 @@ export class Services implements IServices {
   @inject(TYPES.DataService) readonly dataService: IDataService;
   @inject(TYPES.ContractService) readonly contractService: IContractService;
 }
-
 @injectable()
 export class BaseService implements IBaseService {
   @inject(TYPES.DataService) private _dataService: IDataService;

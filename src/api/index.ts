@@ -11,7 +11,7 @@ import { IDataService } from './types/data';
 import { BaseMethodResult, CallCaMethodProps, IContractService } from './types/contract';
 import { myContainer } from './inversify.config';
 export * from './types';
-export class Portkey
+class Portkey
   implements
     IAccountService,
     IGuardianService,

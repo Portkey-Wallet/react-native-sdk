@@ -33,5 +33,4 @@ myContainer.bind<ISettingsService>(TYPES.SettingsService).to(SettingsService).in
 
 myContainer.bind<IBaseService>(TYPES.BaseService).to(BaseService).inSingletonScope();
 myContainer.bind<IServices>(TYPES.Services).to(Services).inSingletonScope();
-console.log('初始化完成！！！');
 export { myContainer };

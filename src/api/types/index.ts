@@ -60,3 +60,13 @@ export interface IServices {
 }
 
 export interface IBaseService {}
+export * from './account';
+export * from './activity';
+export * from './assets';
+export * from './contract';
+export * from './data';
+export * from './guardians';
+export * from './ramp';
+export * from './scan';
+export * from './settings';
+export * from 'api/error';

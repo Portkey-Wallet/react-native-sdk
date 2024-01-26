@@ -83,12 +83,8 @@ export const LockedWalletTestCases: Array<TestCaseApi> = [
     run: async (testContext, caseName) => {
       try {
         const walletState = await portkey.getWalletState();
-        console.log('执行结束');
-        console.log(caseName);
-        console.log(walletState.toString());
         testContext.assert(caseName, walletState === WalletState.LOCKED, 'invoke failed');
       } catch (e: any) {
-        console.log('执行失败');
         testContext.assert(caseName, false, e?.toString() ?? 'failed');
       }
     },

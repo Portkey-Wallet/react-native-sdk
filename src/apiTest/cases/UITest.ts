@@ -112,7 +112,18 @@ export const UITestSendTokenCases: Array<TestCaseApi> = [
     describe: 'Test openSendToken',
     run: async (testContext, caseName) => {
       try {
-        await portkey.openSendToken();
+        await portkey.openSendToken({
+          sendType: 'nft',
+          assetInfo: {
+            balanceInUsd: '',
+            decimals: '',
+            symbol: '',
+            chainId: 'AELF',
+            balance: '',
+            imageUrl: '',
+            tokenContractAddress: '',
+          },
+        });
         testContext.assert(caseName, true, 'invoke failed');
       } catch (e: any) {
         testContext.assert(caseName, false, e?.toString() ?? 'failed');
