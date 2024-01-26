@@ -1,4 +1,3 @@
-import { myContainer } from 'api/inversify.config';
 import { IBaseService, IServices, TYPES, WalletState } from 'api/types';
 import type { IAccountService } from 'api/types/account';
 import type { IActivityService } from 'api/types/activity';

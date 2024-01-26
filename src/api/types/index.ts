@@ -7,8 +7,6 @@ import { IContractService } from './contract';
 import { IAssetsService } from './assets';
 import { IRampService } from './ramp';
 import { IActivityService } from './activity';
-import { PortkeyEntries } from 'config/entries';
-import { EntryResult } from 'service/native-modules';
 export type { CallCaMethodProps, BaseMethodResult } from './contract';
 export type UnlockedWallet = {
   caInfo: {
