@@ -2760,13 +2760,13 @@
     aelf-sdk "3.2.45-beta.0"
     query-string "^7.1.1"
 
-"@portkey/socket@1.0.0-alpha.2":
-  version "1.0.0-alpha.2"
-  resolved "https://registry.npmmirror.com/@portkey/socket/-/socket-1.0.0-alpha.2.tgz#fc243b61c03d2d5c0856190478af566841c00c0e"
-  integrity sha512-B2qr5wIYMS1A0d7UtnfhRJtOPJ+S51tf8Vyp3UdND5BT4d9b63XdeSjSnaBmzLuxXwT9zVP4kRJNkhLPaMpGQA==
+"@portkey/socket@1.5.0-alpha.10":
+  version "1.5.0-alpha.10"
+  resolved "https://registry.yarnpkg.com/@portkey/socket/-/socket-1.5.0-alpha.10.tgz#ac39b9177add112a5a9b930a4d694991a0bd17d1"
+  integrity sha512-MNVL076Z4sJAYKIYW3C8YnoX4dkN68KX8RZs1apvSihxzjejdinYSVb8Ous9KQ7Et6Xv2/n3OC+poW8E+lIasg==
   dependencies:
     "@abp/signalr" "^7.0.0"
-    "@portkey/utils" "^1.0.0-alpha.2"
+    "@portkey/utils" "^1.5.0-alpha.10"
 
 "@portkey/types@1.0.0-alpha.4":
   version "1.0.0-alpha.4"
@@ -2782,7 +2782,12 @@
   dependencies:
     "@types/elliptic" "^6.4.14"
 
-"@portkey/utils@^1.0.0-alpha.2", "@portkey/utils@^1.5.1":
+"@portkey/utils@^1.5.0-alpha.10":
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/@portkey/utils/-/utils-1.5.3.tgz#1b24363e245f733f577b1040859b014af9650f0f"
+  integrity sha512-A41Z7U42GOZALAlDzxfKmxzYWTS7Lp3bJAuwvt0xk4k+ENVLMXLWI6RrGxrEn0BNBVgEJcR5IC/Dm8Qa6fAvng==
+
+"@portkey/utils@^1.5.1":
   version "1.5.1"
   resolved "https://registry.npmmirror.com/@portkey/utils/-/utils-1.5.1.tgz#195e7cb0b14a960fa94ef59ddb59d9dcde2f2934"
   integrity sha512-lWow+ECykQhEH4KVFzYG4+CKrCTK8pal8bwQygjkgYxBB1aZvhWaJKtgHJWinZdAZKQO+E/PG4wko8eNm61xmA==
