@@ -1,6 +1,8 @@
 import { getUnlockedWallet } from 'model/wallet';
 import { TestCaseApi } from 'apiTest/type';
-import { WalletState, portkey } from 'service/core';
+import { WalletState } from 'service/core';
+import { portkey } from 'api';
+// import Portkey from 'api';
 
 //This array stores test cases where the wallet is the unlocked state
 export const UnLockedWalletTestCases: Array<TestCaseApi> = [
@@ -8,6 +10,7 @@ export const UnLockedWalletTestCases: Array<TestCaseApi> = [
     describe: 'Test callCaContractMethod: GetVerifierServers',
     run: async (testContext, caseName) => {
       try {
+        // const p2 = new Portkey();
         const result = await portkey.callCaContractMethod({
           contractMethodName: 'GetVerifierServers',
           isViewMethod: true,
@@ -64,6 +67,7 @@ export const UnLockedWalletTestCases: Array<TestCaseApi> = [
     run: async (testContext, caseName) => {
       try {
         const assetsState = await portkey.getAssetsInfo();
+        testContext.log('assetsState log!!');
         testContext.log(JSON.stringify(assetsState));
         testContext.assert(caseName, !!assetsState, 'invoke failed');
       } catch (e: any) {
@@ -79,8 +83,12 @@ export const LockedWalletTestCases: Array<TestCaseApi> = [
     run: async (testContext, caseName) => {
       try {
         const walletState = await portkey.getWalletState();
+        console.log('执行结束');
+        console.log(caseName);
+        console.log(walletState.toString());
         testContext.assert(caseName, walletState === WalletState.LOCKED, 'invoke failed');
       } catch (e: any) {
+        console.log('执行失败');
         testContext.assert(caseName, false, e?.toString() ?? 'failed');
       }
     },

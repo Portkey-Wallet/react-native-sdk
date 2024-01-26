@@ -2,7 +2,7 @@ export interface CallCaMethodProps {
   contractMethodName: string;
   isViewMethod: boolean;
   params?: { [key: string | symbol]: any };
-  eventId?: string;
+  eventId: string;
 }
 export interface BaseMethodResult {
   status: 'success' | 'fail';
@@ -25,11 +25,12 @@ export type UnlockedWallet = {
   publicKey: string;
   address: string;
 };
-const TYPES = {
-  AccountModule: Symbol.for('AccountModule'),
-  UIManagerModule: Symbol.for('UIManagerModule'),
-  ConfigModule: Symbol.for('ConfigModule'),
+
+declare const TYPES: {
+  AccountModule: symbol;
+  UIManagerModule: symbol;
 };
+
 export { TYPES };
 
 export enum WalletState {
@@ -37,4 +38,11 @@ export enum WalletState {
   LOCKED,
   UNLOCKED,
 }
-export type { IToSendHomeParamsType } from 'packages/types/types-ca/routeParams';
+export interface IServices extends ICommunityRecoveryService {
+  readonly communityRecovery: ICommunityRecoveryService;
+  readonly ramp: IRampService;
+  readonly assets: IAssetsService;
+  readonly token: ITokenService;
+  readonly transaction: ITransactionService;
+  readonly activity: IActivityService;
+}

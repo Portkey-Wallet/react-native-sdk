@@ -45,7 +45,15 @@ import { ScanQRCodeProps, ScanQRCodeResult } from 'pages/QrScanner';
 import { isArray } from 'lodash';
 
 const SendHome = (props: IToSendHomeParamsType) => {
-  const { sendType = 'token', toInfo, assetInfo } = props;
+  const {
+    sendType = 'token',
+    toInfo = {
+      name: '',
+      address: '',
+    },
+    assetInfo,
+  } = props;
+  console.log('props', JSON.stringify(props));
   const { t } = useLanguage();
 
   const { chainsNetworkInfo } = useChainsNetworkInfo();

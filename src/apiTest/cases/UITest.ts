@@ -1,5 +1,5 @@
 import { TestCaseApi } from 'apiTest/type';
-import { portkey } from 'service/core';
+import { portkey } from 'api';
 /*
 NOTE: 
 1. UI op need to open a new page, so a UI op needs to be placed in an array 

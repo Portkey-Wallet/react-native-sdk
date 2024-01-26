@@ -4,6 +4,7 @@ import { IPortkeyAccountService, IPortkeyConfigService, IPortkeyUIManagerService
 import { PortkeyAccountService } from './account';
 import { UIManagerService } from 'service/ui';
 import { PortkeyConfigService } from 'service/config';
+import { Portkey } from '.';
 
 const myContainer = new Container();
 myContainer.bind<IPortkeyAccountService>(TYPES.AccountModule).to(PortkeyAccountService);

@@ -6,8 +6,9 @@ import { AssetsState } from './assets';
 import { NetworkType } from 'packages/types';
 import { UserNetworkType } from 'service/config';
 export * from './type';
-
 class Portkey implements IPortkeyAccountService, IPortkeyUIManagerService, IPortkeyConfigService {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   private _portkeyAccountService: IPortkeyAccountService;
   private _portkeyUIManagerService: IPortkeyUIManagerService;
   private _portkeyConfigService: IPortkeyConfigService;
@@ -23,6 +24,7 @@ class Portkey implements IPortkeyAccountService, IPortkeyUIManagerService, IPort
     return this._portkeyConfigService.setCurrentNetworkType(networkType, clearWalletAndIgnoreDataLoss);
   }
   async getAssetsInfo(): Promise<AssetsState> {
+    console.log(JSON.stringify(this._portkeyAccountService));
     return this._portkeyAccountService.getAssetsInfo();
   }
   async login() {
