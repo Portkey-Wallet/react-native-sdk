@@ -1,8 +1,7 @@
 @startuml
 class Portkey {
   -services: IServices
-  -config: IConfig
-  -theme: ITheme
+  +init(config?: IConfig, theme?: ITheme) 
   +callCaContractMethod(props: CallCaMethodProps): Promise<BaseMethodResult>
   +getWalletInfo(): Promise<UnlockedWallet>
   +getWalletState(): Promise<WalletState>
@@ -79,15 +78,18 @@ class BaseService {
 }
 
 interface IConfig {
-    setNetwork: (config: NetworkConfig) => void
-    setTermsOfService: (prefix: string, title: string) => void
-    clearAllData: () => boolean
+  networkConfig: NetworkConfig;
 }
-
+interface NetworkConfig {
+  apiUrl?: string;
+  connectUrl?: string;
+  graphQLUrl?: string;
+  networkType?: NetworkType;
+}
 interface ITheme {
-    setTheme: (theme: Theme) => void
-    setAppName: (appName: string) => void
-    setNavigationTheme: (navigationTheme: NavigationTheme) => void
+    theme: Theme;
+    appName: string;
+    navigationTheme: NavigationTheme;
 }
 note left of BaseService
     the parent service of all services
@@ -95,6 +97,7 @@ end note
 Portkey --> "1" IServices: services
 Portkey --> "2" IConfig: config
 Portkey --> "3" ITheme: theme
+IConfig --> NetworkConfig: networkConfig
 IServices --> "1" IAccountService: accountService
 IServices --> "2" IGuardianService: guardianService
 IServices --> "3" IAssetsService: assetsService

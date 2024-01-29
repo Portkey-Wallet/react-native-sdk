@@ -10,6 +10,7 @@ import { IScanService } from './types/scan';
 import { IDataService } from './types/data';
 import { BaseMethodResult, CallCaMethodProps, IContractService } from './types/contract';
 import { myContainer } from './inversify.config';
+import { IConfig, ITheme, PortkeyConfig } from './config';
 export * from './types';
 class Portkey
   implements
@@ -27,6 +28,11 @@ class Portkey
   constructor() {
     this.services = myContainer.get<Services>(TYPES.Services);
   }
+  init(config?: IConfig, theme?: ITheme) {
+    PortkeyConfig.config = config;
+    PortkeyConfig.theme = theme;
+  }
+
   callCaContractMethod(props: CallCaMethodProps): Promise<BaseMethodResult> {
     return this.services.contractService.callCaContractMethod(props);
   }

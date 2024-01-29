@@ -49,11 +49,11 @@ export class BaseService implements IBaseService {
     );
   }
   protected async checkIsUnlocked() {
-    const wallState = await this._dataService.getWalletState();
-    return wallState === WalletState.UNLOCKED;
+    const walletState = await this._dataService.getWalletState();
+    return walletState === WalletState.UNLOCKED;
   }
   protected async checkIsLocked() {
-    const wallState = await this._dataService.getWalletState();
-    return wallState === WalletState.LOCKED;
+    const walletState = await this._dataService.getWalletState();
+    return walletState === WalletState.LOCKED;
   }
 }
