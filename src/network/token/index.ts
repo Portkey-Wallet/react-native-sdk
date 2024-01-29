@@ -14,8 +14,11 @@ export const getCachedNetworkToken = async (): Promise<string> => {
   return handleCachedValue({
     target: 'TEMP',
     getIdentifier: async () => {
+      const {
+        caInfo: { caHash },
+      } = await getUnlockedWallet();
       const chainId = await PortkeyConfig.currChainId();
-      return `${NETWORK_TOKEN_IDENTIFIER}-${chainId}`;
+      return `${NETWORK_TOKEN_IDENTIFIER}-${chainId}-${caHash}`;
     },
     valueExpireStrategy: async () => {
       const chainId = PortkeyConfig.currChainId();

@@ -117,10 +117,10 @@ export async function getContractMethods(instance: any, address: any) {
   if (!methodsMap[key]) {
     const methods = await getFileDescriptorsSet(instance, address);
     const _obj: any = {};
-    Object.keys(methods).forEach(i => {
-      const service = methods[i];
-      Object.keys(service.methods).forEach(j => {
-        const method = service.methods[j].resolve();
+    Object.keys(methods).forEach(inKey => {
+      const service = methods[inKey];
+      Object.keys(service.methods).forEach(innerKey => {
+        const method = service.methods[innerKey].resolve();
         _obj[method.name] = method.resolvedRequestType;
       });
     });
@@ -143,7 +143,7 @@ type HandleContractParamsParams = { paramsOption: any; functionName: string; ins
 export const handleContractParams = async ({ paramsOption, functionName, instance }: HandleContractParamsParams) => {
   if (functionName === 'ManagerForwardCall') {
     const { contractAddress, methodName, args, caHash } = paramsOption || {};
-    if (!(contractAddress && methodName && args && caHash)) {
+    if (!(contractAddress && methodName && caHash)) {
       throw new Error('ManagerForwardCall parameter is missing');
     }
     const methods = await getContractMethods(instance, paramsOption.contractAddress);
@@ -151,9 +151,7 @@ export const handleContractParams = async ({ paramsOption, functionName, instanc
     if (!inputType) throw new Error(`Contract ${contractAddress} does not exist ${methodName}`);
     const _args = await encodedParams(inputType, args);
     return {
-      caHash,
-      contractAddress,
-      methodName,
+      ...paramsOption,
       args: _args,
     };
   }
