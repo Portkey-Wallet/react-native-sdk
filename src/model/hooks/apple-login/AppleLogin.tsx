@@ -2,6 +2,7 @@ import React from 'react';
 import { forwardRef, useMemo, useState, useCallback, useRef, useImperativeHandle, ReactNode } from 'react';
 import { StyleSheet, View, ViewStyle, StyleProp, TouchableOpacity } from 'react-native';
 import WebView, { WebViewMessageEvent, WebViewProps } from 'react-native-webview';
+import { LoadingBody } from 'components/Loading';
 
 export declare type AppleLoginInterface = {
   open(): void;
@@ -32,7 +33,6 @@ const styles = StyleSheet.create({
 export type AppleLoginProps = {
   headerComponent?: ReactNode;
   footerComponent?: ReactNode;
-  loadingComponent?: ReactNode;
   webViewProps?: Omit<WebViewProps, 'source' | 'style' | 'onMessage' | 'ref'>;
   onVerify: (token: string) => void;
   onExpire?: (...args: any[]) => void;
@@ -51,7 +51,7 @@ export type AppleLoginProps = {
 };
 
 const AppleLogin = forwardRef(function AppleLogin(
-  { loadingComponent, onVerify, onExpire, onError, onClose, onLoad, size, baseUrl, style }: AppleLoginProps,
+  { onVerify, onExpire, onError, onClose, onLoad, size, baseUrl, style }: AppleLoginProps,
   ref,
 ) {
   const isClosed = useRef(false);
@@ -133,8 +133,12 @@ const AppleLogin = forwardRef(function AppleLogin(
   const webViewStyles = useMemo(() => [styles.webView, style], [style]);
 
   const renderLoading = () => {
-    if (!loading || !loadingComponent) return null;
-    return <View style={styles.loadingContainer}>{loadingComponent}</View>;
+    if (!loading) return null;
+    return (
+      <View style={styles.loadingContainer}>
+        <LoadingBody iconType="loading" />
+      </View>
+    );
   };
 
   return (
@@ -144,6 +148,7 @@ const AppleLogin = forwardRef(function AppleLogin(
         ref={webViewRef}
         source={{ uri: baseUrl }}
         style={webViewStyles}
+        onLoadEnd={() => setLoading(false)}
         onMessage={handleMessage}
         injectedJavaScript={`(()=>{
           try {
