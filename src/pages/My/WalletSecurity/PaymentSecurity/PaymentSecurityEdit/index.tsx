@@ -135,8 +135,9 @@ const PaymentSecurityEdit: React.FC = (props: PaymentSecurityEditProps) => {
         restricted: editInfo.restricted,
         decimals: detail.decimals,
       },
-      failHandler: () => {
-        CommonToast.fail('edit failed');
+      failHandler: option => {
+        const { errorMessage } = option || {};
+        CommonToast.fail(errorMessage ?? 'edit failed');
       },
     });
   }, [detail, editInfo]);
