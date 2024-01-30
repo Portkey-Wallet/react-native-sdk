@@ -362,8 +362,8 @@ export const callEditPaymentSecurityMethod = async (
   return await contractInstance.callSendMethod('SetTransferLimit', address, {
     caHash,
     symbol: transferLimitDetail.symbol,
-    singleLimit: transferLimitDetail.singleLimit,
-    dailyLimit: transferLimitDetail.dailyLimit,
+    singleLimit: Number(transferLimitDetail.singleLimit),
+    dailyLimit: Number(transferLimitDetail.dailyLimit),
     guardiansApproved: guardianList.map(item => parseVerifiedGuardianInfoToCaType(item)),
   });
 };

@@ -285,6 +285,7 @@ export default function GuardianApproval({
         console.log('EDIT_PAYMENT_SECURITY result', result);
         onPageFinish({
           isVerified: !result.error,
+          errorMessage: handlePaymentSecurityRuleSpecial(result?.error),
         });
         break;
       }
@@ -596,12 +597,13 @@ export default function GuardianApproval({
 const handlePaymentSecurityRuleSpecial = (error?: { message?: string }) => {
   const chainProcessingErrorMsg = 'Processing on the chain';
   const validateFailedErrorMsg = 'JudgementStrategy validate failed';
-  if (chainProcessingErrorMsg === error?.message) {
+  const { message } = error || {};
+  if (message?.indexOf(chainProcessingErrorMsg) !== -1) {
     return 'This operation cannot be done before guardian info syncing is completed. Please try again later.';
-  } else if (validateFailedErrorMsg === error?.message) {
+  } else if (message?.indexOf(validateFailedErrorMsg) !== -1) {
     return 'The allowance should exceed the combined total of the transfer amount and transaction fee. Please set a higher value.';
   } else {
-    return error?.message;
+    return message;
   }
 };
 
