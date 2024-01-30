@@ -25,7 +25,6 @@ import ramp, {
   ISellProviderPrice,
   RampType,
 } from 'packages/ramp';
-// import { useEffectOnce } from '@portkey-wallet/hooks';
 import CommonAvatar from 'components/CommonAvatar';
 import Svg from 'components/Svg';
 import Touchable from 'components/Touchable';
