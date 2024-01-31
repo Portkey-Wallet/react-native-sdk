@@ -46,7 +46,7 @@ import {
 } from 'model/contract/handler';
 import { ChainId } from 'packages/types';
 import { getUnlockedWallet } from 'model/wallet';
-
+import { ITransferLimitItem } from '@portkey/services';
 export default function GuardianApproval({
   guardianVerifyConfig: guardianListConfig,
   verifiedTime,
@@ -353,18 +353,19 @@ export default function GuardianApproval({
       Loading.hide();
       if (thirdPartyAccount) {
         Loading.show();
+        const chainId = await getTargetChainId(guardianVerifyType, paymentSecurityConfig);
         const verifyResult = isAppleLogin(thirdPartyAccount)
           ? await NetworkController.verifyAppleGuardianInfo({
               id: thirdPartyAccount.accountIdentifier,
               verifierId: guardian.sendVerifyCodeParams.verifierId,
               accessToken: thirdPartyAccount.identityToken,
-              chainId: await PortkeyConfig.currChainId(),
+              chainId,
               operationType,
             })
           : await NetworkController.verifyGoogleGuardianInfo({
               verifierId: guardian.sendVerifyCodeParams.verifierId,
               accessToken: thirdPartyAccount.accessToken,
-              chainId: await PortkeyConfig.currChainId(),
+              chainId,
               operationType,
             });
         Loading.hide();
@@ -409,6 +410,7 @@ export default function GuardianApproval({
   };
 
   const dealWithParticularGuardian = async (guardian: GuardianConfig, key: string) => {
+    const targetChainId = await getTargetChainId(guardianVerifyType, paymentSecurityConfig);
     if (sentGuardianKeys.has(key)) {
       const verifierSessionId = sentGuardianKeys.get(key);
       const guardianResult = await handleGuardianVerifyPage(
@@ -416,6 +418,7 @@ export default function GuardianApproval({
           verifierSessionId,
         } as Partial<GuardianConfig>),
         true,
+        targetChainId,
       );
       if (guardianResult) {
         CommonToast.success('Verified Successfully');
@@ -463,6 +466,7 @@ export default function GuardianApproval({
                       verifySessionId: sendResult.verifierSessionId,
                     } as Partial<GuardianConfig>),
                     true,
+                    targetChainId,
                   );
                   if (guardianResult) {
                     CommonToast.success('Verified Successfully');
@@ -487,6 +491,7 @@ export default function GuardianApproval({
   const handleGuardianVerifyPage = async (
     guardianConfig?: GuardianConfig,
     alreadySent?: boolean,
+    chainId?: string,
   ): Promise<VerifiedGuardianDoc | null> => {
     const guardian = guardianConfig;
     if (!guardian) {
@@ -495,7 +500,7 @@ export default function GuardianApproval({
     }
     return new Promise(resolve => {
       navigateToGuardianPage(
-        Object.assign({}, guardian, { alreadySent: alreadySent ?? false, operationType }),
+        Object.assign({}, guardian, { alreadySent: alreadySent ?? false, operationType, chainId }),
         result => {
           resolve(result);
         },
@@ -608,6 +613,27 @@ const handlePaymentSecurityRuleSpecial = (error?: { message?: string }) => {
 };
 
 const { primaryColor } = defaultColors;
+
+const getTargetChainId = async (
+  guardianVerifyType: GuardianVerifyType,
+  paymentSecurityConfig?: ITransferLimitItem,
+): Promise<string> => {
+  switch (guardianVerifyType) {
+    case GuardianVerifyType.EDIT_PAYMENT_SECURITY: {
+      // we may have to use the chainId of the paymentSecurityConfig
+      return paymentSecurityConfig?.chainId ?? (await PortkeyConfig.currChainId());
+    }
+    case GuardianVerifyType.CREATE_WALLET: {
+      // no wallet yet, use current chainId instead
+      return await PortkeyConfig.currChainId();
+    }
+    default: {
+      // other cases, use origin chainId
+      const { originChainId } = await getUnlockedWallet();
+      return originChainId;
+    }
+  }
+};
 
 const styles = StyleSheet.create({
   containerStyle: {
