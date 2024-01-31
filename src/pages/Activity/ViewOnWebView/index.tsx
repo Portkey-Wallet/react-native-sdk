@@ -67,7 +67,8 @@ const ViewOnWebView = ({
         if (navState.url.startsWith(RAMP_SELL_URL) && !isAchSellHandled.current) {
           isAchSellHandled.current = true;
           navigateTo(PortkeyEntries.RAMP_HOME_ENTRY);
-          const { orderId, guardiansApproved } = (params as RampSellParams) || {};
+          // const { orderId, guardiansApproved } = (params as RampSellParams) || {};
+          const { orderId } = (params as RampSellParams) || {};
           if (!orderId) {
             CommonToast.failError('Transaction failed.');
             return;

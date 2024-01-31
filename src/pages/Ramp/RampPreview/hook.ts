@@ -4,12 +4,9 @@ import { getUnlockedWallet } from 'model/wallet';
 import { NetworkController } from 'network/controller';
 import { UserGuardianItem } from 'packages/store/store-ca/guardians/type';
 import { ChainId } from 'packages/types';
-import { VersionDeviceType } from 'packages/types/types-ca/device';
 import { LoginType } from 'packages/types/types-ca/wallet';
-import { isIOS } from 'packages/utils/mobile/device';
 import { useEffect, useState } from 'react';
-import * as Application from 'expo-application';
-import { PortkeyConfig, defaultEntryConfig } from 'config';
+import { PortkeyConfig } from 'config';
 
 export const DEFAULT_TOKEN = {
   address: 'JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE',
