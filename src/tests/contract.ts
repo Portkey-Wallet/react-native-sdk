@@ -1,6 +1,7 @@
 import { getCachedNetworkConfig } from 'model/chain';
 import { callGetDefaultTransferLimitMethod, callGetHolderInfoMethod } from 'model/contract/handler';
 import { getUnlockedWallet } from 'model/wallet';
+import { NetworkController } from 'network/controller';
 import { TestCase } from 'service/JsModules/types';
 
 export const ContractMethodTestCases: Array<TestCase> = [
@@ -9,21 +10,25 @@ export const ContractMethodTestCases: Array<TestCase> = [
     run: async testContext => {
       const {
         caInfo: { caHash },
-        originChainId,
       } = await getUnlockedWallet({ getMultiCaAddresses: true });
-      const {
-        caContractAddress,
-        peerUrl,
-        defaultToken: { symbol },
-      } = await getCachedNetworkConfig(originChainId);
-      const contractResults = [];
-      contractResults.push(await callGetDefaultTransferLimitMethod(originChainId, symbol));
-      contractResults.push(await callGetHolderInfoMethod(caHash, caContractAddress, peerUrl));
-      contractResults.forEach(it => {
-        testContext.assert(!it.error, 'it should not contain error');
-        testContext.log(it, 'contract result');
-      });
+      const networkConfig = await NetworkController.getNetworkInfo();
+      const chainIds = networkConfig.items.map(it => it.chainId);
+      for (const chainId of chainIds) {
+        const {
+          caContractAddress,
+          peerUrl,
+          defaultToken: { symbol },
+        } = await getCachedNetworkConfig(chainId);
+        const contractResults = [];
+        contractResults.push(await callGetDefaultTransferLimitMethod(chainId, symbol));
+        contractResults.push(await callGetHolderInfoMethod(caHash, caContractAddress, peerUrl));
+        contractResults.forEach(it => {
+          testContext.assert(!it.error, 'it should not contain error');
+          testContext.log(it, `contract result for chainId ${chainId}`);
+        });
+      }
     },
+    useDetailsReport: true,
   },
   {
     describe: 'sort contracts well',
@@ -50,6 +55,5 @@ export const ContractMethodTestCases: Array<TestCase> = [
       textContext.assert(sortedList[0].name === 'gooleliu1', 'first item should be gooleliu1');
       textContext.log(sortedList, 'sortedList');
     },
-    useDetailsReport: true,
   },
 ];

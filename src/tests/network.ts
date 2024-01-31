@@ -125,7 +125,6 @@ export const NetworkTestCases: Array<TestCase> = [
       testContext.assert(!!it, 'it should not be falsy');
       testContext.log(it, 'readContractsAddress result');
     },
-    useDetailsReport: true,
   },
   {
     describe: 'get account recent activities and check one activity info',
@@ -180,6 +179,5 @@ export const NetworkTestCases: Array<TestCase> = [
       testContext.assert(!!it, 'it should not be falsy');
       testContext.log(it, 'checkTransferSecurity result');
     },
-    useDetailsReport: true,
   },
 ];
