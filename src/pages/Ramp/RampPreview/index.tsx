@@ -14,8 +14,6 @@ import { useReceive } from '../hooks';
 // import navigationService from 'utils/navigationService';
 import CommonToast from 'components/CommonToast';
 import Loading from 'components/Loading';
-// import { useCurrentWalletInfo } from '@portkey-wallet/hooks/hooks-ca/wallet';
-// import { useDefaultToken } from '@portkey-wallet/hooks/hooks-ca/chainList';
 import ramp, {
   IBuyProviderPrice,
   IRampCryptoItem,
@@ -28,7 +26,6 @@ import ramp, {
 import CommonAvatar from 'components/CommonAvatar';
 import Svg from 'components/Svg';
 import Touchable from 'components/Touchable';
-// import { useGuardiansInfo } from 'hooks/store';
 import { LoginType } from 'packages/types/types-ca/wallet';
 import { RAMP_BUY_URL, RAMP_SELL_URL } from '../constants';
 import { checkIsSvgUrl } from 'utils/commonUtil';
@@ -38,6 +35,10 @@ import { GuardiansApprovedType } from 'packages/types/types-ca/routeParams';
 import { MAIN_CHAIN_ID } from 'packages/constants/constants-ca/activity';
 // import { useAppRampEntryShow } from 'hooks/ramp';
 import useEffectOnce from 'hooks/useEffectOnce';
+import useBaseContainer from 'model/container/UseBaseContainer';
+import { PortkeyEntries } from 'config/entries';
+import { useSDKRampEntryShow, useCurrentWalletInfo, useDefaultToken, useGuardiansInfo } from './hook';
+import { t } from 'i18next';
 
 interface RouterParams {
   type?: RampType;
@@ -107,7 +108,7 @@ const renderProviderCard = (
 
 export default function RampPreview(props: RouterParams) {
   const { type = RampType.BUY, crypto, fiat, amount, rate: rateProps, guardiansApproved } = props;
-
+  const { onFinish, navigateTo } = useBaseContainer({ entryName: PortkeyEntries.RAMP_PREVIEW_ENTRY });
   const defaultToken = useDefaultToken(MAIN_CHAIN_ID);
   const { providerPriceList, refreshReceive } = useReceive({
     type,
@@ -120,7 +121,7 @@ export default function RampPreview(props: RouterParams) {
   const isBuy = useMemo(() => type === RampType.BUY, [type]);
   const wallet = useCurrentWalletInfo();
   const [providerKey, setProviderKey] = useState<string>();
-  const { refreshRampShow } = useAppRampEntryShow();
+  const { refreshRampShow } = useSDKRampEntryShow();
   const { userGuardiansList } = useGuardiansInfo();
 
   useEffectOnce(() => {
@@ -197,7 +198,11 @@ export default function RampPreview(props: RouterParams) {
       const isSectionShow = type === RampType.BUY ? showResult.isBuySectionShow : showResult.isSellSectionShow;
       if (!isSectionShow) {
         CommonToast.fail('Sorry, the service you are using is temporarily unavailable.');
-        navigationService.navigate('Tab');
+        // navigationService.navigate('Tab');
+        onFinish({
+          data: { finish: true },
+          status: 'success',
+        });
         Loading.hide();
         return;
       }
@@ -213,19 +218,20 @@ export default function RampPreview(props: RouterParams) {
         amount: amount,
         withdrawUrl: type === RampType.BUY ? RAMP_BUY_URL : RAMP_SELL_URL,
       });
-
-      navigationService.navigate('ViewOnWebView', {
-        title: 'Ramp',
-        url: url,
-        webViewPageType: type === RampType.BUY ? 'ramp-buy' : 'ramp-sell',
-        injectedJavaScript: undefined,
-        params:
-          type === RampType.BUY
-            ? undefined
-            : {
-                orderId,
-                guardiansApproved,
-              },
+      navigateTo(PortkeyEntries.VIEW_ON_WEBVIEW, {
+        params: {
+          title: t('Ramp'),
+          url: url,
+          webViewPageType: type === RampType.BUY ? 'ramp-buy' : 'ramp-sell',
+          injectedJavaScript: undefined,
+          params:
+            type === RampType.BUY
+              ? undefined
+              : {
+                  orderId,
+                  guardiansApproved,
+                },
+        },
       });
     } catch (error) {
       console.log(error);
@@ -236,8 +242,11 @@ export default function RampPreview(props: RouterParams) {
     amount,
     crypto,
     currentProvider?.providerNetwork,
+    currentProvider?.providerSymbol,
     fiat,
     guardiansApproved,
+    navigateTo,
+    onFinish,
     providerKey,
     refreshRampShow,
     type,

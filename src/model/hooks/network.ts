@@ -5,6 +5,7 @@ import useEffectOnce from 'hooks/useEffectOnce';
 import { useState } from 'react';
 import { AElfChainStatusItemDTO } from 'network/dto/wallet';
 import { NetworkController } from 'network/controller';
+import { getCachedAllChainInfo } from 'model/chain';
 
 export const getCurrentNetworkType = async (): Promise<NetworkType> => {
   const endPointUrl = await PortkeyConfig.endPointUrl();
@@ -35,8 +36,8 @@ export const useCurrentNetworkType = () => {
 export const useChainsNetworkInfo = () => {
   const [chainsNetworkInfo, setChainsNetworkInfo] = useState<Record<string, AElfChainStatusItemDTO>>({});
   useEffectOnce(async () => {
-    const networkInfo = await NetworkController.getNetworkInfo();
-    const info = networkInfo.items.reduce((acc, cur) => {
+    const networkInfoItems = await getCachedAllChainInfo();
+    const info = networkInfoItems.reduce((acc, cur) => {
       acc[cur.chainId] = cur;
       return acc;
     }, {} as Record<string, AElfChainStatusItemDTO>);

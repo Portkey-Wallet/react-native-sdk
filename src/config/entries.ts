@@ -53,6 +53,8 @@ export enum PortkeyEntries {
   // contact
   CONTACT_DETAIL_ENTRY = 'contact_detail_entry',
   CONTACT_ACTIVITY_ENTRY = 'contact_activity_entry',
+
+  RAMP_PREVIEW_ENTRY = 'ramp_preview_entry',
 }
 
 export function isPortkeyEntries(variable: any): boolean {

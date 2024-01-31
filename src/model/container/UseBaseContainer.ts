@@ -37,55 +37,10 @@ const useBaseContainer = (props: BaseContainerHookedProps = {}): BaseContainerHo
     return entryName ?? baseContainerContext.entryName;
   }, [entryName, baseContainerContext.entryName]);
 
-  const navigateTo = useCallback(
-    <T = { [x: string]: AcceptableValueType }>(
-      entry: string,
-      {
-        params = {} as any,
-        targetScene = 'none',
-        closeCurrentScreen = false,
-      }: {
-        params?: T;
-        targetScene?: string;
-        closeCurrentScreen?: boolean;
-      } = {},
-    ) => {
-      PortkeyModulesEntity.RouterModule.navigateTo(
-        wrapEntry(entry),
-        LaunchModeSet.get(entry) || LaunchMode.STANDARD,
-        getEntryName(),
-        targetScene ?? 'none',
-        closeCurrentScreen ?? false,
-        params as any,
-      );
-    },
-    [getEntryName],
-  );
-
-  const navigateForResult = useCallback(
-    <V = VoidResult, T = { [x: string]: AcceptableValueType }>(
-      entry: string,
-      options: RouterOptions<T>,
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      callback: (res: EntryResult<V>) => void = () => {},
-    ) => {
-      const { params, closeCurrentScreen, navigationAnimation, navigationAnimationDuration, targetScene } = options;
-      PortkeyModulesEntity.RouterModule.navigateToWithOptions(
-        wrapEntry(entry),
-        LaunchModeSet.get(entry) || LaunchMode.STANDARD,
-        getEntryName(),
-        {
-          params: params ?? ({} as any),
-          closeCurrentScreen: closeCurrentScreen ?? false,
-          navigationAnimation: navigationAnimation ?? 'slide',
-          navigationAnimationDuration: navigationAnimationDuration ?? 2000,
-          targetScene: targetScene ?? '',
-        },
-        callback,
-      );
-    },
-    [getEntryName],
-  );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const navigateTo = useCallback(simple_navigateTo_func(getEntryName), [getEntryName]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const navigateForResult = useCallback(simple_navigateForResult_func(getEntryName), [getEntryName]);
 
   const onFinish = useCallback(
     <R>(res: EntryResult<R>) => {
@@ -158,4 +113,58 @@ export interface BaseContainerHookedProps {
   onNewIntent?: (params: any) => Promise<void> | void;
 }
 
+export const simple_navigateTo_func = (getEntryName?: () => string) => {
+  let fromEntryName = 'unknown';
+  if (getEntryName) {
+    fromEntryName = getEntryName();
+  }
+  return <T = { [x: string]: AcceptableValueType }>(
+    entry: string,
+    {
+      params = {} as any,
+      targetScene = 'none',
+      closeCurrentScreen = false,
+    }: {
+      params?: T;
+      targetScene?: string;
+      closeCurrentScreen?: boolean;
+    } = {},
+  ) => {
+    PortkeyModulesEntity.RouterModule.navigateTo(
+      wrapEntry(entry),
+      LaunchModeSet.get(entry) || LaunchMode.STANDARD,
+      fromEntryName,
+      targetScene ?? 'none',
+      closeCurrentScreen ?? false,
+      params as any,
+    );
+  };
+};
+export const simple_navigateForResult_func = (getEntryName?: () => string) => {
+  let fromEntryName = 'unknown';
+  if (getEntryName) {
+    fromEntryName = getEntryName();
+  }
+  return <V = VoidResult, T = { [x: string]: AcceptableValueType }>(
+    entry: string,
+    options: RouterOptions<T>,
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    callback: (res: EntryResult<V>) => void = () => {},
+  ) => {
+    const { params, closeCurrentScreen, navigationAnimation, navigationAnimationDuration, targetScene } = options;
+    PortkeyModulesEntity.RouterModule.navigateToWithOptions(
+      wrapEntry(entry),
+      LaunchModeSet.get(entry) || LaunchMode.STANDARD,
+      fromEntryName,
+      {
+        params: params ?? ({} as any),
+        closeCurrentScreen: closeCurrentScreen ?? false,
+        navigationAnimation: navigationAnimation ?? 'slide',
+        navigationAnimationDuration: navigationAnimationDuration ?? 2000,
+        targetScene: targetScene ?? '',
+      },
+      callback,
+    );
+  };
+};
 export default useBaseContainer;
