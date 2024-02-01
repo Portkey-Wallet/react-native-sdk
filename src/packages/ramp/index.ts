@@ -1,4 +1,5 @@
-import { request } from 'packages/api/api-did';
+// import { request } from 'packages/api/api-did';
+import request from 'network/api';
 import { IRampProviderType, RAMP_SOCKET_TIMEOUT, SELL_ORDER_DISPLAY_STATUS } from './constants';
 import { AlchemyPayProvider, RampProvider, TransakProvider } from './provider';
 import { AlchemyPayRampService, RampService } from './service';
@@ -210,7 +211,7 @@ export class Ramp extends BaseRamp {
   }
 }
 
-const ramp = new Ramp({ request: request });
+const ramp = new Ramp({ request: request, clientType: 'ThirdParty' });
 
 export default ramp;
 
