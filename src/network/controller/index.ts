@@ -86,7 +86,7 @@ const NETWORK_TOKEN_BLACKLIST = [
 ];
 
 export class NetworkControllerEntity {
-  private realExecute = async <T>(
+  public realExecute = async <T>(
     url: string,
     method: 'GET' | 'POST',
     params?: any,

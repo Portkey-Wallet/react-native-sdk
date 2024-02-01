@@ -44,16 +44,16 @@ export default function BuyForm() {
   const [cryptoList, setCryptoList] = useState<IRampCryptoItem[]>(defaultCryptoList);
   const [currency, setCurrency] = useState({
     crypto: defaultCryptoList.find(
-      item => item.symbol === defaultCrypto.symbol && item.network === defaultCrypto.network,
+      item => item.symbol === defaultCrypto?.symbol && item.network === defaultCrypto?.network,
     ),
-    fiat: fiatListState.find(item => item.symbol === defaultFiat.symbol && item.country === defaultFiat.country),
+    fiat: fiatListState.find(item => item.symbol === defaultFiat?.symbol && item.country === defaultFiat.country),
   });
   const currencyRef = useRef(currency);
   currencyRef.current = currency;
   const fiat = useMemo(() => currency.fiat, [currency]);
   const crypto = useMemo(() => currency.crypto, [currency]);
 
-  const [amount, setAmount] = useState<string>(defaultFiat.amount);
+  const [amount, setAmount] = useState<string>(defaultFiat?.amount ?? '');
   const [amountLocalError, setAmountLocalError] = useState<ErrorType>(INIT_NONE_ERROR);
 
   const refreshList = useCallback(async () => {
