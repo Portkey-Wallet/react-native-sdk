@@ -4,6 +4,7 @@ import { CheckVerifyCodeResultDTO } from 'network/dto/guardian';
 import { ThirdPartyAccountInfo } from '../third-party-account';
 import { ITransferLimitItem } from 'model/security';
 import { ChainId } from 'packages/types';
+import { GuardianApprovalPageResult } from 'pages/Entries/GuardianApproval';
 
 export interface GuardianVerifyConfig {
   guardianVerifyType: GuardianVerifyType;
@@ -13,7 +14,7 @@ export interface GuardianVerifyConfig {
   particularGuardian?: GuardianConfig;
   thirdPartyAccountInfo?: ThirdPartyAccountInfo;
   pastGuardian?: GuardianConfig;
-  failHandler?: () => void;
+  failHandler?: (result?: GuardianApprovalPageResult) => void;
   paymentSecurityConfig?: ITransferLimitItem;
   accelerateChainId?: ChainId;
 }
