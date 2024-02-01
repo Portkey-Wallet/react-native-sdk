@@ -144,7 +144,7 @@ export default function VerifierDetails({
   return (
     <PageContainer
       type="leftBack"
-      titleDom="VerifierDetails"
+      titleDom=""
       safeAreaColor={['white']}
       leftCallback={onBack}
       containerStyles={styles.containerStyles}

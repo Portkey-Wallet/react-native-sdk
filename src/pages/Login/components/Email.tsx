@@ -14,6 +14,7 @@ import { PortkeyEntries } from 'config/entries';
 import TermsServiceButton from './TermsServiceButton';
 import { useVerifyEntry } from 'model/verify/entry';
 import { doubleClick } from 'utils/commonUtil';
+import { useInputFocus } from 'hooks/useInputFocus';
 
 const TitleMap = {
   [PageType.login]: {
@@ -33,6 +34,7 @@ export default function Email({
 }) {
   const { t } = useLanguage();
   const iptRef = useRef<any>();
+  useInputFocus(iptRef);
   const [loading] = useState<boolean>();
   const [email, setEmail] = useState<string>();
   const [errorMessage, setErrorMessage] = useState<string>();
