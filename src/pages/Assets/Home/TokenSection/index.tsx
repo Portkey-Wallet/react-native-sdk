@@ -36,6 +36,7 @@ export default function TokenSection() {
           decimals,
           chainId,
           address,
+          tokenContractAddress: address,
           symbol,
           priceInUsd,
           balanceInUsd,

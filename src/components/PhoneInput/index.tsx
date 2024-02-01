@@ -13,6 +13,7 @@ import { EntryResult, RouterOptions } from 'service/native-modules';
 import { PortkeyEntries } from 'config/entries';
 import { SelectCountryResult } from 'pages/Login/SelectCountry';
 import { AcceptableValueType } from 'model/container/BaseContainer';
+import { useInputFocus } from 'hooks/useInputFocus';
 
 interface PhoneInputProps extends CommonInputProps {
   selectCountry?: CountryItem;
@@ -32,6 +33,7 @@ export default function PhoneInput({
 }: PhoneInputProps) {
   const { t } = useLanguage();
   const iptRef = useRef<any>();
+  useInputFocus(iptRef);
 
   const pushToSelectCountry = () => {
     navigateForResult<SelectCountryResult>(
