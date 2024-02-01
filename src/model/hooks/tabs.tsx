@@ -1,4 +1,3 @@
-import { AELFColors } from 'assets/theme';
 import React, { FC, useMemo, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
@@ -36,7 +35,7 @@ const renderTabBar = (props: any) => {
       getLabelText={scene => {
         return scene.route.title;
       }}
-      activeColor={AELFColors.AELF}
+      activeColor={defaultColors.bg5}
       inactiveColor="black"
       tabStyle={styles.tabStyle}
       labelStyle={styles.labelFocused}
@@ -63,7 +62,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   indicatorStyle: {
-    backgroundColor: AELFColors.AELF,
+    backgroundColor: defaultColors.bg5,
   },
   indicatorContainerStyle: {
     backgroundColor: 'transparent',
