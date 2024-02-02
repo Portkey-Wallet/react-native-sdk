@@ -9,14 +9,15 @@ import SellForm from '../components/SellForm';
 import ActionSheet from 'components/ActionSheet';
 import { RampType } from 'packages/ramp';
 import { useRampEntryShow } from 'packages/hooks/hooks-ca/ramp';
-import useRouterParams from 'packages/hooks/useRouterParams';
 import useEffectOnce from 'hooks/useEffectOnce';
-import useSecuritySafeCheckAndToast from 'components/WalletSecurityAccelerate';
+import { useSecuritySafeCheckAndToast } from 'components/WalletSecurityAccelerate/hook';
 import { MAIN_CHAIN_ID } from 'packages/constants/constants-ca/activity';
 import Loading from 'components/Loading';
 import CommonToast from 'components/CommonToast';
 import useLockCallback from 'packages/hooks/useLockCallback';
 import CommonTouchableTabs from 'components/CommonTouchableTabs';
+import { Provider } from 'react-redux';
+import { store } from 'store';
 
 type TabItemType = {
   name: string;
@@ -33,15 +34,23 @@ const tabList: TabItemType[] = [
   {
     name: 'Sell',
     type: RampType.SELL,
-    component: <SellForm />,
+    // component: <SellForm />,
+    component: <View style={{ width: '100%', height: '80%', backgroundColor: 'red' }} />,
   },
 ];
 
-export default function RampHome() {
+export default function RampHomeProvider({ toTab }: { toTab: RampType }) {
+  return (
+    <Provider store={store}>
+      <RampHome toTab={toTab} />
+    </Provider>
+  );
+}
+
+function RampHome({ toTab }: { toTab: RampType }) {
   const { isBuySectionShow, isSellSectionShow, refreshRampShow } = useRampEntryShow();
   const securitySafeCheckAndToast = useSecuritySafeCheckAndToast();
 
-  const { toTab } = useRouterParams<{ toTab: RampType }>();
   const [selectTab, setSelectTab] = useState<RampType>(
     toTab !== RampType.SELL && isBuySectionShow ? RampType.BUY : RampType.SELL,
   );
