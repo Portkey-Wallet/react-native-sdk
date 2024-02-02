@@ -4,7 +4,7 @@ import { View, StyleSheet, TouchableOpacity, StyleProp, ViewStyle } from 'react-
 import GStyles from 'assets/theme/GStyles';
 import { TextXXXL } from 'components/CommonText';
 import { pTd } from 'utils/unit';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { PIN_SIZE } from 'packages/constants/misc';
 
 export interface KeypadPropsType {
@@ -136,7 +136,7 @@ const Keypad = forwardRef(function Keypad(
       <View style={styles.padRow}>
         {isBiometrics ? (
           <TouchableOpacity style={styles.padBtn} onPress={onBiometricsPress}>
-            <Svg icon="touch-id" oblongSize={[pTd(24), pTd(26)]} />
+            <CommonSvg icon="touch-id" oblongSize={[pTd(24), pTd(26)]} />
           </TouchableOpacity>
         ) : (
           <View style={styles.padBtn} />
@@ -153,7 +153,7 @@ const Keypad = forwardRef(function Keypad(
           onPress={() => {
             handleValueChange('', PadEventType.DELETE);
           }}>
-          <Svg icon="block-back" size={pTd(24)} />
+          <CommonSvg icon="block-back" size={pTd(24)} />
         </TouchableOpacity>
       </View>
     </View>

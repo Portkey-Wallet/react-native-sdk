@@ -29,14 +29,30 @@ export enum PortkeyEntries {
   SCAN_LOG_IN = 'scan_log_in_entry',
   VIEW_ON_WEBVIEW = 'view_on_webview',
 
-  // assets service
+  // base assets service
   ASSETS_HOME_ENTRY = 'assets_home_entry',
   RECEIVE_TOKEN_ENTRY = 'receive_token_entry',
+
+  // assets module ① : activity page
+  ACTIVITY_LIST_ENTRY = 'activity_list_entry',
+  ACTIVITY_DETAIL_ENTRY = 'activity_detail_entry',
+
+  // assets module ② : token and nft details
+  TOKEN_DETAIL_ENTRY = 'token_detail_entry',
+  NFT_DETAIL_ENTRY = 'nft_detail_entry',
+
+  // send token service
+  SEND_TOKEN_HOME_ENTRY = 'send_token_home_entry',
+  SEND_TOKEN_CONFIRM_ENTRY = 'send_token_confirm_entry',
 
   // payment security service
   PAYMENT_SECURITY_HOME_ENTRY = 'payment_security_home_entry',
   PAYMENT_SECURITY_DETAIL_ENTRY = 'payment_security_detail_entry',
   PAYMENT_SECURITY_EDIT_ENTRY = 'payment_security_edit_entry',
+
+  // contact
+  CONTACT_DETAIL_ENTRY = 'contact_detail_entry',
+  CONTACT_ACTIVITY_ENTRY = 'contact_activity_entry',
 }
 
 export function isPortkeyEntries(variable: any): boolean {

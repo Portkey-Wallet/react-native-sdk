@@ -8,6 +8,8 @@ import TokenListItem from 'components/TokenListItem';
 import { REFRESH_TIME } from 'packages/constants/constants-ca/assets';
 import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
 import AssetsContext, { AssetsContextType } from 'global/context/assets/AssetsContext';
+import useBaseContainer from 'model/container/UseBaseContainer';
+import { PortkeyEntries } from 'config/entries';
 
 export interface TokenSectionProps {
   getAccountBalance?: () => void;
@@ -19,7 +21,7 @@ export default function TokenSection() {
   const commonInfo = useCommonNetworkInfo();
   const [isFetching] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const { balanceList, updateBalanceList, allOfTokensList, updateTokensList, tokenPrices, updateTokenPrices } =
+  const { balanceList, updateBalanceList, allOfTokensList, updateTokensList } =
     useContext<AssetsContextType>(AssetsContext);
 
   const itemData: Array<TokenItemShowType> = useMemo(() => {
@@ -27,14 +29,17 @@ export default function TokenSection() {
       .map<TokenItemShowType>(item => {
         const { symbol, decimals, chainId, address } = item.token;
         const balanceItem = balanceList.find(it => it.symbol === symbol && it.chainId === item.token.chainId);
-        const price = tokenPrices.find(it => it.symbol === symbol);
+        const balanceInfo = balanceList.find(it => it.symbol === symbol && it.chainId === item.token.chainId);
+        const { balanceInUsd, price: priceInUsd } = balanceInfo || {};
         return {
           balance: balanceItem?.balance ?? '0',
           decimals,
           chainId,
           address,
+          tokenContractAddress: address,
           symbol,
-          priceInUsd: price?.priceInUsd ?? 0,
+          priceInUsd,
+          balanceInUsd,
           name: item.token.symbol,
           isDisplay: item.isDisplay,
           isDefault: item.isDefault,
@@ -53,28 +58,36 @@ export default function TokenSection() {
           return symbolA.localeCompare(symbolB);
         }
       });
-  }, [allOfTokensList, balanceList, tokenPrices]);
+  }, [allOfTokensList, balanceList]);
 
-  // const onNavigate = useCallback((_: TokenItemShowType) => {
-  //   // item's onclick function is not used by now
-  // }, []);
+  const { navigateTo } = useBaseContainer({});
+
+  const onNavigateToTokenDetail = useCallback(
+    (item: TokenItemShowType) => {
+      navigateTo(PortkeyEntries.TOKEN_DETAIL_ENTRY, {
+        params: {
+          tokenInfo: item,
+        },
+      });
+    },
+    [navigateTo],
+  );
 
   const renderItem = useCallback(
     ({ item }: { item: TokenItemShowType }) => {
-      return <TokenListItem key={item.symbol} item={item} onPress={undefined} commonInfo={commonInfo} />;
+      return <TokenListItem key={item.symbol} item={item} onPress={onNavigateToTokenDetail} commonInfo={commonInfo} />;
     },
-    [commonInfo],
+    [commonInfo, onNavigateToTokenDetail],
   );
 
   const onRefresh = useCallback(async () => {
     try {
       await updateTokensList();
       await updateBalanceList();
-      await updateTokenPrices();
     } catch (e) {
       console.warn('updateBalanceList or updateTokensList failed! ', e);
     }
-  }, [updateBalanceList, updateTokenPrices, updateTokensList]);
+  }, [updateBalanceList, updateTokensList]);
 
   useEffect(() => {
     if (timerRef.current) clearInterval(timerRef.current);

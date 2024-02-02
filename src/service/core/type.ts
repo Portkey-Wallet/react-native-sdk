@@ -2,7 +2,7 @@ export interface CallCaMethodProps {
   contractMethodName: string;
   isViewMethod: boolean;
   params?: { [key: string | symbol]: any };
-  eventId: string;
+  eventId?: string;
 }
 export interface BaseMethodResult {
   status: 'success' | 'fail';
@@ -28,6 +28,7 @@ export type UnlockedWallet = {
 const TYPES = {
   AccountModule: Symbol.for('AccountModule'),
   UIManagerModule: Symbol.for('UIManagerModule'),
+  ConfigModule: Symbol.for('ConfigModule'),
 };
 export { TYPES };
 

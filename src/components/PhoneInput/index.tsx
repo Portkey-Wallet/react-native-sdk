@@ -6,13 +6,14 @@ import CommonInput, { CommonInputProps } from 'components/CommonInput';
 import { CountryItem } from 'packages/types/types-ca/country';
 import { pTd } from 'utils/unit';
 
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { defaultColors } from 'assets/theme';
 import { TextM } from 'components/CommonText';
 import { EntryResult, RouterOptions } from 'service/native-modules';
 import { PortkeyEntries } from 'config/entries';
 import { SelectCountryResult } from 'pages/Login/SelectCountry';
 import { AcceptableValueType } from 'model/container/BaseContainer';
+import { useInputFocus } from 'hooks/useInputFocus';
 
 interface PhoneInputProps extends CommonInputProps {
   selectCountry?: CountryItem;
@@ -32,6 +33,7 @@ export default function PhoneInput({
 }: PhoneInputProps) {
   const { t } = useLanguage();
   const iptRef = useRef<any>();
+  useInputFocus(iptRef);
 
   const pushToSelectCountry = () => {
     navigateForResult<SelectCountryResult>(
@@ -55,7 +57,7 @@ export default function PhoneInput({
       leftIcon={
         <Touchable style={inputStyles.countryRow} onPress={pushToSelectCountry}>
           <TextM>+ {selectCountry?.code}</TextM>
-          <Svg color={defaultColors.font3} size={12} icon="down-arrow" />
+          <CommonSvg color={defaultColors.font3} size={12} icon="down-arrow" />
         </Touchable>
       }
       type="general"

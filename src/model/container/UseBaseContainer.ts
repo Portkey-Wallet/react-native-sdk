@@ -1,12 +1,12 @@
 import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
-import { DeviceEventEmitter, EmitterSubscription } from 'react-native';
+import { EmitterSubscription } from 'react-native';
 import { EntryResult, PortkeyDeviceEventEmitter, RouterOptions, PortkeyModulesEntity } from 'service/native-modules';
 import { AcceptableValueType } from './BaseContainer';
 import BaseContainerContext from './BaseContainerContext';
 import { LaunchMode, LaunchModeSet } from 'global/init/entries';
 import { wrapEntry } from 'utils/commonUtil';
 
-const useBaseContainer = (props: BaseContainerHookedProps): BaseContainerHooks => {
+const useBaseContainer = (props: BaseContainerHookedProps = {}): BaseContainerHooks => {
   const onShowListener = useRef<EmitterSubscription | null>(null);
   const onNewIntentListener = useRef<EmitterSubscription | null>(null);
   const baseContainerContext = useContext(BaseContainerContext);
@@ -33,10 +33,9 @@ const useBaseContainer = (props: BaseContainerHookedProps): BaseContainerHooks =
     };
   }, [onShow, containerId, onNewIntent]);
 
-  const getEntryName = useCallback(
-    () => entryName ?? baseContainerContext.entryName,
-    [entryName, baseContainerContext.entryName],
-  );
+  const getEntryName = useCallback(() => {
+    return entryName ?? baseContainerContext.entryName;
+  }, [entryName, baseContainerContext.entryName]);
 
   const navigateTo = useCallback(
     <T = { [x: string]: AcceptableValueType }>(
@@ -49,7 +48,7 @@ const useBaseContainer = (props: BaseContainerHookedProps): BaseContainerHooks =
         params?: T;
         targetScene?: string;
         closeCurrentScreen?: boolean;
-      },
+      } = {},
     ) => {
       PortkeyModulesEntity.RouterModule.navigateTo(
         wrapEntry(entry),
@@ -88,9 +87,12 @@ const useBaseContainer = (props: BaseContainerHookedProps): BaseContainerHooks =
     [getEntryName],
   );
 
-  const onFinish = useCallback(<R>(res: EntryResult<R>) => {
-    PortkeyModulesEntity.RouterModule.navigateBack(res);
-  }, []);
+  const onFinish = useCallback(
+    <R>(res: EntryResult<R>) => {
+      PortkeyModulesEntity.RouterModule.navigateBack(res, getEntryName());
+    },
+    [getEntryName],
+  );
 
   const onError = useCallback(
     (err: Error) => {
@@ -130,7 +132,7 @@ export interface BaseContainerHooks {
   getEntryName: () => string;
   navigateTo: <T = { [x: string]: AcceptableValueType }>(
     entry: string,
-    option: {
+    option?: {
       params?: T;
       targetScene?: string;
       closeCurrentScreen?: boolean;

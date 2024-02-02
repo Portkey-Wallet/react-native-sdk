@@ -6,6 +6,7 @@ import React from 'react';
 import { AfterVerifiedConfig } from 'model/verify/core';
 import { SetPinPageProps, SetPinPageResult } from 'pages/Pin/SetPin';
 import CommonToast from 'components/CommonToast';
+import { ChainId } from 'packages/types';
 
 export default class GuardianApprovalEntryPage extends BaseContainer<
   GuardianApprovalPageProps,
@@ -16,7 +17,6 @@ export default class GuardianApprovalEntryPage extends BaseContainer<
     super(props);
     const { deliveredGuardianListInfo } = props;
     if (!deliveredGuardianListInfo) throw new Error('guardianConfig is null!');
-    console.log('GuardianApprovalEntryPage', deliveredGuardianListInfo);
     const verifiedTime = new Date().getTime();
     this.state = {
       verifiedTime,
@@ -28,10 +28,12 @@ export default class GuardianApprovalEntryPage extends BaseContainer<
 
   onPageFinish = (result: GuardianApprovalPageResult) => {
     const { guardianVerifyType } = this.state.config;
-    const { deliveredVerifiedData, isVerified } = result || {};
+    const { deliveredVerifiedData, isVerified, errorMessage } = result || {};
     if (guardianVerifyType === GuardianVerifyType.CREATE_WALLET) {
       if (!deliveredVerifiedData || !isVerified) {
-        CommonToast.fail('verification failed, please try again.');
+        CommonToast.fail(
+          errorMessage && errorMessage?.length > 0 ? errorMessage : 'verification failed, please try again.',
+        );
         return;
       } else {
         this.dealWithSetPin(deliveredVerifiedData);
@@ -74,6 +76,7 @@ export default class GuardianApprovalEntryPage extends BaseContainer<
           guardianVerifyConfig={socialRecoveryConfig}
           verifiedTime={verifiedTime}
           onPageFinish={this.onPageFinish}
+          accelerateChainId={this.props.accelerateChainId}
         />
       </>
     );
@@ -82,6 +85,7 @@ export default class GuardianApprovalEntryPage extends BaseContainer<
 
 export interface GuardianApprovalPageProps extends BaseContainerProps {
   deliveredGuardianListInfo: string; // GuardianVerifyConfig
+  accelerateChainId?: ChainId;
 }
 
 export interface GuardianApprovalPageState {

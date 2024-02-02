@@ -3,7 +3,7 @@ import PageContainer from 'components/PageContainer';
 import { TextL, TextM, TextXL, TextS } from 'components/CommonText';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { pTd } from 'utils/unit';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { defaultColors } from 'assets/theme';
 import { useLanguage } from 'i18n/hooks';
 import CommonAvatar from 'components/CommonAvatar';
@@ -68,7 +68,7 @@ export default function ReceiveTokenPage(props: {
             const tmpStr = `ELF_${currentCaAddress}_${chainId}`;
             copyText(tmpStr);
           }}>
-          <Svg icon="copy" size={pTd(20)} color={defaultColors.font2} />
+          <CommonSvg icon="copy" size={pTd(20)} color={defaultColors.font2} />
         </TouchableOpacity>
         <TextM style={styles.buttonText}>{t('Copy')}</TextM>
       </View>
