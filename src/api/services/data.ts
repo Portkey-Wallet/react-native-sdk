@@ -1,4 +1,4 @@
-import { WalletState } from 'api/types';
+import { UnlockedWallet, WalletState } from 'api/types';
 import { AssetsState } from 'api/types/assets';
 import { IDataService } from 'api/types/data';
 import BigNumber from 'bignumber.js';
@@ -11,12 +11,36 @@ import { AccountError } from 'service/error';
 
 @injectable()
 export class DataService implements IDataService {
-  async getWalletInfo() {
+  async getWalletInfo(containMultiCaAddresses?: boolean | undefined) {
     if (!(await isWalletUnlocked())) {
       throw new AccountError(1001);
     }
-    const wallet = await getUnlockedWallet();
+    const wallet = await getUnlockedWallet({ getMultiCaAddresses: containMultiCaAddresses });
     return wallet;
+  }
+
+  async getActivityInfoList({ offset, totalCount }: { offset: number; totalCount?: number }) {
+    if (!(await isWalletUnlocked())) {
+      throw new AccountError(1001);
+    }
+    const instantWallet = await getUnlockedWallet({ getMultiCaAddresses: true });
+    if (!instantWallet || !instantWallet.address) {
+      throw new AccountError(1001);
+    }
+    const { originChainId, multiCaAddresses, address } = instantWallet;
+    const { data, totalRecordCount } = await NetworkController.getRecentActivities({
+      caAddressInfos: Object.entries(multiCaAddresses).map(it => {
+        return { chainId: it[0], caAddress: it[1] };
+      }),
+      managerAddresses: [address],
+      chainId: originChainId,
+      skipCount: offset,
+      maxResultCount: totalCount ?? 30,
+    });
+    return {
+      data,
+      totalRecordCount,
+    };
   }
 
   async getWalletState() {

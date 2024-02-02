@@ -26,9 +26,10 @@ export const UnLockedWalletTestCases: Array<TestCaseApi> = [
     describe: 'Test callCaContractMethod: GetHolderInfo',
     run: async (testContext, caseName) => {
       try {
+        const wallet = await getUnlockedWallet({ getMultiCaAddresses: false });
         const {
           caInfo: { caHash },
-        } = await getUnlockedWallet({ getMultiCaAddresses: false });
+        } = wallet;
         const result = await portkey.callCaContractMethod({
           contractMethodName: 'GetHolderInfo',
           isViewMethod: true,
@@ -45,7 +46,20 @@ export const UnLockedWalletTestCases: Array<TestCaseApi> = [
     run: async (testContext, caseName) => {
       try {
         const walletInfo = await portkey.getWalletInfo();
-        testContext.assert(caseName, !!walletInfo, 'invoke failed');
+        const assertSuccess = 'address' in walletInfo;
+        testContext.assert(caseName, assertSuccess, 'invoke failed');
+      } catch (e: any) {
+        testContext.assert(caseName, false, e?.toString() ?? 'failed');
+      }
+    },
+  },
+  {
+    describe: 'Test getWalletInfo containMultiCaAddresses',
+    run: async (testContext, caseName) => {
+      try {
+        const walletInfo = await portkey.getWalletInfo(true);
+        const assertSuccess = 'address' in walletInfo && 'multiCaAddresses' in walletInfo;
+        testContext.assert(caseName, assertSuccess, 'invoke failed');
       } catch (e: any) {
         testContext.assert(caseName, false, e?.toString() ?? 'failed');
       }
@@ -67,9 +81,30 @@ export const UnLockedWalletTestCases: Array<TestCaseApi> = [
     run: async (testContext, caseName) => {
       try {
         const assetsState = await portkey.getAssetsInfo();
-        testContext.log('assetsState log!!');
-        testContext.log(JSON.stringify(assetsState));
-        testContext.assert(caseName, !!assetsState, 'invoke failed');
+        const assertSuccess = 'tokens' in assetsState && 'balanceInUsd' in assetsState;
+        testContext.assert(caseName, assertSuccess, 'invoke failed');
+      } catch (e: any) {
+        testContext.assert(caseName, false, e?.toString() ?? 'failed');
+      }
+    },
+  },
+  {
+    describe: 'Test getActivityInfoList by default totalCount',
+    run: async (testContext, caseName) => {
+      try {
+        const response = await portkey.getActivityInfoList({ offset: 0 });
+        testContext.assert(caseName, (response?.data?.length ?? 0) === 30, 'invoke failed');
+      } catch (e: any) {
+        testContext.assert(caseName, false, e?.toString() ?? 'failed');
+      }
+    },
+  },
+  {
+    describe: 'Test getActivityInfoList totalCount is 20',
+    run: async (testContext, caseName) => {
+      try {
+        const response = await portkey.getActivityInfoList({ offset: 0, totalCount: 20 });
+        testContext.assert(caseName, (response?.data?.length ?? 0) === 20, 'invoke failed');
       } catch (e: any) {
         testContext.assert(caseName, false, e?.toString() ?? 'failed');
       }

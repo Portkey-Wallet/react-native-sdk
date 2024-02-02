@@ -29,8 +29,11 @@ import {
   UITestSettingsManagerCases,
   UITestUnlockWalletCases,
   UITestSendTokenCases,
+  UITestOpenActivityListCases,
+  UITestOpenActivityDetailCases,
 } from './cases/UITest';
 import CommonToast from 'components/CommonToast';
+import Loading from 'components/Loading';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -58,6 +61,8 @@ const testUICasesMap: TestCasesMapType = {
   UITestScanQRCodeManagerCases,
   UITestSettingsManagerCases,
   UITestSendTokenCases,
+  UITestOpenActivityListCases,
+  UITestOpenActivityDetailCases,
 };
 
 // testCasesKeyList
@@ -160,7 +165,10 @@ const TestEntry = () => {
           },
         ];
       });
-      testCaseItem.run(testContext, testCaseItem.describe);
+      Loading.show();
+      testCaseItem.run(testContext, testCaseItem.describe).finally(() => {
+        Loading.hide();
+      });
     });
 
     // show modal

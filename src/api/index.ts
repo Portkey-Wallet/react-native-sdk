@@ -11,6 +11,7 @@ import { IDataService } from './types/data';
 import { BaseMethodResult, CallCaMethodProps, IContractService } from './types/contract';
 import { myContainer } from './inversify.config';
 import { IConfig, ITheme, PortkeyConfig } from './config';
+import { IActivitiesApiResponse } from 'network/dto/query';
 export * from './types';
 class Portkey
   implements
@@ -28,6 +29,16 @@ class Portkey
   constructor() {
     this.services = myContainer.get<Services>(TYPES.Services);
   }
+  getActivityInfoList({
+    offset,
+    totalCount,
+  }: {
+    offset: number;
+    totalCount?: number;
+  }): Promise<IActivitiesApiResponse> {
+    return this.services.dataService.getActivityInfoList({ offset, totalCount });
+  }
+
   init(config?: IConfig, theme?: ITheme) {
     PortkeyConfig.config = config;
     PortkeyConfig.theme = theme;
@@ -36,8 +47,8 @@ class Portkey
   callCaContractMethod(props: CallCaMethodProps): Promise<BaseMethodResult> {
     return this.services.contractService.callCaContractMethod(props);
   }
-  getWalletInfo(): Promise<UnlockedWallet> {
-    return this.services.dataService.getWalletInfo();
+  getWalletInfo(containMultiCaAddresses?: boolean | undefined): Promise<UnlockedWallet> {
+    return this.services.dataService.getWalletInfo(containMultiCaAddresses);
   }
   getWalletState(): Promise<WalletState> {
     return this.services.dataService.getWalletState();

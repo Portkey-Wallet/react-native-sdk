@@ -113,17 +113,48 @@ export const UITestSendTokenCases: Array<TestCaseApi> = [
     run: async (testContext, caseName) => {
       try {
         await portkey.openSendToken({
-          sendType: 'nft',
+          sendType: 'token',
           assetInfo: {
-            balanceInUsd: '',
-            decimals: '',
-            symbol: '',
+            balanceInUsd: '1000',
+            decimals: '8',
+            symbol: 'ELF',
             chainId: 'AELF',
-            balance: '',
+            balance: '1900',
             imageUrl: '',
             tokenContractAddress: '',
           },
         });
+        testContext.assert(caseName, true, 'invoke failed');
+      } catch (e: any) {
+        testContext.assert(caseName, false, e?.toString() ?? 'failed');
+      }
+    },
+  },
+];
+// open send token page, unlock wallet
+export const UITestOpenActivityListCases: Array<TestCaseApi> = [
+  {
+    describe: 'Test openActivityLis',
+    run: async (testContext, caseName) => {
+      try {
+        await portkey.openActivityList();
+        testContext.assert(caseName, true, 'invoke failed');
+      } catch (e: any) {
+        testContext.assert(caseName, false, e?.toString() ?? 'failed');
+      }
+    },
+  },
+];
+// open send token page, unlock wallet
+export const UITestOpenActivityDetailCases: Array<TestCaseApi> = [
+  {
+    describe: 'Test openActivityDetail',
+    run: async (testContext, caseName) => {
+      try {
+        const item = (await portkey.getActivityInfoList({ offset: 0 })).data[0];
+        const multiCaAddresses = (await portkey.getWalletInfo(true)).multiCaAddresses;
+        console.log('item', JSON.stringify(item));
+        await portkey.openActivityDetail({ item, multiCaAddresses });
         testContext.assert(caseName, true, 'invoke failed');
       } catch (e: any) {
         testContext.assert(caseName, false, e?.toString() ?? 'failed');

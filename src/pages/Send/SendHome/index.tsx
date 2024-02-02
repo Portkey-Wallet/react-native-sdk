@@ -53,7 +53,6 @@ const SendHome = (props: IToSendHomeParamsType) => {
     },
     assetInfo,
   } = props;
-  console.log('props', JSON.stringify(props));
   const { t } = useLanguage();
 
   const { chainsNetworkInfo } = useChainsNetworkInfo();
