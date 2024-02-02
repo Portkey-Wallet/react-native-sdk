@@ -44,7 +44,13 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
-
+    sourceSets {
+        main {
+            java {
+                exclude 'finance/portkey/npm/**'
+            }
+        }
+    }
     defaultConfig {
         minSdk _minSdkVersion
         targetSdk _targetSdkVersion

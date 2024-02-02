@@ -39,7 +39,8 @@ const returnToParticularBasePage = async (intent: GuardiansApprovalIntent) => {
       returnToGuardianHome(intent);
       break;
     case GuardianVerifyType.EDIT_PAYMENT_SECURITY:
-      returnToPaymentSecurityDetail(intent);
+    case GuardianVerifyType.ADD_GUARDIAN_ACCELERATE:
+      returnPreviousPage(intent);
       break;
   }
 };
@@ -55,11 +56,14 @@ const returnToGuardianHome = async (intent: GuardiansApprovalIntent) => {
   );
 };
 
-const returnToPaymentSecurityDetail = async (intent: GuardiansApprovalIntent) => {
-  PortkeyModulesEntity.RouterModule.navigateBack({
-    status: intent.result,
-    data: intent,
-  });
+const returnPreviousPage = async (intent: GuardiansApprovalIntent) => {
+  PortkeyModulesEntity.RouterModule.navigateBack(
+    {
+      status: intent.result,
+      data: intent,
+    },
+    'unknown',
+  );
 };
 
 export const handlePhoneOrEmailGuardianVerify = async (config: VerifierDetailsPageProps) => {
@@ -104,12 +108,13 @@ export const handleGuardiansApproval = async (config: GuardianVerifyConfig) => {
     PortkeyEntries.GUARDIAN_APPROVAL_ENTRY,
     {
       deliveredGuardianListInfo: JSON.stringify(config),
+      accelerateChainId: config.accelerateChainId,
     },
   );
   console.log('handleGuardiansApproval', option);
   Loading.hide();
-  if (!option?.isVerified && failHandler) {
-    failHandler();
+  if (option && !option?.isVerified && failHandler) {
+    failHandler(option);
   } else {
     returnToParticularBasePage({
       type: guardianVerifyType,
@@ -126,6 +131,7 @@ const checkGuardiansApprovalConfig = (config: GuardianVerifyConfig): boolean => 
       return !particularGuardian;
     }
     case GuardianVerifyType.ADD_GUARDIAN:
+    case GuardianVerifyType.ADD_GUARDIAN_ACCELERATE:
     case GuardianVerifyType.MODIFY_GUARDIAN:
     case GuardianVerifyType.REMOVE_GUARDIAN: {
       return !!particularGuardian;

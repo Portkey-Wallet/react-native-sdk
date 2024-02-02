@@ -19,6 +19,7 @@ import { ITransferLimitItem } from 'model/security';
 import { handleGuardiansApproval } from 'model/verify/entry/hooks';
 import { GuardianVerifyType } from 'model/verify/social-recovery';
 import CommonToast from 'components/CommonToast';
+import { getBottomSpace } from 'utils/screen';
 
 export interface PaymentSecurityEditProps {
   transferLimitDetail?: ITransferLimitItem;
@@ -134,8 +135,9 @@ const PaymentSecurityEdit: React.FC = (props: PaymentSecurityEditProps) => {
         restricted: editInfo.restricted,
         decimals: detail.decimals,
       },
-      failHandler: () => {
-        CommonToast.fail('edit failed');
+      failHandler: option => {
+        const { errorMessage } = option || {};
+        CommonToast.fail(errorMessage ?? 'edit failed');
       },
     });
   }, [detail, editInfo]);
@@ -186,7 +188,7 @@ const PaymentSecurityEdit: React.FC = (props: PaymentSecurityEditProps) => {
           <TextM style={FontStyles.font3}>No limit for transfer</TextM>
         )}
       </View>
-      <CommonButton disabled={isButtonDisabled} type="solid" onPress={save}>
+      <CommonButton style={pageStyles.bottomButton} disabled={isButtonDisabled} type="solid" onPress={save}>
         Send Request
       </CommonButton>
     </PageContainer>
@@ -198,7 +200,8 @@ const pageStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: defaultColors.bg4,
     justifyContent: 'space-between',
-    ...GStyles.paddingArg(24, 20, 18),
+    ...GStyles.paddingArg(24, 20, 22),
+    display: 'flex',
   },
   switchWrap: {
     flexDirection: 'row',
@@ -209,6 +212,9 @@ const pageStyles = StyleSheet.create({
     height: pTd(56),
     alignItems: 'center',
     borderRadius: pTd(6),
+  },
+  bottomButton: {
+    marginBottom: getBottomSpace(),
   },
 });
 

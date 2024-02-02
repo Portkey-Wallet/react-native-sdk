@@ -12,7 +12,7 @@ const KeyList = [
   'getCaHolder',
 ] as const;
 
-const ApiObject: Record<typeof KeyList[number], ESBaseConfig> = {
+const ApiObject: Record<(typeof KeyList)[number], ESBaseConfig> = {
   getUserTokenList: {
     target: `${BaseESUrl}search/usertokenindex`,
     config: { method: Method },

@@ -17,7 +17,7 @@ export class UIManagerService implements IPortkeyUIManagerService {
   @inject(TYPES.AccountModule) private _accountService: IPortkeyAccountService;
   login(): Promise<UnlockedWallet | null> {
     return new Promise((resolve, reject) => {
-      this.openResultFromExternal<LoginResult>(PortkeyEntries.SIGN_IN_ENTRY, res => {
+      this.openResultFromExternal<LoginResult>(PortkeyEntries.SIGN_IN_ENTRY, async res => {
         if (res) {
           resolve(res?.data?.walletInfo ?? null);
         } else {
@@ -56,7 +56,10 @@ export class UIManagerService implements IPortkeyUIManagerService {
     }
     this.openFromExternal(PortkeyEntries.PAYMENT_SECURITY_HOME_ENTRY);
   }
-  unlockWallet(): Promise<UnlockedWallet | null> {
+  async unlockWallet(): Promise<UnlockedWallet | null> {
+    if (!(await this.checkIsLocked())) {
+      throw new AccountError(1001);
+    }
     return new Promise((resolve, reject) => {
       this.openResultFromExternal<CheckPinResult>(PortkeyEntries.CHECK_PIN, res => {
         if (res) {
@@ -67,10 +70,20 @@ export class UIManagerService implements IPortkeyUIManagerService {
       });
     });
   }
+  async openSendToken() {
+    if (!(await this.checkIsUnlocked())) {
+      throw new AccountError(1001);
+    }
+    this.openFromExternal(PortkeyEntries.SEND_TOKEN_HOME_ENTRY);
+  }
 
   private async checkIsUnlocked() {
     const wallState = await this._accountService.getWalletState();
     return wallState === WalletState.UNLOCKED;
+  }
+  private async checkIsLocked() {
+    const wallState = await this._accountService.getWalletState();
+    return wallState === WalletState.LOCKED;
   }
   private openFromExternal(target: PortkeyEntries) {
     PortkeyModulesEntity.RouterModule.navigateTo(

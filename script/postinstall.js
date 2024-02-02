@@ -1,5 +1,8 @@
 const npmCommand = process.env.npm_config_argv;
 const commandOriginal = npmCommand && JSON.parse(process.env.npm_config_argv).original;
+console.log('npmCommand', npmCommand);
+console.log('commandOriginal', commandOriginal);
+console.log('commandOriginal length', commandOriginal ? commandOriginal.length : 0);
 if (!commandOriginal || commandOriginal.length === 0) {
   console.log('no install');
   return;

@@ -1,3 +1,4 @@
+/* eslint-disable prefer-spread */
 import React, { useState } from 'react';
 import { Modal, View, Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import { portkey } from '@portkey/react-native-sdk';
@@ -49,12 +50,14 @@ function App() {
               <MyButton
                 title={`Call Method: ${value[0]}`}
                 onPress={() => {
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
                   portkey[value[0]]
                     .apply(portkey, value.slice(1))
-                    .then(res => {
+                    .then((res: any) => {
                       console.log('res', res);
                     })
-                    .catch(error => {
+                    .catch((error: any) => {
                       console.log('error', error);
                     })
                     .finally(() => {
@@ -81,12 +84,14 @@ function App() {
               <MyButton
                 title={`Call Method: ${value[0]}`}
                 onPress={() => {
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
                   portkey[value[0] as string]
                     .apply(portkey, value.slice(1))
-                    .then(res => {
+                    .then((res: any) => {
                       console.log('res', res);
                     })
-                    .catch(error => {
+                    .catch((error: any) => {
                       console.log('error', error);
                     })
                     .finally(() => {

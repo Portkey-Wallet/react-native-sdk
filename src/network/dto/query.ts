@@ -1,4 +1,9 @@
+import { AddressItem, BaseListResponse } from '@portkey/services';
+import { TransactionTypes } from 'packages/constants/constants-ca/activity';
+import { CaHolderInfo, IImInfo } from 'packages/im';
+import { ITokenInfoType, INftInfoType } from 'packages/store/store-ca/assets/type';
 import { ChainId } from 'packages/types';
+import { NftInfo, TransactionFees } from 'packages/types/types-ca/activity';
 
 export interface SearchTokenListParams {
   keyword?: string; // used to filter token list, can be empty
@@ -96,3 +101,134 @@ export type INftCollectionItem = {
   tokenId: string;
   totalSupply: string;
 };
+
+export type GetAccountAssetsByKeywordsParams = {
+  maxResultCount?: number;
+  skipCount?: number;
+  keyword?: string;
+  caAddressInfos: CaAddressInfosType;
+  width?: number;
+  height?: number;
+};
+
+export type GetAccountAssetsByKeywordsResult = {
+  data: IAssetItemType[];
+  totalRecordCount: number;
+};
+
+export interface IAssetItemType {
+  chainId: string;
+  symbol: string;
+  address: string;
+  tokenInfo?: ITokenInfoType;
+  nftInfo?: INftInfoType;
+  tokenContractAddress: string;
+}
+
+export type GetRecentTransactionParams = {
+  caAddressInfos: CaAddressInfosType;
+  skipCount?: number;
+  maxResultCount?: number;
+};
+
+export type RecentTransactionResponse = BaseListResponse<RecentContactItemType>;
+
+export interface GetContractAddressesParams {
+  keyword?: string;
+  page?: number;
+  size?: number;
+  modificationTime?: number; // default is Date.now()
+}
+
+export type GetContractListApiType = {
+  totalCount: number;
+  items: Array<ContactItemType>;
+};
+
+export interface ContactItemType {
+  id: string;
+  index: string;
+  name: string;
+  avatar?: string;
+  addresses: AddressItem[];
+  modificationTime: number;
+  isDeleted: boolean;
+  userId: string;
+  caHolderInfo?: Partial<CaHolderInfo>;
+  imInfo?: Partial<IImInfo>;
+  isImputation?: boolean;
+}
+
+export interface IActivitiesApiParams {
+  caAddressInfos: { chainId: string; caAddress: string }[];
+  managerAddresses: string[];
+  chainId: string;
+  transactionTypes?: TransactionTypes[]; // if not provided, it's all types
+  maxResultCount?: number;
+  skipCount?: number;
+  symbol?: string; // if you want to filter by symbol, provide it
+  width?: number;
+  height?: number;
+}
+
+export interface IActivitiesApiResponse {
+  data: ActivityItemType[];
+  totalRecordCount: number;
+}
+
+export interface IActivityApiParams {
+  transactionId: string;
+  blockHash: string;
+  caAddressInfos: Array<CaAddressInfoType>;
+}
+
+export type ActivityItemType = {
+  chainId: string;
+  transactionType: TransactionTypes;
+  transactionName?: string; // item title
+  from: string; // wallet name
+  to: string; // to user nick name
+  fromAddress: string;
+  toAddress: string;
+  fromChainId: ChainId;
+  toChainId: ChainId;
+  status: string;
+  transactionId: string;
+  blockHash: string; // The chain may have forks, use transactionId and blockHash to uniquely determine the transaction
+  timestamp: string;
+  isReceived: boolean; // Is it a received transaction
+  amount: string;
+  symbol: string;
+  decimals?: string;
+  priceInUsd?: string;
+  nftInfo?: NftInfo;
+  transactionFees: TransactionFees[];
+  listIcon?: string;
+  isDelegated?: boolean;
+};
+
+export interface RecentContactItemType extends ContactItemType {
+  chainId: ChainId;
+  chainName: string;
+  caAddress: string;
+  address: string;
+  addressChainId: ChainId;
+  transactionTime: string;
+  name: string;
+  addresses: RecentAddressItem[];
+}
+
+export interface RecentAddressItem extends AddressItem {
+  transactionTime?: string;
+}
+
+export interface RecentContactItemType extends ContactItemType {
+  chainId: ChainId;
+  chainName: string;
+  caAddress: string;
+  address: string;
+  addressChainId: ChainId;
+  transactionTime: string;
+  name: string;
+  addresses: RecentAddressItem[];
+}

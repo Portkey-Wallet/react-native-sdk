@@ -69,12 +69,6 @@ export default function SetBiometrics({ pin, deliveredSetPinInfo }: SetBiometric
         return;
       }
       await getResult(true);
-      onFinish({
-        status: 'success',
-        data: {
-          finished: true,
-        },
-      });
     } catch (error) {
       Loading.hide();
       setErrorMessage(handleErrorMessage(error, 'Failed To Verify'));

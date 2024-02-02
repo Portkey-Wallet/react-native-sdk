@@ -20,6 +20,11 @@ RCT_EXPORT_MODULE(StorageModule);
     };
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
 RCT_EXPORT_METHOD(setString:(NSString *)key value:(NSString *)value)
 {
     [PortkeySDKMMKVStorage writeString:value forKey:key];

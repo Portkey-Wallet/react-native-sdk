@@ -1,7 +1,7 @@
 import { authenticationReady, touchAuth } from './authentication';
 import { isIOS } from './device';
 import secureStore, { SecureKeys } from './secureStore';
-export async function setSecureStoreItem(key: typeof SecureKeys[number] = 'Password', value: string) {
+export async function setSecureStoreItem(key: (typeof SecureKeys)[number] = 'Password', value: string) {
   const isReady = await authenticationReady();
   if (!isReady) throw { message: 'biometrics is not ready' };
   // authentication ready secure store password
@@ -14,7 +14,7 @@ export async function setSecureStoreItem(key: typeof SecureKeys[number] = 'Passw
   await secureStore.setItemAsync(key, value);
 }
 
-export async function getSecureStoreItem(key: typeof SecureKeys[number] = 'Password') {
+export async function getSecureStoreItem(key: (typeof SecureKeys)[number] = 'Password') {
   const isReady = await authenticationReady();
   if (!isReady) throw { message: 'biometrics is not ready' };
   // android secureStore requires authenticate by default
