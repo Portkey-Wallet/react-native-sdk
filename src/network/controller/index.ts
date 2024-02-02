@@ -104,7 +104,6 @@ export class NetworkControllerEntity {
       const access_token = await getCachedNetworkToken();
       headers = Object.assign({}, headers, { Authorization: `Bearer ${access_token}` });
     }
-
     const result = nativeFetch<T>(url, method, params, headers, extraOptions);
     return result;
   };
@@ -576,7 +575,7 @@ export class NetworkControllerEntity {
     return res.result;
   };
 
-  parseUrl = async (url: string) => {
+  public parseUrl = async (url: string) => {
     return `${await PortkeyConfig.endPointUrl()}${url}`;
   };
 }
