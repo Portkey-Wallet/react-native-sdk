@@ -1,4 +1,4 @@
-import { UnlockedWallet, WalletState } from 'api/types';
+import { WalletState } from 'api/types';
 import { AssetsState } from 'api/types/assets';
 import { IDataService } from 'api/types/data';
 import BigNumber from 'bignumber.js';
