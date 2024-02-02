@@ -33,7 +33,7 @@ export class ContractBasic {
   };
 
   public callSendMethod: CallSendMethod = async (functionName, _account, paramsOption, sendOptions) => {
-    console.log('callSendMethod', functionName, JSON.stringify(paramsOption), sendOptions);
+    console.log('callSendMethod', functionName, JSON.stringify(paramsOption), JSON.stringify(sendOptions));
     if (this.callContract instanceof AElfContractBasic)
       return this.callContract.callSendMethod(functionName, paramsOption, sendOptions);
 

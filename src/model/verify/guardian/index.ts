@@ -1,6 +1,6 @@
 import { NetworkController } from 'network/controller';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { CheckVerifyCodeResultDTO, SendVerifyCodeParams } from '../../../network/dto/guardian';
+import { CheckVerifyCodeParams, CheckVerifyCodeResultDTO, SendVerifyCodeParams } from '../../../network/dto/guardian';
 import { AccountOriginalType } from '../core';
 import { VerifiedGuardianDoc } from '../core/index';
 
@@ -71,16 +71,22 @@ const usePhoneOrEmailGuardian = (config: GuardianConfig): GuardianEntity => {
         console.warn('You can not check verify code at this stage.');
         return null;
       }
+      const { sendVerifyCodeParams, chainId } = config;
       //  else if (!verifierSessionId && !config.verifySessionId) {
       //   console.error('You must send verify code first.');
       //   return null;
       // }
       try {
-        const result = await NetworkController.checkVerifyCode({
-          ...config.sendVerifyCodeParams,
+        // in some cases like edit payment limit, we need to change the target chain id
+        let preparedParams: CheckVerifyCodeParams = {
+          ...sendVerifyCodeParams,
           verificationCode,
           verifierSessionId,
-        });
+        };
+        if (chainId) {
+          preparedParams = Object.assign({}, preparedParams, { chainId });
+        }
+        const result = await NetworkController.checkVerifyCode(preparedParams);
         if (result.verificationDoc && result.signature) {
           setStatus(GuardianStatus.VERIFIED);
           setVerifiedDoc(result);
@@ -136,6 +142,7 @@ export interface GuardianConfig {
   thirdPartyEmail?: string;
   verifiedDoc?: CheckVerifyCodeResultDTO;
   identifierHash?: string;
+  chainId?: string;
 }
 
 export enum GuardianStatus {
