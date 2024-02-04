@@ -95,11 +95,11 @@ export class NetworkControllerEntity {
   ): Promise<ResultWrapper<T>> => {
     if (method === 'GET' && params) {
       url += '?';
-      Object.entries(params).forEach(([key, value]) => {
-        url = url + `&${key}=${encodeURIComponent((value ?? 'null') as string)}`;
+      Object.entries(params).forEach(([key, value], index) => {
+        url = url + `${index > 0 ? '&' : ''}${key}=${encodeURIComponent((value ?? 'null') as string)}`;
       });
     }
-    headers = Object.assign({}, headers ?? {}, { Version: 'v1.4.8' });
+    headers = Object.assign({}, headers ?? {}, { Version: 'v1.4.16' });
     if ((await isWalletUnlocked()) && !this.isUrlInBlackList(url)) {
       const access_token = await getCachedNetworkToken();
       headers = Object.assign({}, headers, { Authorization: `Bearer ${access_token}` });

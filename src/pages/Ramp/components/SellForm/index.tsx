@@ -12,7 +12,7 @@ import fonts from 'assets/theme/fonts';
 import SelectToken from '../SelectToken';
 import { usePin } from 'hooks/store';
 import SelectCurrency from '../SelectCurrency';
-import { ErrorType, INIT_HAS_ERROR, INIT_NONE_ERROR } from '@portkey-wallet/constants/constants-ca/common';
+import { ErrorType, INIT_HAS_ERROR, INIT_NONE_ERROR } from 'packages/constants/constants-ca/common';
 import { FontStyles } from 'assets/theme/styles';
 import CommonButton from 'components/CommonButton';
 // import navigationService from 'utils/navigationService';
