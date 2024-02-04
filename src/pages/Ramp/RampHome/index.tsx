@@ -18,6 +18,7 @@ import useLockCallback from 'packages/hooks/useLockCallback';
 import CommonTouchableTabs from 'components/CommonTouchableTabs';
 import { Provider } from 'react-redux';
 import { store } from 'store';
+import { getBottomSpace } from 'utils/screen';
 
 type TabItemType = {
   name: string;
@@ -131,5 +132,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: defaultColors.bg1,
     ...GStyles.paddingArg(16, 20),
+    paddingBottom: getBottomSpace(),
   },
 });
