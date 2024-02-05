@@ -22,5 +22,9 @@
     "@types/react": "~18.2.14",
     "typescript": "^5.1.3"
   },
+  "resolutions": {
+    "@expo/config": "8.1.2",
+    "string-width": "4.2.3"
+  },
   "private": true
 }

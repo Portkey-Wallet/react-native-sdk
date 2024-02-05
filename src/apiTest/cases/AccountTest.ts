@@ -1,6 +1,7 @@
 import { getUnlockedWallet } from 'model/wallet';
 import { TestCaseApi } from 'apiTest/type';
-import { WalletState, portkey } from 'service/core';
+import { WalletState, portkey } from 'api';
+// import Portkey from 'api';
 
 //This array stores test cases where the wallet is the unlocked state
 export const UnLockedWalletTestCases: Array<TestCaseApi> = [
@@ -8,6 +9,7 @@ export const UnLockedWalletTestCases: Array<TestCaseApi> = [
     describe: 'Test callCaContractMethod: GetVerifierServers',
     run: async (testContext, caseName) => {
       try {
+        // const p2 = new Portkey();
         const result = await portkey.callCaContractMethod({
           contractMethodName: 'GetVerifierServers',
           isViewMethod: true,
@@ -23,9 +25,10 @@ export const UnLockedWalletTestCases: Array<TestCaseApi> = [
     describe: 'Test callCaContractMethod: GetHolderInfo',
     run: async (testContext, caseName) => {
       try {
+        const wallet = await getUnlockedWallet({ getMultiCaAddresses: false });
         const {
           caInfo: { caHash },
-        } = await getUnlockedWallet({ getMultiCaAddresses: false });
+        } = wallet;
         const result = await portkey.callCaContractMethod({
           contractMethodName: 'GetHolderInfo',
           isViewMethod: true,
@@ -42,7 +45,20 @@ export const UnLockedWalletTestCases: Array<TestCaseApi> = [
     run: async (testContext, caseName) => {
       try {
         const walletInfo = await portkey.getWalletInfo();
-        testContext.assert(caseName, !!walletInfo, 'invoke failed');
+        const assertSuccess = 'address' in walletInfo;
+        testContext.assert(caseName, assertSuccess, 'invoke failed');
+      } catch (e: any) {
+        testContext.assert(caseName, false, e?.toString() ?? 'failed');
+      }
+    },
+  },
+  {
+    describe: 'Test getWalletInfo containMultiCaAddresses',
+    run: async (testContext, caseName) => {
+      try {
+        const walletInfo = await portkey.getWalletInfo(true);
+        const assertSuccess = 'address' in walletInfo && 'multiCaAddresses' in walletInfo;
+        testContext.assert(caseName, assertSuccess, 'invoke failed');
       } catch (e: any) {
         testContext.assert(caseName, false, e?.toString() ?? 'failed');
       }
@@ -64,8 +80,31 @@ export const UnLockedWalletTestCases: Array<TestCaseApi> = [
     run: async (testContext, caseName) => {
       try {
         const assetsState = await portkey.getAssetsInfo();
-        testContext.log(JSON.stringify(assetsState));
-        testContext.assert(caseName, !!assetsState, 'invoke failed');
+        const assertSuccess = 'data' in assetsState && 'totalRecordCount' in assetsState;
+        console.log(JSON.stringify(assetsState.data));
+        testContext.assert(caseName, assertSuccess, 'invoke failed');
+      } catch (e: any) {
+        testContext.assert(caseName, false, e?.toString() ?? 'failed');
+      }
+    },
+  },
+  {
+    describe: 'Test getActivityInfoList by default totalCount',
+    run: async (testContext, caseName) => {
+      try {
+        const response = await portkey.getActivityInfoList();
+        testContext.assert(caseName, (response?.data?.length ?? 0) === 30, 'invoke failed');
+      } catch (e: any) {
+        testContext.assert(caseName, false, e?.toString() ?? 'failed');
+      }
+    },
+  },
+  {
+    describe: 'Test getActivityInfoList totalCount is 20',
+    run: async (testContext, caseName) => {
+      try {
+        const response = await portkey.getActivityInfoList({ offset: 0, pageSize: 20 });
+        testContext.assert(caseName, (response?.data?.length ?? 0) === 20, 'invoke failed');
       } catch (e: any) {
         testContext.assert(caseName, false, e?.toString() ?? 'failed');
       }
