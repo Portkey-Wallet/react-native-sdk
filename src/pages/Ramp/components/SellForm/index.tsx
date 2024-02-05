@@ -25,9 +25,9 @@ import { getELFChainBalance } from 'packages/utils/balance';
 import { useCurrentWalletInfo } from '@portkey-wallet/hooks/hooks-ca/wallet';
 import { ZERO } from 'packages/constants/misc';
 import CommonToast from 'components/CommonToast';
-import { useCheckManagerSyncState } from 'hooks/wallet';
+import { checkManagerSyncState, useGetTransferFee } from 'model/contract/handler';
 import { useFetchTxFee, useGetTxFee } from '@portkey-wallet/hooks/hooks-ca/useTxFee';
-import { useRampEntryShow, useSellCrypto } from '@portkey-wallet/hooks/hooks-ca/ramp';
+import { useRampEntryShow, useSellCrypto } from 'packages/hooks/hooks-ca/ramp';
 import { IRampCryptoItem, IRampFiatItem, RampType } from 'packages/ramp';
 import useEffectOnce from 'hooks/useEffectOnce';
 import { IRampLimit } from 'packages/types/types-ca/ramp';
@@ -63,7 +63,6 @@ export default function SellForm() {
   const crypto = useMemo(() => currency.crypto, [currency]);
   const fiat = useMemo(() => currency.fiat, [currency]);
 
-  const checkManagerSyncState = useCheckManagerSyncState();
   useFetchTxFee();
   const { ach: achFee } = useGetTxFee(MAIN_CHAIN_ID);
 

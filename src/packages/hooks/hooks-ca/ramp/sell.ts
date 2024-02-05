@@ -1,12 +1,25 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
+import { useAppCommonDispatch } from '../../index';
+import {
+  setSellCryptoList,
+  setSellDefaultCrypto,
+  setSellDefaultFiat,
+  setSellDefaultFiatList,
+} from 'packages/store/store-ca/ramp/actions';
+import {
+  useSellCryptoListState,
+  useSellDefaultCryptoState,
+  useSellDefaultFiatListState,
+  useSellDefaultFiatState,
+} from './index';
 import { getSellCrypto, getSellFiat } from 'packages/utils/ramp';
-import { IRampCryptoDefault, IRampCryptoItem, IRampFiatDefault, IRampFiatItem } from 'packages/ramp';
 
 export const useSellCrypto = () => {
-  const [sellCryptoList, setSellCryptoList] = useState<IRampCryptoItem[]>([]);
-  const [sellDefaultCrypto, setSellDefaultCrypto] = useState<IRampCryptoDefault>();
-  const [sellDefaultFiatList, setSellDefaultFiatList] = useState<IRampFiatItem[]>([]);
-  const [sellDefaultFiat, setSellDefaultFiat] = useState<IRampFiatDefault>();
+  const dispatch = useAppCommonDispatch();
+  const sellCryptoList = useSellCryptoListState();
+  const sellDefaultCrypto = useSellDefaultCryptoState();
+  const sellDefaultFiatList = useSellDefaultFiatListState();
+  const sellDefaultFiat = useSellDefaultFiatState();
 
   const refreshSellCrypto = useCallback(async () => {
     const { cryptoList, defaultCrypto } = await getSellCrypto();
@@ -15,17 +28,29 @@ export const useSellCrypto = () => {
       network: defaultCrypto.network,
     });
 
-    setSellCryptoList(cryptoList);
-    setSellDefaultCrypto(defaultCrypto);
-    setSellDefaultFiatList(sellFiatList);
-    setSellDefaultFiat(sellDefaultFiat);
+    dispatch(setSellCryptoList({ list: cryptoList }));
+    dispatch(
+      setSellDefaultCrypto({
+        value: defaultCrypto,
+      }),
+    );
+    dispatch(
+      setSellDefaultFiatList({
+        list: sellFiatList,
+      }),
+    );
+    dispatch(
+      setSellDefaultFiat({
+        value: sellDefaultFiat,
+      }),
+    );
     return {
       sellCryptoList: cryptoList,
       sellDefaultCrypto: defaultCrypto,
       sellDefaultFiatList: sellFiatList,
       sellDefaultFiat,
     };
-  }, []);
+  }, [dispatch]);
 
   return {
     sellCryptoList,
