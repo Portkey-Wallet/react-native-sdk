@@ -18,7 +18,7 @@ export function CheckWalletUnlocked({ errorCode, way }: CheckWalletUnlockedOptio
     descriptor.value = async function (...args: any[]) {
       if (!(await isWalletUnlocked())) {
         if (way === HANDLE_WAY.RETURN_FALSE) {
-          console.warn(errorMap.get(1001));
+          console.warn(errorMap.get(errorCode ?? 1001));
           return false;
         } else {
           throw new AccountError(errorCode ?? 1001);
