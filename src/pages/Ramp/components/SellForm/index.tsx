@@ -20,7 +20,8 @@ import Loading from 'components/Loading';
 import { divDecimals, formatAmountShow } from 'packages/utils/converter';
 import { useReceive } from '../../hooks';
 import { getContractBasic } from 'packages/contracts/utils';
-import { useCurrentChain, useDefaultToken } from 'packages/hooks/hooks-ca/chainList';
+import { PortkeyConfig } from 'global/constants';
+import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
 import { getELFChainBalance } from 'packages/utils/balance';
 import { useCurrentWalletInfo } from '@portkey-wallet/hooks/hooks-ca/wallet';
 import { ZERO } from 'packages/constants/misc';
@@ -69,7 +70,6 @@ export default function SellForm() {
   const [amount, setAmount] = useState<string>(defaultCrypto.amount);
   const [amountLocalError, setAmountLocalError] = useState<ErrorType>(INIT_NONE_ERROR);
 
-  const chainInfo = useCurrentChain(MAIN_CHAIN_ID);
   const pin = usePin();
   const wallet = useCurrentWalletInfo();
 
@@ -202,7 +202,7 @@ export default function SellForm() {
     setAmount(text);
   }, []);
 
-  const defaultToken = useDefaultToken();
+  const { defaultToken } = useCommonNetworkInfo();
   const checkTransferLimitWithJump = useCheckTransferLimitWithJump();
   const securitySafeCheckAndToast = useSecuritySafeCheckAndToast();
   const onNext = useCallback(async () => {
@@ -224,7 +224,7 @@ export default function SellForm() {
 
     const tokenContractAddress = defaultToken.address;
     const { decimals, symbol, chainId } = crypto || {};
-    const { endPoint } = chainInfo || {};
+    const endPoint = await PortkeyConfig.endPointUrl();
     if (!tokenContractAddress || decimals === undefined || !symbol || !chainId) return;
     if (!pin || !endPoint) return;
 
@@ -332,12 +332,10 @@ export default function SellForm() {
     rate,
     defaultToken.address,
     crypto,
-    chainInfo,
     pin,
     fiat,
     refreshRampShow,
     securitySafeCheckAndToast,
-    checkManagerSyncState,
     achFee,
     checkTransferLimitWithJump,
     wallet,
