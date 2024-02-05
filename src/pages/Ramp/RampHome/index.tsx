@@ -16,8 +16,6 @@ import Loading from 'components/Loading';
 import CommonToast from 'components/CommonToast';
 import useLockCallback from 'packages/hooks/useLockCallback';
 import CommonTouchableTabs from 'components/CommonTouchableTabs';
-import { Provider } from 'react-redux';
-import { store } from 'store';
 import { getBottomSpace } from 'utils/screen';
 
 type TabItemType = {
@@ -40,15 +38,7 @@ const tabList: TabItemType[] = [
   },
 ];
 
-export default function RampHomeProvider({ toTab }: { toTab: RampType }) {
-  return (
-    <Provider store={store}>
-      <RampHome toTab={toTab} />
-    </Provider>
-  );
-}
-
-function RampHome({ toTab }: { toTab: RampType }) {
+export default function RampHome({ toTab }: { toTab: RampType }) {
   const { isBuySectionShow, isSellSectionShow, refreshRampShow } = useRampEntryShow();
   const securitySafeCheckAndToast = useSecuritySafeCheckAndToast();
 

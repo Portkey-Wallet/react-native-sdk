@@ -36,6 +36,8 @@ import { PortkeyTestEntries } from 'apiTest';
 import SendHome from 'pages/Send/SendHome';
 import SendPreview from 'pages/Send/SendPreview';
 import RampHome from 'pages/Ramp/RampHome';
+import ReduxProvider from './ReduxProvider';
+import React from 'react';
 
 type AcceptableComponentType = ComponentProvider;
 
@@ -99,7 +101,7 @@ const initEntries = () => {
   entryConfig.set(PortkeyEntries.CONTACT_DETAIL_ENTRY, () => ContactDetail);
   entryConfig.set(PortkeyEntries.CONTACT_ACTIVITY_ENTRY, () => ContactActivity);
 
-  entryConfig.set(PortkeyEntries.RAMP_HOME, () => RampHome);
+  entryConfig.set(PortkeyEntries.RAMP_HOME, () => ReduxProvider(RampHome as React.ComponentType<any>));
 
   for (const [key, value] of entryConfig) {
     AppRegistry.registerComponent(wrapEntry(key), value);
