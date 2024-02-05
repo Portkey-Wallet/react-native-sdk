@@ -1,7 +1,6 @@
 import { getUnlockedWallet } from 'model/wallet';
 import { TestCaseApi } from 'apiTest/type';
-import { WalletState } from 'service/core';
-import { portkey } from 'api';
+import { WalletState, portkey } from 'api';
 // import Portkey from 'api';
 
 //This array stores test cases where the wallet is the unlocked state
@@ -81,7 +80,8 @@ export const UnLockedWalletTestCases: Array<TestCaseApi> = [
     run: async (testContext, caseName) => {
       try {
         const assetsState = await portkey.getAssetsInfo();
-        const assertSuccess = 'tokens' in assetsState && 'balanceInUsd' in assetsState;
+        const assertSuccess = 'data' in assetsState && 'totalRecordCount' in assetsState;
+        console.log(JSON.stringify(assetsState.data));
         testContext.assert(caseName, assertSuccess, 'invoke failed');
       } catch (e: any) {
         testContext.assert(caseName, false, e?.toString() ?? 'failed');
@@ -92,7 +92,7 @@ export const UnLockedWalletTestCases: Array<TestCaseApi> = [
     describe: 'Test getActivityInfoList by default totalCount',
     run: async (testContext, caseName) => {
       try {
-        const response = await portkey.getActivityInfoList({ offset: 0 });
+        const response = await portkey.getActivityInfoList();
         testContext.assert(caseName, (response?.data?.length ?? 0) === 30, 'invoke failed');
       } catch (e: any) {
         testContext.assert(caseName, false, e?.toString() ?? 'failed');
@@ -103,7 +103,7 @@ export const UnLockedWalletTestCases: Array<TestCaseApi> = [
     describe: 'Test getActivityInfoList totalCount is 20',
     run: async (testContext, caseName) => {
       try {
-        const response = await portkey.getActivityInfoList({ offset: 0, totalCount: 20 });
+        const response = await portkey.getActivityInfoList({ offset: 0, pageSize: 20 });
         testContext.assert(caseName, (response?.data?.length ?? 0) === 20, 'invoke failed');
       } catch (e: any) {
         testContext.assert(caseName, false, e?.toString() ?? 'failed');

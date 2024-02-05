@@ -1,19 +1,17 @@
 import { injectable } from 'inversify';
 import { BaseService } from '.';
 import { BaseMethodResult, CallCaMethodProps, IContractService } from 'api/types/contract';
-import { isWalletUnlocked } from 'model/verify/core';
 import { AccountError } from 'api/error';
 import { getCAContractInstance } from 'model/contract/handler';
 import { getUnlockedWallet } from 'model/wallet';
 import { SendResult, ViewResult } from 'packages/contracts/types';
+import { CheckWalletUnlocked } from 'api/decorate';
 
 @injectable()
 export class ContractService extends BaseService implements IContractService {
+  @CheckWalletUnlocked()
   async callCaContractMethod(props: CallCaMethodProps) {
     const { contractMethodName: methodName, params, isViewMethod } = props;
-    if (!(await isWalletUnlocked())) {
-      throw new AccountError(1001);
-    }
     const contract = await getCAContractInstance();
     const { address } = await getUnlockedWallet();
     const isParamsEmpty = Object.values(params ?? {}).length === 0;

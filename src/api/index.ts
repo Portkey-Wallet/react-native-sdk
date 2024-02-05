@@ -2,7 +2,7 @@ import { IServices, IToSendHomeParamsType, TYPES, UnlockedWallet, WalletState } 
 import { Services } from './services';
 import { IAccountService } from './types/account';
 import { IGuardianService } from './types/guardians';
-import { AssetsState, IAssetsService } from './types/assets';
+import { IAssetsService } from './types/assets';
 import { IRampService, RampTabType } from './types/ramp';
 import { ISettingsService } from './types/settings';
 import { ActivityDetailPropsType, IActivityService } from './types/activity';
@@ -11,7 +11,7 @@ import { IDataService } from './types/data';
 import { BaseMethodResult, CallCaMethodProps, IContractService } from './types/contract';
 import { myContainer } from './inversify.config';
 import { IConfig, ITheme, PortkeyConfig } from './config';
-import { IActivitiesApiResponse } from 'network/dto/query';
+import { GetAccountAssetsByKeywordsResult, IActivitiesApiResponse } from 'network/dto/query';
 export * from './types';
 class Portkey
   implements
@@ -31,12 +31,9 @@ class Portkey
   }
   getActivityInfoList({
     offset,
-    totalCount,
-  }: {
-    offset: number;
-    totalCount?: number;
-  }): Promise<IActivitiesApiResponse> {
-    return this.services.dataService.getActivityInfoList({ offset, totalCount });
+    pageSize,
+  }: { offset?: number; pageSize?: number } = {}): Promise<IActivitiesApiResponse> {
+    return this.services.dataService.getActivityInfoList({ offset, pageSize });
   }
 
   init(config?: IConfig, theme?: ITheme) {
@@ -53,8 +50,16 @@ class Portkey
   getWalletState(): Promise<WalletState> {
     return this.services.dataService.getWalletState();
   }
-  getAssetsInfo(): Promise<AssetsState> {
-    return this.services.dataService.getAssetsInfo();
+  getAssetsInfo({
+    offset,
+    pageSize,
+    keyword,
+  }: {
+    offset?: number;
+    pageSize?: number;
+    keyword?: string;
+  } = {}): Promise<GetAccountAssetsByKeywordsResult> {
+    return this.services.dataService.getAssetsInfo({ offset, pageSize, keyword });
   }
   scanQRCodeManager(): Promise<void> {
     return this.services.scanService.scanQRCodeManager();

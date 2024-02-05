@@ -1,15 +1,13 @@
 import { IScanService } from 'api/types/scan';
 import { injectable } from 'inversify';
 import { BaseService } from '.';
-import { AccountError } from 'api/error';
 import { PortkeyEntries } from 'config/entries';
+import { CheckWalletUnlocked } from 'api/decorate';
 
 @injectable()
 export class ScanService extends BaseService implements IScanService {
+  @CheckWalletUnlocked()
   async scanQRCodeManager() {
-    if (!(await this.checkIsUnlocked())) {
-      throw new AccountError(1001);
-    }
     this.openFromExternal(PortkeyEntries.SCAN_QR_CODE);
   }
 }

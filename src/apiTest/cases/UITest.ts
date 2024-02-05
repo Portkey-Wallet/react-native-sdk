@@ -1,5 +1,6 @@
 import { TestCaseApi } from 'apiTest/type';
 import { portkey } from 'api';
+import { ChainId } from 'packages/types';
 /*
 NOTE: 
 1. UI op need to open a new page, so a UI op needs to be placed in an array 
@@ -112,16 +113,19 @@ export const UITestSendTokenCases: Array<TestCaseApi> = [
     describe: 'Test openSendToken',
     run: async (testContext, caseName) => {
       try {
+        const assetsInfo = await portkey.getAssetsInfo({});
+        const item = assetsInfo.data[9];
         await portkey.openSendToken({
-          sendType: 'token',
-          assetInfo: {
-            balanceInUsd: '1000',
-            decimals: '8',
-            symbol: 'ELF',
+          sendType: item?.nftInfo ? 'nft' : 'token',
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          //@ts-ignore
+          assetInfo: item?.nftInfo
+            ? { ...item?.nftInfo, chainId: item.chainId as ChainId, symbol: item.symbol }
+            : { ...item?.tokenInfo, chainId: item.chainId as ChainId, symbol: item.symbol },
+          toInfo: {
+            address: 'gmXTZh9ezoHkxDQQNBzNyfq4qibin56wVepNDmtvJe4EsFbvm',
+            name: 'James',
             chainId: 'AELF',
-            balance: '1900',
-            imageUrl: '',
-            tokenContractAddress: '',
           },
         });
         testContext.assert(caseName, true, 'invoke failed');
@@ -131,7 +135,7 @@ export const UITestSendTokenCases: Array<TestCaseApi> = [
     },
   },
 ];
-// open send token page, unlock wallet
+// open activity list page, unlock wallet
 export const UITestOpenActivityListCases: Array<TestCaseApi> = [
   {
     describe: 'Test openActivityLis',
@@ -145,7 +149,7 @@ export const UITestOpenActivityListCases: Array<TestCaseApi> = [
     },
   },
 ];
-// open send token page, unlock wallet
+// open activity detail page, unlock wallet
 export const UITestOpenActivityDetailCases: Array<TestCaseApi> = [
   {
     describe: 'Test openActivityDetail',
@@ -155,6 +159,20 @@ export const UITestOpenActivityDetailCases: Array<TestCaseApi> = [
         const multiCaAddresses = (await portkey.getWalletInfo(true)).multiCaAddresses;
         console.log('item', JSON.stringify(item));
         await portkey.openActivityDetail({ item, multiCaAddresses });
+        testContext.assert(caseName, true, 'invoke failed');
+      } catch (e: any) {
+        testContext.assert(caseName, false, e?.toString() ?? 'failed');
+      }
+    },
+  },
+];
+// open ramp home page, unlock wallet
+export const UITestOpenRampHomeCases: Array<TestCaseApi> = [
+  {
+    describe: 'Test openActivityDetail',
+    run: async (testContext, caseName) => {
+      try {
+        await portkey.openRampHome();
         testContext.assert(caseName, true, 'invoke failed');
       } catch (e: any) {
         testContext.assert(caseName, false, e?.toString() ?? 'failed');

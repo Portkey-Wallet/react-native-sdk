@@ -18,13 +18,14 @@
     "resolveJsonModule": true,
     "outDir": "./dist",
     "declaration": true,
-    "noEmit": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
     "types": ["reflect-metadata"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false
   },
   "exclude": ["android", "ios", "node_modules", "babel.config.js", "metro.config.js", "jest.config.js"],
-  "include": ["src/**/*.ts", "src/**/*.tsx", "index.js"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "extends": "expo/tsconfig.base"
 }

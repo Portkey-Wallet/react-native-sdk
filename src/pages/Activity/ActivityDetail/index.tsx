@@ -97,7 +97,6 @@ const ActivityDetail = ({ item, caAddressInfos }: ActivityDetailPropsType) => {
 
   const networkUI = useMemo(() => {
     const { transactionType, fromChainId, toChainId, transactionId: _transactionId = '' } = activityItem || {};
-    console.log('activityItem fromChainId', fromChainId);
 
     const isNetworkShow = transactionType && SHOW_FROM_TRANSACTION_TYPES.includes(transactionType);
     return (

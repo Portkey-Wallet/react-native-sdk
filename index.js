@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-import './src/api/inversify.config';
 import { initEntries } from './src/global/init/entries';
 import { initJsMethodService } from './src/global/init/services';
 import { initLanguage } from './src/i18n/index';
@@ -20,5 +19,4 @@ if (__DEV__) {
 }
 
 // export for npm
-// export * from './src/service/core';
 export * from './src/api';

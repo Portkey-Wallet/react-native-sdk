@@ -31,6 +31,7 @@ import {
   UITestSendTokenCases,
   UITestOpenActivityListCases,
   UITestOpenActivityDetailCases,
+  UITestOpenRampHomeCases,
 } from './cases/UITest';
 import CommonToast from 'components/CommonToast';
 import Loading from 'components/Loading';
@@ -63,6 +64,7 @@ const testUICasesMap: TestCasesMapType = {
   UITestSendTokenCases,
   UITestOpenActivityListCases,
   UITestOpenActivityDetailCases,
+  UITestOpenRampHomeCases,
 };
 
 // testCasesKeyList

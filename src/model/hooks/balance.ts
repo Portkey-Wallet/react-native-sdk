@@ -72,8 +72,6 @@ export const useNftCollections = () => {
         caAddressInfos,
         symbol,
       });
-      console.log('symbol', symbol);
-      console.log('item', JSON.stringify(item));
     }
     setNftCollections(
       data.map(it => {

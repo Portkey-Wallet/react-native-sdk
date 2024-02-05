@@ -4,11 +4,11 @@ import { injectable } from 'inversify';
 import { BaseService } from '.';
 import { LoginResult } from 'model/verify/entry';
 import { PortkeyEntries } from 'config/entries';
-import { AccountError, errorMap } from 'api/error';
-import { isWalletUnlocked } from 'model/verify/core';
+import { AccountError } from 'api/error';
 import { callRemoveManagerMethod } from 'model/contract/handler';
 import { exitWallet as exitInternalWallet, lockWallet as lockInternalWallet } from 'model/verify/core';
 import { CheckPinResult } from 'pages/Pin/CheckPin';
+import { CheckWalletUnlocked, HANDLE_WAY } from 'api/decorate';
 @injectable()
 export class AccountService extends BaseService implements IAccountService {
   login(): Promise<UnlockedWallet | null> {
@@ -22,11 +22,9 @@ export class AccountService extends BaseService implements IAccountService {
       });
     });
   }
+
+  @CheckWalletUnlocked({ way: HANDLE_WAY.RETURN_FALSE })
   async exitWallet() {
-    if (!(await isWalletUnlocked())) {
-      console.warn(errorMap.get(1001));
-      return false;
-    }
     try {
       const res = await callRemoveManagerMethod();
       if (!res.error) {
@@ -40,18 +38,15 @@ export class AccountService extends BaseService implements IAccountService {
       throw new AccountError(9999, e?.message || e);
     }
   }
+
+  @CheckWalletUnlocked({ way: HANDLE_WAY.RETURN_FALSE })
   async lockWallet() {
-    if (!(await isWalletUnlocked())) {
-      console.warn(errorMap.get(1001));
-      return false;
-    }
     await lockInternalWallet();
     return true;
   }
+
+  @CheckWalletUnlocked({ way: HANDLE_WAY.THROW_ERROR })
   async unlockWallet(): Promise<UnlockedWallet | null> {
-    if (!(await this.checkIsLocked())) {
-      throw new AccountError(1001);
-    }
     return new Promise((resolve, reject) => {
       this.openResultFromExternal<CheckPinResult>(PortkeyEntries.CHECK_PIN, res => {
         if (res) {
