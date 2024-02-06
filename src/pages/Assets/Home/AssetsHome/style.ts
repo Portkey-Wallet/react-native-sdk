@@ -57,4 +57,7 @@ export const styles = StyleSheet.create({
   header: {
     backgroundColor: bg5,
   },
+  buttonWrapStyle1: {
+    marginHorizontal: screenWidth * 0.03,
+  },
 });

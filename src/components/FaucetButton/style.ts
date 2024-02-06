@@ -26,7 +26,10 @@ export const dashBoardBtnStyle = StyleSheet.create({
 });
 
 export const innerPageStyles = StyleSheet.create({
-  buttonWrap: {},
+  buttonWrap: {
+    marginBottom: pTd(24),
+    width: pTd(65),
+  },
   iconWrapStyle: {
     display: 'flex',
     alignContent: 'center',

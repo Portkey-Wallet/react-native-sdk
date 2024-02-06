@@ -516,7 +516,7 @@ export class NetworkControllerEntity {
     const res = await this.realExecute<ActivityItemType>(await this.parseUrl(APIPaths.GET_ACTIVITY_INFO), 'POST', {
       transactionId,
       blockHash,
-      caAddresses: caAddressInfos.map(item => item.caAddress),
+      caAddresses: caAddressInfos?.map(item => item.caAddress),
       caAddressInfos,
     });
     if (!res?.result) throw new Error('network failure');

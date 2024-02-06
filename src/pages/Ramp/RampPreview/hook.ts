@@ -6,7 +6,7 @@ import { UserGuardianItem } from 'packages/store/store-ca/guardians/type';
 import { ChainId } from 'packages/types';
 import { LoginType } from 'packages/types/types-ca/wallet';
 import { useEffect, useState } from 'react';
-import { PortkeyConfig } from 'config';
+import { PortkeyConfig } from 'global/config';
 
 export const DEFAULT_TOKEN = {
   address: 'JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE',

@@ -165,18 +165,19 @@ const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
   }, [onFinish]);
 
   const { wallet } = useUnlockedWallet({ getMultiCaAddresses: true });
-  const caAddresses = useMemo(() => {
+  const caAddressInfos = useMemo(() => {
     if (!wallet) return {};
-    return Object.entries(wallet.multiCaAddresses).map(it => it[1]);
+    return Object.entries(wallet.multiCaAddresses ?? {}).map(it => {
+      return { chainId: it[0], caAddress: it[1] };
+    });
   }, [wallet]);
-
   const onNavigateActivityDetail = useCallback(
     (item: ActivityItemType) => {
       navigateTo(PortkeyEntries.ACTIVITY_DETAIL_ENTRY, {
-        params: { item, caAddresses },
+        params: { item, caAddressInfos },
       });
     },
-    [caAddresses, navigateTo],
+    [caAddressInfos, navigateTo],
   );
 
   return (
