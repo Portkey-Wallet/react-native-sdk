@@ -12,7 +12,7 @@ import fonts from 'assets/theme/fonts';
 import SelectToken from '../SelectToken';
 import { usePin } from 'hooks/store';
 import SelectCurrency from '../SelectCurrency';
-import { ErrorType, INIT_HAS_ERROR, INIT_NONE_ERROR } from '@portkey-wallet/constants/constants-ca/common';
+import { ErrorType, INIT_HAS_ERROR, INIT_NONE_ERROR } from 'packages/constants/constants-ca/common';
 import { FontStyles } from 'assets/theme/styles';
 import CommonButton from 'components/CommonButton';
 // import navigationService from 'utils/navigationService';
@@ -20,14 +20,15 @@ import Loading from 'components/Loading';
 import { divDecimals, formatAmountShow } from 'packages/utils/converter';
 import { useReceive } from '../../hooks';
 import { getContractBasic } from 'packages/contracts/utils';
-import { useCurrentChain, useDefaultToken } from 'packages/hooks/hooks-ca/chainList';
+import { PortkeyConfig } from 'global/constants';
+import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
 import { getELFChainBalance } from 'packages/utils/balance';
 import { useCurrentWalletInfo } from '@portkey-wallet/hooks/hooks-ca/wallet';
 import { ZERO } from 'packages/constants/misc';
 import CommonToast from 'components/CommonToast';
-import { useCheckManagerSyncState } from 'hooks/wallet';
+import { checkManagerSyncState, useGetTransferFee } from 'model/contract/handler';
 import { useFetchTxFee, useGetTxFee } from '@portkey-wallet/hooks/hooks-ca/useTxFee';
-import { useRampEntryShow, useSellCrypto } from '@portkey-wallet/hooks/hooks-ca/ramp';
+import { useRampEntryShow, useSellCrypto } from 'packages/hooks/hooks-ca/ramp';
 import { IRampCryptoItem, IRampFiatItem, RampType } from 'packages/ramp';
 import useEffectOnce from 'hooks/useEffectOnce';
 import { IRampLimit } from 'packages/types/types-ca/ramp';
@@ -63,14 +64,12 @@ export default function SellForm() {
   const crypto = useMemo(() => currency.crypto, [currency]);
   const fiat = useMemo(() => currency.fiat, [currency]);
 
-  const checkManagerSyncState = useCheckManagerSyncState();
   useFetchTxFee();
   const { ach: achFee } = useGetTxFee(MAIN_CHAIN_ID);
 
   const [amount, setAmount] = useState<string>(defaultCrypto.amount);
   const [amountLocalError, setAmountLocalError] = useState<ErrorType>(INIT_NONE_ERROR);
 
-  const chainInfo = useCurrentChain(MAIN_CHAIN_ID);
   const pin = usePin();
   const wallet = useCurrentWalletInfo();
 
@@ -203,7 +202,7 @@ export default function SellForm() {
     setAmount(text);
   }, []);
 
-  const defaultToken = useDefaultToken();
+  const { defaultToken } = useCommonNetworkInfo();
   const checkTransferLimitWithJump = useCheckTransferLimitWithJump();
   const securitySafeCheckAndToast = useSecuritySafeCheckAndToast();
   const onNext = useCallback(async () => {
@@ -225,7 +224,7 @@ export default function SellForm() {
 
     const tokenContractAddress = defaultToken.address;
     const { decimals, symbol, chainId } = crypto || {};
-    const { endPoint } = chainInfo || {};
+    const endPoint = await PortkeyConfig.endPointUrl();
     if (!tokenContractAddress || decimals === undefined || !symbol || !chainId) return;
     if (!pin || !endPoint) return;
 
@@ -334,12 +333,10 @@ export default function SellForm() {
     rate,
     defaultToken.address,
     crypto,
-    chainInfo,
     pin,
     fiat,
     refreshRampShow,
     securitySafeCheckAndToast,
-    checkManagerSyncState,
     achFee,
     checkTransferLimitWithJump,
     wallet,

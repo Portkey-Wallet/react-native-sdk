@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { MAX_REFRESH_TIME } from './constants';
-import useEffectOnce from 'hooks/useEffectOnce';
 import { formatAmountShow } from 'packages/utils/converter';
 import { ErrorType, INIT_HAS_ERROR, INIT_NONE_ERROR } from 'packages/constants/constants-ca/common';
 import isEqual from 'lodash/isEqual';
@@ -46,7 +45,7 @@ export const useReceive = ({
   const rateRefreshTimeRef = useRef(MAX_REFRESH_TIME);
   const [rateRefreshTime, setRateRefreshTime] = useState<number>(MAX_REFRESH_TIME);
   const refreshReceiveRef = useRef<() => void>();
-  const refreshReceiveTimerRef = useRef<NodeJS.Timer>();
+  const refreshReceiveTimerRef = useRef<NodeJS.Timeout>();
   const isFocusedRef = useRef(false);
 
   const [providerPriceList, setProviderPriceList] = useState<IBuyProviderPrice[] | ISellProviderPrice[]>([]);
@@ -65,13 +64,13 @@ export const useReceive = ({
     refreshReceiveTimerRef.current = undefined;
   }, []);
 
-  useEffectOnce(() => {
+  useEffect(() => {
     isFocusedRef.current = true;
     return () => {
       isFocusedRef.current = false;
       clearRefreshReceive();
     };
-  });
+  }, [clearRefreshReceive]);
 
   const registerRefreshReceive = useCallback(() => {
     clearRefreshReceive();

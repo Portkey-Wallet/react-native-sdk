@@ -29,6 +29,8 @@ import txFeeSlice from 'packages/store/store-ca/txFee/slice';
 import { TxFeeType } from 'packages/store/store-ca/txFee/type';
 import imSlice from 'packages/store/store-ca/im/slice';
 import { IMStateType } from 'packages/store/store-ca/im/type';
+import { rampSlice } from 'packages/store/store-ca/ramp/slice';
+import { IRampStateType } from 'packages/store/store-ca/ramp/type';
 
 export type CACommonState = RootCommonState & {
   [tokenManagementSlice.name]: TokenState;
@@ -47,4 +49,5 @@ export type CACommonState = RootCommonState & {
   [cmsSlice.name]: CMSState;
   [txFeeSlice.name]: TxFeeType;
   [imSlice.name]: IMStateType;
+  [rampSlice.name]: IRampStateType;
 };

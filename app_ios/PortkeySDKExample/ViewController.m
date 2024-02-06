@@ -322,6 +322,9 @@
         [PortkeyPageConfig configWithTitle:@"PaymentSecurity"
                                  entryName:@"portkey_payment_security_home_entry"
                                 launchMode:@"single_task"],
+        [PortkeyPageConfig configWithTitle:@"RampHome"
+                                 entryName:@"portkey_ramp_home_entry"
+                                launchMode:@"single_task"],
         [PortkeyPageConfig configWithTitle:@"Api Test"
                                  entryName:@"portkey_test"
                                 launchMode:@""]

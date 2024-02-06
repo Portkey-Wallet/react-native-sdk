@@ -86,7 +86,7 @@ const NETWORK_TOKEN_BLACKLIST = [
 ];
 
 export class NetworkControllerEntity {
-  private realExecute = async <T>(
+  public realExecute = async <T>(
     url: string,
     method: 'GET' | 'POST',
     params?: any,
@@ -95,16 +95,15 @@ export class NetworkControllerEntity {
   ): Promise<ResultWrapper<T>> => {
     if (method === 'GET' && params) {
       url += '?';
-      Object.entries(params).forEach(([key, value]) => {
-        url = url + `&${key}=${encodeURIComponent((value ?? 'null') as string)}`;
+      Object.entries(params).forEach(([key, value], index) => {
+        url = url + `${index > 0 ? '&' : ''}${key}=${encodeURIComponent((value ?? 'null') as string)}`;
       });
     }
-    headers = Object.assign({}, headers ?? {}, { Version: 'v1.4.8' });
+    headers = Object.assign({}, headers ?? {}, { Version: 'v1.4.16' });
     if ((await isWalletUnlocked()) && !this.isUrlInBlackList(url)) {
       const access_token = await getCachedNetworkToken();
       headers = Object.assign({}, headers, { Authorization: `Bearer ${access_token}` });
     }
-
     const result = nativeFetch<T>(url, method, params, headers, extraOptions);
     return result;
   };
@@ -576,7 +575,7 @@ export class NetworkControllerEntity {
     return res.result;
   };
 
-  parseUrl = async (url: string) => {
+  public parseUrl = async (url: string) => {
     return `${await PortkeyConfig.endPointUrl()}${url}`;
   };
 }

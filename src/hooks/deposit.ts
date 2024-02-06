@@ -17,14 +17,14 @@ const DepositMap = {
     icon: 'buy2',
     description: 'Buy crypto using fiat currency',
     // onPress: () => navigationService.navigate('RampHome', { toTab: RampType.BUY }),
-    onPress: () => navigateTo(PortkeyEntries.RAMP_HOME_ENTRY, { params: { toTab: RampType.BUY } }),
+    onPress: () => navigateTo(PortkeyEntries.RAMP_HOME, { params: { toTab: RampType.BUY } }),
   },
   sell: {
     title: 'Sell Crypto',
     icon: 'sell',
     description: 'Sell crypto for fiat currency',
     // onPress: () => navigationService.navigate('RampHome', { toTab: RampType.SELL }),
-    onPress: () => navigateTo(PortkeyEntries.RAMP_HOME_ENTRY, { params: { toTab: RampType.SELL } }),
+    onPress: () => navigateTo(PortkeyEntries.RAMP_HOME, { params: { toTab: RampType.SELL } }),
   },
 };
 
