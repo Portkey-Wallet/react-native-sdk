@@ -113,8 +113,8 @@ export const handleGuardiansApproval = async (config: GuardianVerifyConfig) => {
   );
   console.log('handleGuardiansApproval', option);
   Loading.hide();
-  if (!option?.isVerified && failHandler) {
-    failHandler();
+  if (option && !option?.isVerified && failHandler) {
+    failHandler(option);
   } else {
     returnToParticularBasePage({
       type: guardianVerifyType,

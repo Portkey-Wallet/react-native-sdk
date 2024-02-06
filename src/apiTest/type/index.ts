@@ -5,7 +5,7 @@ export interface TestContextApi {
   assert: (caseName: string, condition: boolean, msg: string) => void;
 }
 export interface TestCaseApi {
-  run: (context: TestContextApi, caseName: string) => void | Promise<void>;
+  run: (context: TestContextApi, caseName: string) => Promise<void>;
   describe: string;
   useDetailsReport?: boolean;
 }
