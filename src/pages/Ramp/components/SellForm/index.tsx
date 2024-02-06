@@ -293,6 +293,7 @@ export default function SellForm() {
         _rate = rst.rate;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const navigateParams = {
         type: RampType.SELL,
         crypto,

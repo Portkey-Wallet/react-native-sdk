@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { StatusBar, StatusBarProps } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, Text, TouchableOpacity, StyleSheet, StyleProp, ViewProps } from 'react-native';
 import { styles } from './style';
 import ReceiveButton from 'components/ReceiveButton';

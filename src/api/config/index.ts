@@ -1,5 +1,3 @@
-import { BackEndNetWorkMap } from 'packages/constants/constants-ca/backend-network';
-
 export interface IConfig {
   networkConfig: NetworkConfig;
   entryConfig: IEntryConfig;

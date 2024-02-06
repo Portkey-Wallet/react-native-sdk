@@ -218,6 +218,7 @@ export default function BuyForm() {
       const rst = await refreshReceiveRef.current();
       Loading.hide();
       if (!rst) return;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       _rate = rst.rate;
     }
 
@@ -230,7 +231,7 @@ export default function BuyForm() {
     //   type: RampType.BUY,
     //   rate: _rate,
     // });
-  }, [amount, fiat, rate, refreshRampShow, crypto]);
+  }, [amount, fiat, rate, refreshRampShow]);
 
   return (
     <View style={styles.formContainer}>
