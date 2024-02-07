@@ -94,7 +94,7 @@ export default function CheckPin(props: CheckPinProps) {
     <PageContainer
       titleDom
       type="leftBack"
-      backTitle={'back'}
+      backTitle={'Back'}
       containerStyles={styles.container}
       leftCallback={() => {
         onFinish<CheckPinResult>({
