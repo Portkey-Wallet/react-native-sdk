@@ -10,24 +10,23 @@ import Touchable from 'components/Touchable';
 import Svg from 'components/Svg';
 import fonts from 'assets/theme/fonts';
 import SelectToken from '../SelectToken';
-import { usePin } from 'hooks/store';
+import { getUnlockedWallet } from 'model/wallet';
 import SelectCurrency from '../SelectCurrency';
 import { ErrorType, INIT_HAS_ERROR, INIT_NONE_ERROR } from 'packages/constants/constants-ca/common';
 import { FontStyles } from 'assets/theme/styles';
 import CommonButton from 'components/CommonButton';
-// import navigationService from 'utils/navigationService';
 import Loading from 'components/Loading';
 import { divDecimals, formatAmountShow } from 'packages/utils/converter';
 import { useReceive } from '../../hooks';
 import { getContractBasic } from 'packages/contracts/utils';
+import { AElfWeb3SDK } from 'network/dto/wallet';
 import { PortkeyConfig } from 'global/constants';
 import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
 import { getELFChainBalance } from 'packages/utils/balance';
-import { useCurrentWalletInfo } from '@portkey-wallet/hooks/hooks-ca/wallet';
 import { ZERO } from 'packages/constants/misc';
 import CommonToast from 'components/CommonToast';
-import { checkManagerSyncState, useGetTransferFee } from 'model/contract/handler';
-import { useFetchTxFee, useGetTxFee } from '@portkey-wallet/hooks/hooks-ca/useTxFee';
+import { checkManagerSyncState } from 'model/contract/handler';
+import { useGetTxFee } from 'model/hooks/balance';
 import { useRampEntryShow, useSellCrypto } from 'packages/hooks/hooks-ca/ramp';
 import { IRampCryptoItem, IRampFiatItem, RampType } from 'packages/ramp';
 import useEffectOnce from 'hooks/useEffectOnce';
@@ -64,14 +63,10 @@ export default function SellForm() {
   const crypto = useMemo(() => currency.crypto, [currency]);
   const fiat = useMemo(() => currency.fiat, [currency]);
 
-  useFetchTxFee();
-  const { ach: achFee } = useGetTxFee(MAIN_CHAIN_ID);
+  const { txFee } = useGetTxFee(MAIN_CHAIN_ID);
 
   const [amount, setAmount] = useState<string>(defaultCrypto.amount);
   const [amountLocalError, setAmountLocalError] = useState<ErrorType>(INIT_NONE_ERROR);
-
-  const pin = usePin();
-  const wallet = useCurrentWalletInfo();
 
   const refreshList = useCallback(async () => {
     Loading.show();
@@ -226,7 +221,7 @@ export default function SellForm() {
     const { decimals, symbol, chainId } = crypto || {};
     const endPoint = await PortkeyConfig.endPointUrl();
     if (!tokenContractAddress || decimals === undefined || !symbol || !chainId) return;
-    if (!pin || !endPoint) return;
+    if (!endPoint) return;
 
     Loading.show();
     let isSellSectionShow = false;
@@ -266,21 +261,25 @@ export default function SellForm() {
         return;
       }
 
+      const achFee = txFee?.find(it => it.chainId === chainId)?.transactionFee?.ach || 0;
+
       if (ZERO.plus(amount).isLessThanOrEqualTo(achFee)) {
         throw new Error('Insufficient funds');
       }
       const isRefreshReceiveValidValue = isRefreshReceiveValid.current;
 
-      const account = getManagerAccount(pin);
-      if (!account) return;
-
+      const {
+        privateKey,
+        caInfo: { caAddress },
+      } = (await getUnlockedWallet()) || {};
+      const account = AElfWeb3SDK.getWalletByPrivateKey(privateKey);
       const tokenContract = await getContractBasic({
         contractAddress: tokenContractAddress,
         rpcUrl: endPoint,
         account: account,
       });
 
-      const balance = await getELFChainBalance(tokenContract, symbol, wallet?.[chainId]?.caAddress || '');
+      const balance = await getELFChainBalance(tokenContract, symbol, caAddress || '');
 
       if (divDecimals(balance, decimals).minus(achFee).isLessThan(amount)) {
         throw new Error('Insufficient funds');
@@ -332,13 +331,11 @@ export default function SellForm() {
     rate,
     defaultToken.address,
     crypto,
-    pin,
-    fiat,
     refreshRampShow,
     securitySafeCheckAndToast,
-    achFee,
+    txFee,
+    fiat,
     checkTransferLimitWithJump,
-    wallet,
   ]);
 
   return (

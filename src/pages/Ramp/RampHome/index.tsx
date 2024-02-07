@@ -33,8 +33,7 @@ const tabList: TabItemType[] = [
   {
     name: 'Sell',
     type: RampType.SELL,
-    // component: <SellForm />,
-    component: <View style={{ width: '100%', height: '80%', backgroundColor: 'red' }} />,
+    component: <SellForm />,
   },
 ];
 
