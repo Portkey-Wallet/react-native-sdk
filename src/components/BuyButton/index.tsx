@@ -11,6 +11,9 @@ import { commonButtonStyle } from '../SendButton/style';
 import Touchable from 'components/Touchable';
 import { dashBoardBtnStyle } from '../SendButton/style';
 import { innerPageStyles } from './style';
+import useBaseContainer from 'model/container/UseBaseContainer';
+import { PortkeyEntries } from 'config/entries';
+import { RampType } from 'packages/ramp';
 
 interface SendButtonType {
   themeType?: 'dashBoard' | 'innerPage';
@@ -21,6 +24,9 @@ const BuyButton = (props: SendButtonType) => {
   const { themeType = 'dashBoard', wrapStyle = {} } = props;
   const isMainnet = useCurrentNetworkType() === 'MAIN';
   const { t } = useLanguage();
+  const { navigateTo } = useBaseContainer({
+    entryName: PortkeyEntries.TOKEN_DETAIL_ENTRY,
+  });
 
   const buttonTitleStyle = useMemo(
     () =>
@@ -38,6 +44,11 @@ const BuyButton = (props: SendButtonType) => {
         style={[styles.iconWrapStyle, GStyles.alignCenter]}
         onPress={async () => {
           if (!isMainnet) return;
+          navigateTo(PortkeyEntries.RAMP_HOME_ENTRY, {
+            params: {
+              toTab: RampType.BUY,
+            },
+          });
         }}>
         <CommonSvg icon={themeType === 'dashBoard' ? 'buy' : 'buy1'} size={pTd(46)} />
       </Touchable>

@@ -59,14 +59,14 @@ const ViewOnWebView = ({
       if (webViewPageType === 'default') return;
       if (webViewPageType === 'ramp-buy') {
         if (navState.url.startsWith(RAMP_BUY_URL)) {
-          navigateTo(PortkeyEntries.RAMP_HOME);
+          navigateTo(PortkeyEntries.RAMP_HOME_ENTRY);
         }
         return;
       }
       if (webViewPageType === 'ramp-sell') {
         if (navState.url.startsWith(RAMP_SELL_URL) && !isAchSellHandled.current) {
           isAchSellHandled.current = true;
-          navigateTo(PortkeyEntries.RAMP_HOME);
+          navigateTo(PortkeyEntries.RAMP_HOME_ENTRY);
           // const { orderId, guardiansApproved } = (params as RampSellParams) || {};
           const { orderId } = (params as RampSellParams) || {};
           if (!orderId) {

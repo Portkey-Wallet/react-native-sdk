@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo, useRef } from 'react';
 import { View, Text, FlatList, StatusBar } from 'react-native';
+import BuyButton from 'components/BuyButton';
 import SendButton from 'components/SendButton';
 import ReceiveButton from 'components/ReceiveButton';
 import FaucetButton from 'components/FaucetButton';
@@ -27,6 +28,7 @@ import { useAccountTokenBalanceList } from 'model/hooks/balance';
 import { ActivityItemType } from 'network/dto/query';
 import { PortkeyEntries } from 'config/entries';
 import { getUnlockedWallet, useUnlockedWallet } from 'model/wallet';
+import { useSDKRampEntryShow } from 'pages/Ramp/RampPreview/hook';
 
 interface TokenDetailPageProps {
   tokenInfo: TokenItemShowType;
@@ -128,8 +130,11 @@ const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
     [currentToken?.balance, currentToken?.decimals],
   );
 
-  // not support Buy function
-  // const isBuyButtonShow = false;
+  const { isBuySectionShow } = useSDKRampEntryShow();
+  const isBuyButtonShow = useMemo(
+    () => tokenInfo.symbol === defaultToken.symbol && tokenInfo.chainId === 'AELF' && isBuySectionShow,
+    [defaultToken.symbol, isBuySectionShow, tokenInfo.chainId, tokenInfo.symbol],
+  );
 
   const isFaucetButtonShow = useMemo(
     () => !isMainnet && tokenInfo.symbol === defaultToken.symbol && tokenInfo.chainId === 'AELF',
@@ -206,8 +211,7 @@ const TokenDetail = ({ tokenInfo }: TokenDetailPageProps) => {
             )}`}</Text>
           )}
           <View style={[styles.buttonGroupWrap, buttonGroupWrapStyle]}>
-            {/* Buy is not supported for now */}
-            {/* {isBuyButtonShow && <BuyButton themeType="innerPage" wrapStyle={buttonWrapStyle} />} */}
+            {isBuyButtonShow && <BuyButton themeType="innerPage" wrapStyle={buttonWrapStyle} />}
             <SendButton themeType="tokenInnerPage" sentToken={tokenInfo} wrapStyle={buttonWrapStyle} />
             <ReceiveButton currentTokenInfo={tokenInfo} themeType="innerPage" wrapStyle={buttonWrapStyle} />
             {isFaucetButtonShow && <FaucetButton themeType="innerPage" wrapStyle={buttonWrapStyle} />}

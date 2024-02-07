@@ -102,8 +102,8 @@ const initEntries = () => {
   entryConfig.set(PortkeyEntries.CONTACT_DETAIL_ENTRY, () => ContactDetail);
   entryConfig.set(PortkeyEntries.CONTACT_ACTIVITY_ENTRY, () => ContactActivity);
 
-  entryConfig.set(PortkeyEntries.RAMP_HOME, () => ReduxProvider(RampHome as React.ComponentType<any>));
-  entryConfig.set(PortkeyEntries.RAMP_PREVIEW, () => ReduxProvider(RampPreview as React.ComponentType<any>));
+  entryConfig.set(PortkeyEntries.RAMP_HOME_ENTRY, () => ReduxProvider(RampHome as React.ComponentType<any>));
+  entryConfig.set(PortkeyEntries.RAMP_PREVIEW_ENTRY, () => ReduxProvider(RampPreview as React.ComponentType<any>));
 
   for (const [key, value] of entryConfig) {
     AppRegistry.registerComponent(wrapEntry(key), value);
