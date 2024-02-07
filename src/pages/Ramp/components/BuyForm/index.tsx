@@ -58,7 +58,7 @@ export default function BuyForm() {
   const [amount, setAmount] = useState<string>(defaultFiat?.amount ?? '');
   const [amountLocalError, setAmountLocalError] = useState<ErrorType>(INIT_NONE_ERROR);
 
-  const { navigateTo } = useBaseContainer();
+  const { navigateTo, onFinish } = useBaseContainer();
 
   const refreshList = useCallback(async () => {
     Loading.show();
@@ -211,8 +211,9 @@ export default function BuyForm() {
     }
     if (!isBuySectionShow) {
       CommonToast.fail('Sorry, the service you are using is temporarily unavailable.');
-      // todo_wade
-      // navigationService.navigate('Tab');
+      onFinish({
+        status: 'fail',
+      });
       Loading.hide();
       return;
     }
@@ -234,10 +235,10 @@ export default function BuyForm() {
       type: RampType.BUY,
       rate: _rate,
     };
-    navigateTo(PortkeyEntries.RAMP_PREVIEW, {
+    navigateTo(PortkeyEntries.RAMP_PREVIEW_ENTRY, {
       params,
     });
-  }, [amount, crypto, fiat, navigateTo, rate, refreshRampShow]);
+  }, [amount, crypto, fiat, navigateTo, onFinish, rate, refreshRampShow]);
 
   return (
     <View style={styles.formContainer}>

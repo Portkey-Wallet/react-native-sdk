@@ -108,7 +108,7 @@ const renderProviderCard = (
 
 export default function RampPreview(props: RouterParams) {
   const { type = RampType.BUY, crypto, fiat, amount, rate: rateProps, guardiansApproved } = props;
-  const { onFinish, navigateTo } = useBaseContainer({ entryName: PortkeyEntries.RAMP_PREVIEW });
+  const { onFinish, navigateTo } = useBaseContainer({ entryName: PortkeyEntries.RAMP_PREVIEW_ENTRY });
   const defaultToken = useDefaultToken(MAIN_CHAIN_ID);
   const { providerPriceList, refreshReceive } = useReceive({
     type,
