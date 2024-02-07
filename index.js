@@ -19,4 +19,4 @@ if (__DEV__) {
 }
 
 // export for npm
-export * from './src/service/core';
+export * from './src/api';

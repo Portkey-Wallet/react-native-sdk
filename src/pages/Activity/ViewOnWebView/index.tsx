@@ -5,11 +5,14 @@ import WebView from 'react-native-webview';
 import CustomHeader from 'components/CustomHeader';
 import SafeAreaBox from 'components/SafeAreaBox';
 import { pTd } from 'utils/unit';
-import { ACH_WITHDRAW_URL } from 'constants/common';
 import CommonToast from 'components/CommonToast';
 import Progressbar, { IProgressbar } from 'components/Progressbar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import GStyles from 'assets/theme/GStyles';
+import { RAMP_BUY_URL, RAMP_SELL_URL } from 'pages/Ramp/constants';
+import useBaseContainer from 'model/container/UseBaseContainer';
+import { PortkeyEntries } from 'config/entries';
+import { GuardiansApprovedType } from 'packages/types/types-ca/routeParams';
 
 const safeAreaColorMap = {
   white: defaultColors.bg1,
@@ -20,7 +23,7 @@ const safeAreaColorMap = {
 
 export type SafeAreaColorMapKeyUnit = keyof typeof safeAreaColorMap;
 
-type WebViewPageType = 'default' | 'ach' | 'achSell';
+type WebViewPageType = 'default' | 'ramp-buy' | 'ramp-sell';
 
 export interface AchSellParams {
   orderNo?: string;
@@ -33,7 +36,10 @@ export interface ViewOnWebViewProps {
   injectedJavaScript?: string;
   params?: any;
 }
-
+export interface RampSellParams {
+  orderId?: string;
+  guardiansApproved?: GuardiansApprovedType[];
+}
 const ViewOnWebView = ({
   title = '',
   url,
@@ -42,7 +48,7 @@ const ViewOnWebView = ({
   params,
 }: ViewOnWebViewProps) => {
   const [browserInfo] = useState({ url, title });
-
+  const { navigateTo } = useBaseContainer({ entryName: PortkeyEntries.VIEW_ON_WEBVIEW });
   const webViewRef = React.useRef<WebView>(null);
   const progressBarRef = React.useRef<IProgressbar>(null);
 
@@ -51,18 +57,28 @@ const ViewOnWebView = ({
   const handleNavigationStateChange = useCallback(
     (navState: any) => {
       if (webViewPageType === 'default') return;
-      if (webViewPageType === 'achSell') {
-        if (navState.url.startsWith(ACH_WITHDRAW_URL) && !isAchSellHandled.current) {
+      if (webViewPageType === 'ramp-buy') {
+        if (navState.url.startsWith(RAMP_BUY_URL)) {
+          navigateTo(PortkeyEntries.RAMP_HOME);
+        }
+        return;
+      }
+      if (webViewPageType === 'ramp-sell') {
+        if (navState.url.startsWith(RAMP_SELL_URL) && !isAchSellHandled.current) {
           isAchSellHandled.current = true;
-          const { orderNo } = (params as AchSellParams) || {};
-          if (!orderNo) {
+          navigateTo(PortkeyEntries.RAMP_HOME);
+          // const { orderId, guardiansApproved } = (params as RampSellParams) || {};
+          const { orderId } = (params as RampSellParams) || {};
+          if (!orderId) {
             CommonToast.failError('Transaction failed.');
             return;
           }
+          // todo @wade-portkey handle ramp sell
+          // handleRampSell(orderId, guardiansApproved);
         }
       }
     },
-    [params, webViewPageType],
+    [navigateTo, params, webViewPageType],
   );
 
   return (

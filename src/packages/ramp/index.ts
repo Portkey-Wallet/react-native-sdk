@@ -80,7 +80,7 @@ export abstract class BaseRamp implements IBaseRamp {
       //
     }
 
-    let timer: NodeJS.Timeout | undefined = undefined;
+    let timer: NodeJS.Timeout | undefined;
     const timerPromise = new Promise<'timeout'>(resolve => {
       timer = setTimeout(() => {
         resolve('timeout');
