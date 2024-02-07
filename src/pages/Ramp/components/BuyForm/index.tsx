@@ -14,12 +14,14 @@ import SelectCurrency from '../SelectCurrency';
 
 import { FontStyles } from 'assets/theme/styles';
 import CommonButton from 'components/CommonButton';
-// import navigationService from 'utils/navigationService';
 import Loading from 'components/Loading';
 import { formatAmountShow } from 'packages/utils/converter';
 import { useReceive } from '../../hooks';
 import CommonToast from 'components/CommonToast';
-import { useBuyFiat, useRampEntryShow } from 'packages/hooks/hooks-ca/ramp';
+import { useBuyFiat } from 'packages/hooks/hooks-ca/ramp';
+import { useSDKRampEntryShow } from 'pages/Ramp/RampPreview/hook';
+import useBaseContainer from 'model/container/UseBaseContainer';
+import { PortkeyEntries } from 'config/entries';
 import { IRampCryptoItem, IRampFiatItem, RampType } from 'packages/ramp';
 import useEffectOnce from 'hooks/useEffectOnce';
 import { IRampLimit } from 'packages/types/types-ca/ramp';
@@ -38,7 +40,7 @@ export default function BuyForm() {
     refreshBuyFiat,
   } = useBuyFiat();
 
-  const { refreshRampShow } = useRampEntryShow();
+  const { refreshRampShow } = useSDKRampEntryShow();
 
   const [fiatList, setFiatList] = useState<IRampFiatItem[]>(fiatListState);
   const [cryptoList, setCryptoList] = useState<IRampCryptoItem[]>(defaultCryptoList);
@@ -55,6 +57,8 @@ export default function BuyForm() {
 
   const [amount, setAmount] = useState<string>(defaultFiat?.amount ?? '');
   const [amountLocalError, setAmountLocalError] = useState<ErrorType>(INIT_NONE_ERROR);
+
+  const { navigateTo } = useBaseContainer();
 
   const refreshList = useCallback(async () => {
     Loading.show();
@@ -223,15 +227,17 @@ export default function BuyForm() {
     }
 
     Loading.hide();
-    // // todo_wade
-    // navigationService.navigate('RampPreview', {
-    //   amount,
-    //   fiat,
-    //   crypto,
-    //   type: RampType.BUY,
-    //   rate: _rate,
-    // });
-  }, [amount, fiat, rate, refreshRampShow]);
+    const params = {
+      amount,
+      fiat,
+      crypto,
+      type: RampType.BUY,
+      rate: _rate,
+    };
+    navigateTo(PortkeyEntries.RAMP_PREVIEW, {
+      params,
+    });
+  }, [amount, crypto, fiat, navigateTo, rate, refreshRampShow]);
 
   return (
     <View style={styles.formContainer}>

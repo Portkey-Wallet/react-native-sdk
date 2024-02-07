@@ -8,7 +8,7 @@ import BuyForm from '../components/BuyForm';
 import SellForm from '../components/SellForm';
 import ActionSheet from 'components/ActionSheet';
 import { RampType } from 'packages/ramp';
-import { useRampEntryShow } from 'packages/hooks/hooks-ca/ramp';
+import { useSDKRampEntryShow } from '../RampPreview/hook';
 import useEffectOnce from 'hooks/useEffectOnce';
 import { useSecuritySafeCheckAndToast } from 'components/WalletSecurityAccelerate/hook';
 import { MAIN_CHAIN_ID } from 'packages/constants/constants-ca/activity';
@@ -38,7 +38,7 @@ const tabList: TabItemType[] = [
 ];
 
 export default function RampHome({ toTab }: { toTab: RampType }) {
-  const { isBuySectionShow, isSellSectionShow, refreshRampShow } = useRampEntryShow();
+  const { isBuySectionShow, isSellSectionShow, refreshRampShow } = useSDKRampEntryShow();
   const securitySafeCheckAndToast = useSecuritySafeCheckAndToast();
 
   const [selectTab, setSelectTab] = useState<RampType>(

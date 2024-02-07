@@ -27,7 +27,8 @@ import { ZERO } from 'packages/constants/misc';
 import CommonToast from 'components/CommonToast';
 import { checkManagerSyncState } from 'model/contract/handler';
 import { useGetTxFee } from 'model/hooks/balance';
-import { useRampEntryShow, useSellCrypto } from 'packages/hooks/hooks-ca/ramp';
+import { useSellCrypto } from 'packages/hooks/hooks-ca/ramp';
+import { useSDKRampEntryShow } from 'pages/Ramp/RampPreview/hook';
 import { IRampCryptoItem, IRampFiatItem, RampType } from 'packages/ramp';
 import useEffectOnce from 'hooks/useEffectOnce';
 import { IRampLimit } from 'packages/types/types-ca/ramp';
@@ -47,7 +48,7 @@ export default function SellForm() {
     refreshSellCrypto,
   } = useSellCrypto();
 
-  const { refreshRampShow } = useRampEntryShow();
+  const { refreshRampShow } = useSDKRampEntryShow();
 
   const [cryptoList, setCryptoList] = useState<IRampCryptoItem[]>(cryptoListState);
   const [fiatList, setFiatList] = useState<IRampFiatItem[]>(defaultFiatList);
