@@ -7,6 +7,7 @@ import { ChainId } from 'packages/types';
 import { LoginType } from 'packages/types/types-ca/wallet';
 import { useEffect, useState } from 'react';
 import { PortkeyConfig } from 'global/config';
+import { RecoverWalletConfig, getTempWalletConfig } from 'model/verify/core';
 
 export const DEFAULT_TOKEN = {
   address: 'JRmBduh4nXWi1aXgdUsj5gJrzeZb2LxmrAbf7W99faZSvoAaE',
@@ -56,7 +57,11 @@ export function useDefaultToken(_chainId?: ChainId) {
 export function useGuardiansInfo() {
   const [userGuardiansList, setUserGuardiansList] = useState<UserGuardianItem[]>();
   useEffectOnce(async () => {
-    const { guardianList } = await NetworkController.getGuardianInfo();
+    const config: RecoverWalletConfig = await getTempWalletConfig();
+    const { guardianList } = await NetworkController.getGuardianInfo(
+      config.accountIdentifier as string,
+      config?.caInfo?.caHash,
+    );
     const _guardianList = guardianList.guardians.map(item => {
       const key = `${item.guardianIdentifier}&${item.verifierId}`;
       const _guardian = {

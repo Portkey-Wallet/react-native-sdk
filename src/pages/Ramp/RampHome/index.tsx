@@ -7,7 +7,7 @@ import { TextM } from 'components/CommonText';
 import BuyForm from '../components/BuyForm';
 import SellForm from '../components/SellForm';
 import ActionSheet from 'components/ActionSheet';
-import { RampType } from 'packages/ramp';
+import ramp, { RampType } from 'packages/ramp';
 import { useSDKRampEntryShow } from '../RampPreview/hook';
 import useEffectOnce from 'hooks/useEffectOnce';
 import { useSecuritySafeCheckAndToast } from 'components/WalletSecurityAccelerate/hook';
@@ -40,7 +40,12 @@ const tabList: TabItemType[] = [
 export default function RampHome({ toTab }: { toTab: RampType }) {
   const { isBuySectionShow, isSellSectionShow, refreshRampShow } = useSDKRampEntryShow();
   const securitySafeCheckAndToast = useSecuritySafeCheckAndToast();
-
+  useEffectOnce(() => {
+    ramp.init({
+      baseUrl: '',
+      clientType: 'ThirdParty',
+    });
+  });
   const [selectTab, setSelectTab] = useState<RampType>(
     toTab !== RampType.SELL && isBuySectionShow ? RampType.BUY : RampType.SELL,
   );

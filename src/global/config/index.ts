@@ -5,13 +5,6 @@ export const defaultEntryConfig: IEntryConfig = {
   isBuySectionShow: true,
   isSellSectionShow: true,
   refreshRampShow: async function () {
-    console.log(
-      'invoke refreshRampShow',
-      JSON.stringify({
-        isBuySectionShow: this.isBuySectionShow,
-        isSellSectionShow: this.isSellSectionShow,
-      }),
-    );
     return {
       isBuySectionShow: true,
       isSellSectionShow: true,

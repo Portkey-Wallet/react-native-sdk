@@ -82,7 +82,7 @@ const initEntries = () => {
   entryConfig.set(PortkeyEntries.BIOMETRIC_SWITCH_ENTRY, () => Biometric);
 
   // assets module
-  entryConfig.set(PortkeyEntries.ASSETS_HOME_ENTRY, () => AssetsHome);
+  entryConfig.set(PortkeyEntries.ASSETS_HOME_ENTRY, () => ReduxProvider(AssetsHome as React.ComponentType<any>));
   entryConfig.set(PortkeyEntries.RECEIVE_TOKEN_ENTRY, () => ReceiveTokenPage);
   entryConfig.set(PortkeyEntries.ACTIVITY_LIST_ENTRY, () => ActivityListPage);
   entryConfig.set(PortkeyEntries.ACTIVITY_DETAIL_ENTRY, () => ActivityDetail);
