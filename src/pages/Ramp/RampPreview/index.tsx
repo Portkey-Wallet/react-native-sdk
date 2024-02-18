@@ -39,6 +39,7 @@ import useBaseContainer from 'model/container/UseBaseContainer';
 import { PortkeyEntries } from 'config/entries';
 import { useSDKRampEntryShow, useCurrentWalletInfo, useDefaultToken, useGuardiansInfo } from './hook';
 import { t } from 'i18next';
+import { getBottomSpace } from 'utils/screen';
 
 interface RouterParams {
   type?: RampType;
@@ -332,6 +333,7 @@ const styles = StyleSheet.create({
     backgroundColor: defaultColors.bg1,
     justifyContent: 'space-between',
     ...GStyles.paddingArg(60, 20, 16, 20),
+    paddingBottom: getBottomSpace(),
   },
   amountContainer: {
     marginBottom: pTd(60),
