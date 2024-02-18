@@ -28,6 +28,9 @@ import { getBuyCrypto, getBuyLimit } from 'packages/utils/ramp';
 import CommonAvatar from 'components/CommonAvatar';
 import { ErrorType, INIT_HAS_ERROR, INIT_NONE_ERROR } from 'packages/constants/constants-ca/common';
 import { isPotentialNumber } from 'packages/utils/reg';
+import useBaseContainer from 'model/container/UseBaseContainer';
+import { PortkeyEntries } from 'config/entries';
+import { useSDKRampEntryShow } from 'pages/Ramp/RampPreview/hook';
 
 export default function BuyForm() {
   const {
@@ -37,8 +40,8 @@ export default function BuyForm() {
     buyDefaultCrypto: defaultCrypto,
     refreshBuyFiat,
   } = useBuyFiat();
-
-  const { refreshRampShow } = useRampEntryShow();
+  const { navigateTo } = useBaseContainer({ entryName: PortkeyEntries.RAMP_HOME });
+  const { refreshRampShow } = useSDKRampEntryShow();
 
   const [fiatList, setFiatList] = useState<IRampFiatItem[]>(fiatListState);
   const [cryptoList, setCryptoList] = useState<IRampCryptoItem[]>(defaultCryptoList);
@@ -201,6 +204,7 @@ export default function BuyForm() {
     let isBuySectionShow = false;
     try {
       const result = await refreshRampShow();
+      console.log(JSON.stringify(result));
       isBuySectionShow = result.isBuySectionShow;
     } catch (error) {
       console.log(error);
@@ -231,7 +235,16 @@ export default function BuyForm() {
     //   type: RampType.BUY,
     //   rate: _rate,
     // });
-  }, [amount, fiat, rate, refreshRampShow]);
+    navigateTo(PortkeyEntries.RAMP_PREVIEW, {
+      params: {
+        amount,
+        fiat,
+        crypto,
+        type: RampType.BUY,
+        rate: _rate,
+      },
+    });
+  }, [amount, crypto, fiat, navigateTo, rate, refreshRampShow]);
 
   return (
     <View style={styles.formContainer}>

@@ -1,6 +1,4 @@
 import React, { useMemo } from 'react';
-import { StatusBar, StatusBarProps } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, Text, TouchableOpacity, StyleSheet, StyleProp, ViewProps } from 'react-native';
 import { styles } from './style';
 import ReceiveButton from 'components/ReceiveButton';
@@ -22,7 +20,6 @@ import { defaultColors } from 'assets/theme';
 import CommonSvg from 'components/Svg';
 import DepositButton from 'components/DepositButton';
 import { DepositItem, useDepositList } from 'hooks/deposit';
-import { isIOS } from 'packages/utils/mobile/device';
 
 const style = StyleSheet.create({
   scanQrCode: {
@@ -66,75 +63,60 @@ const AssetsHome: React.FC = () => {
   if (!isMainnet) buttonCount++;
 
   const buttonWrapStyle = buttonCount < 5 ? (styles.buttonWrapStyle1 as StyleProp<ViewProps>) : undefined;
-  const statusBarProps = useMemo(() => {
-    const barProps: StatusBarProps = { barStyle: 'light-content' };
-    if (!isIOS) {
-      barProps.translucent = true;
-      barProps.backgroundColor = 'transparent';
-    }
-    return barProps;
-  }, []);
   return (
-    <SafeAreaView
-      // eslint-disable-next-line react-native/no-inline-styles
-      style={{ width: '100%', height: '100%', backgroundColor: '#5B8EF4' }}
-      edges={['top', 'bottom', 'right', 'left']}
-      mode="padding">
-      <StatusBar {...statusBarProps} />
-      <AssetsContext.Provider value={assetsContext}>
-        <View style={[styles.cardWrap, styles.pagePaddingTop]}>
-          <CustomHeader
-            themeType={'blue'}
-            titleDom={''}
-            rightDom={
-              <TouchableOpacity
-                style={[styles.svgWrap, style.scanQrCode]}
-                onPress={() => {
-                  navigateTo(PortkeyEntries.SCAN_QR_CODE);
-                }}>
-                <CommonSvg icon="scan" size={22} color={defaultColors.font2} />
-              </TouchableOpacity>
-            }
-            leftCallback={() => {
-              onFinish({
-                status: 'success',
-                data: {
-                  finished: true,
-                },
-              });
-            }}
-          />
-          <Text style={styles.usdtBalance}>{isMainnet ? `$${balanceUSD.toFixed(2)}` : 'Dev Mode'}</Text>
-          <TextM style={styles.accountName}>{wallet?.name}</TextM>
-          <View style={styles.buttonGroupWrap}>
-            {/* ramp is now available by now */}
-            {/* {isBuyButtonShow && (
+    <AssetsContext.Provider value={assetsContext}>
+      <View style={[styles.cardWrap, styles.pagePaddingTop]}>
+        <CustomHeader
+          themeType={'blue'}
+          titleDom={''}
+          rightDom={
+            <TouchableOpacity
+              style={[styles.svgWrap, style.scanQrCode]}
+              onPress={() => {
+                navigateTo(PortkeyEntries.SCAN_QR_CODE);
+              }}>
+              <CommonSvg icon="scan" size={22} color={defaultColors.font2} />
+            </TouchableOpacity>
+          }
+          leftCallback={() => {
+            onFinish({
+              status: 'success',
+              data: {
+                finished: true,
+              },
+            });
+          }}
+        />
+        <Text style={styles.usdtBalance}>{isMainnet ? `$${balanceUSD.toFixed(2)}` : 'Dev Mode'}</Text>
+        <TextM style={styles.accountName}>{wallet?.name}</TextM>
+        <View style={styles.buttonGroupWrap}>
+          {/* ramp is now available by now */}
+          {/* {isBuyButtonShow && (
+          <>
+            <BuyButton themeType="dashBoard" />
+            <View style={styles.spacerStyle} />
+          </>
+        )} */}
+          {isDepositShow && <DepositButton wrapStyle={buttonWrapStyle} list={depositList as DepositItem[]} />}
+          <SendButton wrapStyle={buttonWrapStyle} themeType="dashBoard" />
+          {/* <View style={styles.spacerStyle} /> */}
+          <ReceiveButton wrapStyle={buttonWrapStyle} themeType="dashBoard" />
+          {!isMainnet && (
             <>
-              <BuyButton themeType="dashBoard" />
-              <View style={styles.spacerStyle} />
+              {/* <View style={styles.spacerStyle} /> */}
+              <FaucetButton wrapStyle={buttonWrapStyle} themeType="dashBoard" />
             </>
-          )} */}
-            {isDepositShow && <DepositButton wrapStyle={buttonWrapStyle} list={depositList as DepositItem[]} />}
-            <SendButton wrapStyle={buttonWrapStyle} themeType="dashBoard" />
-            {/* <View style={styles.spacerStyle} /> */}
-            <ReceiveButton wrapStyle={buttonWrapStyle} themeType="dashBoard" />
-            {!isMainnet && (
-              <>
-                {/* <View style={styles.spacerStyle} /> */}
-                <FaucetButton wrapStyle={buttonWrapStyle} themeType="dashBoard" />
-              </>
-            )}
-            {/* <View style={styles.spacerStyle} /> */}
-            <ActivityButton
-              wrapStyle={buttonWrapStyle}
-              themeType="dashBoard"
-              entryName={PortkeyEntries.ASSETS_HOME_ENTRY}
-            />
-          </View>
+          )}
+          {/* <View style={styles.spacerStyle} /> */}
+          <ActivityButton
+            wrapStyle={buttonWrapStyle}
+            themeType="dashBoard"
+            entryName={PortkeyEntries.ASSETS_HOME_ENTRY}
+          />
         </View>
-        <DashBoardTab />
-      </AssetsContext.Provider>
-    </SafeAreaView>
+      </View>
+      <DashBoardTab />
+    </AssetsContext.Provider>
   );
 };
 

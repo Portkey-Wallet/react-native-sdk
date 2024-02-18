@@ -15,12 +15,12 @@ export const DEFAULT_TOKEN = {
   name: 'AELF',
   symbol: 'ELF',
 };
-interface WalletInfo {
+type WalletInfo = {
   caHash?: string;
   managerAddress?: string;
   originChainId: ChainId;
   caAddress?: string;
-}
+} & { AELF?: { caAddress: string } };
 export function useCurrentWalletInfo() {
   const [walletInfo, setWalletInfo] = useState<WalletInfo>({
     caHash: '',
@@ -29,12 +29,18 @@ export function useCurrentWalletInfo() {
   });
   useEffect(() => {
     (async () => {
-      const { caInfo, address: managerAddress, originChainId } = await getUnlockedWallet();
+      const {
+        caInfo,
+        address: managerAddress,
+        originChainId,
+        multiCaAddresses,
+      } = await getUnlockedWallet({ getMultiCaAddresses: true });
       setWalletInfo({
         caHash: caInfo?.caHash,
         managerAddress,
         originChainId: originChainId as ChainId,
         caAddress: caInfo?.caAddress,
+        AELF: { caAddress: multiCaAddresses.AELF },
       });
     })();
   }, []);
