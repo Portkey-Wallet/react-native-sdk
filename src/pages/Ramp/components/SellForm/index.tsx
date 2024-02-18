@@ -20,7 +20,6 @@ import { divDecimals, formatAmountShow } from 'packages/utils/converter';
 import { useReceive } from '../../hooks';
 import { getContractBasic } from 'packages/contracts/utils';
 import { AElfWeb3SDK } from 'network/dto/wallet';
-import { PortkeyConfig } from 'global/constants';
 import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
 import { getELFChainBalance } from 'packages/utils/balance';
 import { ZERO } from 'packages/constants/misc';
@@ -38,6 +37,9 @@ import CommonAvatar from 'components/CommonAvatar';
 import { useCheckTransferLimitWithJump, useSecuritySafeCheckAndToast } from 'components/WalletSecurityAccelerate/hook';
 import { MAIN_CHAIN_ID } from 'packages/constants/constants-ca/activity';
 import { isPotentialNumber } from 'packages/utils/reg';
+import { getCachedNetworkConfig } from 'model/chain';
+import useBaseContainer from 'model/container/UseBaseContainer';
+import { PortkeyEntries } from 'config/entries';
 
 export default function SellForm() {
   const {
@@ -68,6 +70,10 @@ export default function SellForm() {
 
   const [amount, setAmount] = useState<string>(defaultCrypto.amount);
   const [amountLocalError, setAmountLocalError] = useState<ErrorType>(INIT_NONE_ERROR);
+
+  const { navigateTo } = useBaseContainer({
+    entryName: PortkeyEntries.RAMP_HOME_ENTRY,
+  });
 
   const refreshList = useCallback(async () => {
     Loading.show();
@@ -220,9 +226,7 @@ export default function SellForm() {
 
     const tokenContractAddress = defaultToken.address;
     const { decimals, symbol, chainId } = crypto || {};
-    const endPoint = await PortkeyConfig.endPointUrl();
     if (!tokenContractAddress || decimals === undefined || !symbol || !chainId) return;
-    if (!endPoint) return;
 
     Loading.show();
     let isSellSectionShow = false;
@@ -274,9 +278,10 @@ export default function SellForm() {
         caInfo: { caAddress },
       } = (await getUnlockedWallet()) || {};
       const account = AElfWeb3SDK.getWalletByPrivateKey(privateKey);
+      const { peerUrl } = (await getCachedNetworkConfig()) || {};
       const tokenContract = await getContractBasic({
         contractAddress: tokenContractAddress,
-        rpcUrl: endPoint,
+        rpcUrl: peerUrl,
         account: account,
       });
 
@@ -321,7 +326,9 @@ export default function SellForm() {
         return;
       }
 
-      // navigationService.navigate('RampPreview', navigateParams);
+      navigateTo(PortkeyEntries.RAMP_PREVIEW_ENTRY, {
+        params: navigateParams,
+      });
     } catch (error) {
       setAmountLocalError({ ...INIT_HAS_ERROR, errorMsg: 'Insufficient funds' });
       console.log('error', error);
@@ -338,6 +345,7 @@ export default function SellForm() {
     txFee,
     fiat,
     checkTransferLimitWithJump,
+    navigateTo,
   ]);
 
   return (
