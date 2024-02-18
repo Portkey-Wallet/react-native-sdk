@@ -55,15 +55,16 @@ const ManageTokenList: React.FC<ManageTokenListProps> = ({ containerId }: Manage
       if (!debounceWord) return;
       setIsSearching(true);
 
-      const list = await NetworkController.fetchUserTokenConfigList({
-        symbol: debounceWord,
-        chainIds: chainIdList,
+      const { items } = await NetworkController.searchTokenList({
+        keyword: debounceWord,
+        chainIdArray: chainIdList,
       });
 
-      const tmpToken: TokenItemShowType[] = list.map((item: any) => ({
+      const tmpToken: TokenItemShowType[] = items.map((item: any) => ({
         ...item,
+        ...item.token,
         isAdded: item.isDisplay,
-        userTokenId: item.id,
+        id: item.id,
       }));
       setFilterTokenList(tmpToken);
     } catch (error) {

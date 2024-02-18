@@ -593,6 +593,23 @@ export class NetworkControllerEntity {
     });
   };
 
+  checkAvailableToken = async (config: {
+    chainId: string;
+    symbol: string;
+  }): Promise<{ symbol?: string; id?: string }> => {
+    const { chainId, symbol } = config;
+    const res = await this.realExecute<{ symbol: string; id: string }>(
+      await this.parseUrl(APIPaths.CHECK_AVAILABLE_TOKEN),
+      'GET',
+      {
+        chainId,
+        symbol,
+      },
+    );
+    if (!res?.result) return {};
+    return res.result;
+  };
+
   public parseUrl = async (url: string) => {
     return `${await PortkeyConfig.endPointUrl()}${url}`;
   };

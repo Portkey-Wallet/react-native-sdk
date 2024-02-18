@@ -21,6 +21,7 @@ import CommonSvg from 'components/Svg';
 import DepositButton from 'components/DepositButton';
 import { DepositItem, useDepositList } from 'hooks/deposit';
 import GStyles from 'assets/theme/GStyles';
+import Loading from 'components/Loading';
 
 const style = StyleSheet.create({
   scanQrCode: {
@@ -28,7 +29,7 @@ const style = StyleSheet.create({
   },
 });
 
-const AssetsHome: React.FC = () => {
+const AssetsHome = ({ containerId }: { containerId: any }) => {
   const { wallet } = useUnlockedWallet();
   const networkType = useCurrentNetworkType();
   const { balanceList, updateBalanceList } = useAccountTokenBalanceList();
@@ -55,6 +56,14 @@ const AssetsHome: React.FC = () => {
 
   const { onFinish, navigateTo } = useBaseContainer({
     entryName: PortkeyEntries.ASSETS_HOME_ENTRY,
+    containerId,
+    onShow: async () => {
+      Loading.show({ duration: 3000 });
+      await updateBalanceList();
+      await updateTokensList();
+      await updateNftCollections();
+      Loading.hide();
+    },
   });
   const depositList = useDepositList();
   const isDepositShow = depositList && depositList.length > 0;

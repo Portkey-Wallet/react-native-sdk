@@ -13,7 +13,6 @@ import CommonToast from 'components/CommonToast';
 import { FontStyles } from 'assets/theme/styles';
 import GStyles from 'assets/theme/GStyles';
 import { ChainId } from '@portkey/provider-types';
-import { request } from 'packages/api/api-did';
 import { useDebounceCallback } from 'packages/hooks';
 import { sleep } from 'packages/utils';
 import { screenWidth } from 'packages/utils/mobile/device';
@@ -23,6 +22,7 @@ import SelectChain from 'components/SelectChain';
 import { useChainsNetworkInfo, useCurrentNetworkType } from 'model/hooks/network';
 import useBaseContainer from 'model/container/UseBaseContainer';
 import { PortkeyEntries } from 'config/entries';
+import { NetworkController } from 'network/controller';
 
 interface CustomTokenProps {
   route?: any;
@@ -63,11 +63,9 @@ const CustomToken: React.FC<CustomTokenProps> = () => {
     setTokenItem(pre => ({ ...pre, decimals: '--', symbol: '' }));
 
     try {
-      const res = await request.token.fetchTokenItemBySearch({
-        params: {
-          symbol: keyword,
-          chainId: tokenItem.chainId,
-        },
+      const res = await NetworkController.checkAvailableToken({
+        chainId: tokenItem.chainId,
+        symbol: keyword,
       });
       const { symbol, id } = res || {};
 
@@ -112,11 +110,9 @@ const CustomToken: React.FC<CustomTokenProps> = () => {
     } else {
       try {
         Loading.show();
-        await request.token.displayUserToken({
+        await NetworkController.setDisplayUserToken({
           resourceUrl: `${tokenItem?.id}/display`,
-          params: {
-            isDisplay: true,
-          },
+          isDisplay: true,
         });
         CommonToast.success('success');
         await sleep(500);
