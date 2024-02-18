@@ -36,7 +36,6 @@ import { PortkeyTestEntries } from 'apiTest';
 import SendHome from 'pages/Send/SendHome';
 import SendPreview from 'pages/Send/SendPreview';
 import RampHome from 'pages/Ramp/RampHome';
-import RampPreview from 'pages/Ramp/RampPreview';
 import ReduxProvider from './ReduxProvider';
 import React from 'react';
 import RampPreview from 'pages/Ramp/RampPreview';
@@ -104,7 +103,7 @@ const initEntries = () => {
   entryConfig.set(PortkeyEntries.CONTACT_ACTIVITY_ENTRY, () => ContactActivity);
 
   entryConfig.set(PortkeyEntries.RAMP_HOME_ENTRY, () => ReduxProvider(RampHome as React.ComponentType<any>));
-  entryConfig.set(PortkeyEntries.RAMP_PREVIEW_ENTRY, () => ReduxProvider(RampPreview as React.ComponentType<any>)); feature/ramp-preview-ffy
+  entryConfig.set(PortkeyEntries.RAMP_PREVIEW_ENTRY, () => ReduxProvider(RampPreview as React.ComponentType<any>));
 
   for (const [key, value] of entryConfig) {
     AppRegistry.registerComponent(wrapEntry(key), value);
