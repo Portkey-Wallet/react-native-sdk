@@ -81,7 +81,7 @@ export interface StorageModule {
 export interface NetworkModule {
   fetch: (
     url: string,
-    method: 'GET' | 'POST',
+    method: 'GET' | 'POST' | 'PUT',
     params: TypedUrlParams,
     headers: TypedUrlParams,
     extraOptions: NetworkOptions,
@@ -125,7 +125,7 @@ export type AuthenticationBioOptions = {
 export type AuthenticationBioResult = { success: true } | { success: false; error: string; warning?: string };
 export const nativeFetch = async <T>(
   url: string,
-  method: 'GET' | 'POST',
+  method: 'GET' | 'POST' | 'PUT',
   params?: TypedUrlParams,
   headers?: TypedUrlParams,
   extraOptions?: NetworkOptions,

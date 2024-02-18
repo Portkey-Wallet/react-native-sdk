@@ -1,4 +1,3 @@
-import { TokenItemShowType } from '@portkey-wallet/types/types-ca/token';
 import { StyleSheet } from 'react-native';
 import gStyles from 'assets/theme/GStyles';
 import { defaultColors } from 'assets/theme';
@@ -6,12 +5,14 @@ import React, { useCallback } from 'react';
 import { FlatList } from 'react-native';
 import { pTd } from 'utils/unit';
 import { useLanguage } from 'i18n/hooks';
-import { useWallet } from '@portkey-wallet/hooks/hooks-ca/wallet';
 import TokenItem from '../TokenItem';
 import { TextL, TextM } from 'components/CommonText';
 import CommonButton from 'components/CommonButton';
-import navigationService from 'utils/navigationService';
 import Svg from 'components/Svg';
+import { useCurrentNetworkType } from 'model/hooks/network';
+import { TokenItemShowType } from 'packages/types/types-eoa/token';
+import useBaseContainer from 'model/container/UseBaseContainer';
+import { PortkeyEntries } from 'config/entries';
 
 enum TipsEnum {
   NO_RESULT = 'There is no search result.',
@@ -25,10 +26,9 @@ interface IFilterTokenSectionProps {
 
 const FilterTokenSection: React.FC<IFilterTokenSectionProps> = (props: IFilterTokenSectionProps) => {
   const { tokenList, onHandleTokenItem } = props;
-
   const { t } = useLanguage();
-
-  const { currentNetwork } = useWallet();
+  const currentNetwork = useCurrentNetworkType();
+  const { navigateTo } = useBaseContainer({ entryName: PortkeyEntries.TOKEN_MANAGE_LIST_ENTRY });
 
   const CustomTokenTips = useCallback(
     (v: TipsEnum) => (
@@ -38,13 +38,13 @@ const FilterTokenSection: React.FC<IFilterTokenSectionProps> = (props: IFilterTo
           type="solid"
           containerStyle={customTokenTipsStyle.addButtonWrap}
           buttonStyle={customTokenTipsStyle.addButton}
-          onPress={() => navigationService.navigate('CustomToken')}>
+          onPress={() => navigateTo(PortkeyEntries.TOKEN_MANAGE_ADD_ENTRY)}>
           <Svg icon="add1" size={pTd(16)} color={defaultColors.icon2} />
           <TextM style={customTokenTipsStyle.addText}>{t('Custom Token')}</TextM>
         </CommonButton>
       </>
     ),
-    [t],
+    [navigateTo, t],
   );
 
   return (

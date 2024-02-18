@@ -1,4 +1,3 @@
-import { TokenItemShowType } from '@portkey-wallet/types/types-ca/token';
 import { StyleSheet } from 'react-native';
 import { defaultColors } from 'assets/theme';
 import React from 'react';
@@ -6,9 +5,10 @@ import { FlatList } from 'react-native';
 import { TextL } from 'components/CommonText';
 import { pTd } from 'utils/unit';
 import { useLanguage } from 'i18n/hooks';
-import { useWallet } from '@portkey-wallet/hooks/hooks-ca/wallet';
 import TokenItem from '../TokenItem';
 import fonts from 'assets/theme/fonts';
+import { TokenItemShowType } from 'packages/types/types-eoa/token';
+import { useCurrentNetworkType } from 'model/hooks/network';
 
 interface IPopularTokenSectionProps {
   tokenDataShowInMarket: any[];
@@ -20,7 +20,7 @@ const PopularTokenSection: React.FC<IPopularTokenSectionProps> = (props: IPopula
 
   const { t } = useLanguage();
 
-  const { currentNetwork } = useWallet();
+  const currentNetwork = useCurrentNetworkType();
 
   return (
     <FlatList

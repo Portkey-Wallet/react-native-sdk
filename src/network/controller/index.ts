@@ -60,6 +60,7 @@ import {
   CheckTransactionFeeResult,
   CheckTransferSecurityParams,
 } from 'network/dto/transaction';
+import { TokenItemType } from 'packages/types/types-eoa/token';
 
 const DEFAULT_MAX_POLLING_TIMES = 50;
 const MAX_PAGE_LIMIT = 100;
@@ -88,7 +89,7 @@ const NETWORK_TOKEN_BLACKLIST = [
 export class NetworkControllerEntity {
   public realExecute = async <T>(
     url: string,
-    method: 'GET' | 'POST',
+    method: 'GET' | 'POST' | 'PUT',
     params?: any,
     headers?: any,
     extraOptions?: NetworkOptions,
@@ -573,6 +574,23 @@ export class NetworkControllerEntity {
     });
     if (!res?.result) throw new Error('network failure');
     return res.result;
+  };
+
+  fetchUserTokenConfigList = async (config: { chainIds: string[]; symbol: string }): Promise<TokenItemType[]> => {
+    const { chainIds, symbol } = config;
+    const res = await this.realExecute<TokenItemType[]>(await this.parseUrl(APIPaths.GET_USER_TOKEN_CONFIG), 'GET', {
+      chainIds,
+      symbol,
+    });
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  setDisplayUserToken = async (config: { resourceUrl: string; isDisplay: boolean }): Promise<void> => {
+    const { resourceUrl, isDisplay } = config;
+    await this.realExecute<any>(await this.parseUrl(`${APIPaths.GET_USER_TOKEN_CONFIG}/${resourceUrl}`), 'PUT', {
+      isDisplay,
+    });
   };
 
   public parseUrl = async (url: string) => {

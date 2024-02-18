@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect, useRef, useContext, useMemo } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { View, FlatList } from 'react-native';
 import { TokenItemShowType } from 'packages/types/types-ca/token';
 import { defaultColors } from 'assets/theme';
@@ -10,6 +10,9 @@ import { useCommonNetworkInfo } from 'components/TokenOverlay/hooks';
 import AssetsContext, { AssetsContextType } from 'global/context/assets/AssetsContext';
 import useBaseContainer from 'model/container/UseBaseContainer';
 import { PortkeyEntries } from 'config/entries';
+import Svg from 'components/Svg';
+import { TextM } from 'components/CommonText';
+import { useLanguage } from 'i18n/hooks';
 
 export interface TokenSectionProps {
   getAccountBalance?: () => void;
@@ -18,6 +21,7 @@ export interface TokenSectionProps {
 const frontEndTokenSymbol = 'ELF';
 
 export default function TokenSection() {
+  const { t } = useLanguage();
   const commonInfo = useCommonNetworkInfo();
   const [isFetching] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -107,17 +111,16 @@ export default function TokenSection() {
         renderItem={renderItem}
         keyExtractor={(item: TokenItemShowType) => item.symbol + item.chainId}
         onRefresh={onRefresh}
-        // addToken not available by now
-        // ListFooterComponent={
-        //   <TouchableOpacity
-        //     style={styles.addWrap}
-        //     onPress={() => {
-        //       navigationService.navigate('ManageTokenList');
-        //     }}>
-        //     <Svg icon="add-token" size={20} />
-        //     <TextM style={styles.addTokenText}>{t('Add Tokens')}</TextM>
-        //   </TouchableOpacity>
-        // }
+        ListFooterComponent={
+          <TouchableOpacity
+            style={styles.addWrap}
+            onPress={() => {
+              navigateTo(PortkeyEntries.TOKEN_MANAGE_LIST_ENTRY);
+            }}>
+            <Svg icon="add-token" size={20} />
+            <TextM style={styles.addTokenText}>{t('Add Tokens')}</TextM>
+          </TouchableOpacity>
+        }
       />
     </View>
   );

@@ -1,5 +1,3 @@
-import { useSymbolImages } from '@portkey-wallet/hooks/hooks-ca/useToken';
-import { TokenItemShowType } from '@portkey-wallet/types/types-ca/token';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { defaultColors } from 'assets/theme';
 import React from 'react';
@@ -8,10 +6,12 @@ import { pTd } from 'utils/unit';
 import Svg from 'components/Svg';
 import CommonSwitch from 'components/CommonSwitch';
 import CommonAvatar from 'components/CommonAvatar';
-import { formatChainInfoToShow } from '@portkey-wallet/utils';
 import { FontStyles } from 'assets/theme/styles';
-import { NetworkType } from '@portkey-wallet/types';
-import { useDefaultToken } from '@portkey-wallet/hooks/hooks-ca/chainList';
+import { useSymbolImages } from 'components/TokenOverlay/hooks';
+import { TokenItemShowType } from 'packages/types/types-eoa/token';
+import { formatChainInfoToShow } from 'packages/utils';
+import { useDefaultToken } from 'pages/Ramp/RampPreview/hook';
+import { NetworkType } from 'packages/types';
 
 type TokenItemProps = {
   networkType: NetworkType;

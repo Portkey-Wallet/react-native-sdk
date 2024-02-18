@@ -12,44 +12,52 @@ import FilterTokenSection from '../components/FilterToken';
 import PopularTokenSection from '../components/PopularToken';
 import { pTd } from 'utils/unit';
 import Svg from 'components/Svg';
-import { request } from 'packages/api/api-did';
-import { useAppCommonDispatch, useAppCASelector } from 'packages/hooks';
-import { fetchAllTokenListAsync } from 'packages/store/store-ca/tokenManagement/action';
-import { fetchTokenListAsync } from 'packages/store/token/slice';
 import { TokenItemShowType } from 'packages/types/types-eoa/token';
+import { useChainsNetworkInfo } from 'model/hooks/network';
+import useBaseContainer from 'model/container/UseBaseContainer';
+import { PortkeyEntries } from 'config/entries';
+import { NetworkController } from 'network/controller';
+import { useSearchTokenList } from 'model/hooks/balance';
 
 interface ManageTokenListProps {
   route?: any;
+  containerId: any;
 }
-const ManageTokenList: React.FC<ManageTokenListProps> = () => {
+const ManageTokenList: React.FC<ManageTokenListProps> = ({ containerId }: ManageTokenListProps) => {
   const { t } = useLanguage();
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const [isSearching, setIsSearching] = useState<boolean>(false);
-
-  const chainIdList = useChainIdList();
-
-  const dispatch = useAppCommonDispatch();
-  const caAddressArray = useCaAddresses();
-  const caAddressInfos = useCaAddressInfoList();
-
-  const { tokenDataShowInMarket } = useAppCASelector(state => state.tokenManagement);
+  const { chainsNetworkInfo } = useChainsNetworkInfo();
+  const chainIdList = useMemo(() => {
+    return Object.entries(chainsNetworkInfo).map(([chainId]) => chainId);
+  }, [chainsNetworkInfo]);
 
   const [keyword, setKeyword] = useState<string>('');
   const [filterTokenList, setFilterTokenList] = useState<TokenItemShowType[]>([]);
 
   const debounceWord = useDebounce(keyword, 800);
 
+  const { tokenList = [], updateTokensList } = useSearchTokenList();
+  const tokenDataShowInMarket = useMemo(() => {
+    return tokenList.map(it => {
+      return {
+        ...it,
+        ...it.token,
+        id: it.id,
+        isAdded: it.isDisplay,
+      };
+    });
+  }, [tokenList]);
+
   const fetchSearchedTokenList = useCallback(async () => {
     try {
       if (!debounceWord) return;
       setIsSearching(true);
 
-      const list = await request.token.fetchTokenListBySearch({
-        params: {
-          symbol: debounceWord,
-          chainIds: chainIdList,
-        },
+      const list = await NetworkController.fetchUserTokenConfigList({
+        symbol: debounceWord,
+        chainIds: chainIdList,
       });
 
       const tmpToken: TokenItemShowType[] = list.map((item: any) => ({
@@ -65,23 +73,30 @@ const ManageTokenList: React.FC<ManageTokenListProps> = () => {
     }
   }, [chainIdList, debounceWord]);
 
+  const onRefresh = useCallback(() => {
+    fetchSearchedTokenList();
+  }, [fetchSearchedTokenList]);
+
+  const { navigateTo } = useBaseContainer({
+    entryName: PortkeyEntries.TOKEN_MANAGE_LIST_ENTRY,
+    onShow: onRefresh,
+    containerId,
+  });
+
   const onHandleTokenItem = useCallback(
     async (item: TokenItemShowType, isDisplay: boolean) => {
       Loading.showOnce();
 
       try {
-        await request.token.displayUserToken({
-          resourceUrl: `${item.userTokenId}/display`,
-          params: {
-            isDisplay,
-          },
+        await NetworkController.setDisplayUserToken({
+          resourceUrl: `${item.id}/display`,
+          isDisplay,
         });
         timerRef.current = setTimeout(async () => {
-          dispatch(fetchTokenListAsync({ caAddresses: caAddressArray, caAddressInfos }));
           if (debounceWord) {
             await fetchSearchedTokenList();
           } else {
-            await dispatch(fetchAllTokenListAsync({ keyword: '', chainIdArray: chainIdList }));
+            updateTokensList({ keyword: '', chainIdArray: chainIdList });
           }
           Loading.hide();
           CommonToast.success('Success');
@@ -91,21 +106,8 @@ const ManageTokenList: React.FC<ManageTokenListProps> = () => {
         CommonToast.failError(err);
       }
     },
-    [caAddressArray, caAddressInfos, chainIdList, debounceWord, dispatch, fetchSearchedTokenList],
+    [chainIdList, debounceWord, fetchSearchedTokenList, updateTokensList],
   );
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchSearchedTokenList();
-      dispatch(fetchAllTokenListAsync({ chainIdArray: chainIdList }));
-    }, [chainIdList, dispatch, fetchSearchedTokenList]),
-  );
-
-  useEffect(() => {
-    if (tokenDataShowInMarket.length) return;
-    dispatch(fetchAllTokenListAsync({ keyword: debounceWord, chainIdArray: chainIdList }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     if (debounceWord) {
@@ -113,9 +115,9 @@ const ManageTokenList: React.FC<ManageTokenListProps> = () => {
       setFilterTokenList([]);
       fetchSearchedTokenList();
     } else {
-      dispatch(fetchAllTokenListAsync({ chainIdArray: chainIdList }));
+      updateTokensList({ chainIdArray: chainIdList });
     }
-  }, [chainIdList, debounceWord, dispatch, fetchSearchedTokenList]);
+  }, [chainIdList, debounceWord, fetchSearchedTokenList, updateTokensList]);
 
   // clear timer
   useEffect(
@@ -130,12 +132,12 @@ const ManageTokenList: React.FC<ManageTokenListProps> = () => {
       <TouchableOpacity
         style={pageStyles.rightIconStyle}
         onPress={() => {
-          navigationService.navigate('CustomToken');
+          navigateTo(PortkeyEntries.TOKEN_MANAGE_ADD_ENTRY);
         }}>
         <Svg icon="add1" size={pTd(20)} color={defaultColors.font2} />
       </TouchableOpacity>
     ),
-    [],
+    [navigateTo],
   );
 
   return (

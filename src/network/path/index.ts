@@ -32,6 +32,7 @@ export enum APIPaths {
   FETCH_NFT_COLLECTIONS_ITEM = '/api/app/user/assets/nftItems',
   SEARCH_USER_ASSETS = '/api/app/user/assets/searchUserAssets',
   CHECK_TRANSACTION_FEE = '/api/app/account/transactionFee',
+  GET_USER_TOKEN_CONFIG = '/api/app/userTokens',
 
   // account info
   GET_RECENT_ADDRESS = '/api/app/user/assets/recentTransactionUsers',
