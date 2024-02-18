@@ -30,6 +30,9 @@ import { getBuyCrypto, getBuyLimit } from 'packages/utils/ramp';
 import CommonAvatar from 'components/CommonAvatar';
 import { ErrorType, INIT_HAS_ERROR, INIT_NONE_ERROR } from 'packages/constants/constants-ca/common';
 import { isPotentialNumber } from 'packages/utils/reg';
+import useBaseContainer from 'model/container/UseBaseContainer';
+import { PortkeyEntries } from 'config/entries';
+import { useSDKRampEntryShow } from 'pages/Ramp/RampPreview/hook';
 
 export default function BuyForm() {
   const {
@@ -39,7 +42,7 @@ export default function BuyForm() {
     buyDefaultCrypto: defaultCrypto,
     refreshBuyFiat,
   } = useBuyFiat();
-
+  const { navigateTo, onFinish } = useBaseContainer({ entryName: PortkeyEntries.RAMP_HOME_ENTRY });
   const { refreshRampShow } = useSDKRampEntryShow();
 
   const [fiatList, setFiatList] = useState<IRampFiatItem[]>(fiatListState);
@@ -57,8 +60,6 @@ export default function BuyForm() {
 
   const [amount, setAmount] = useState<string>(defaultFiat?.amount ?? '');
   const [amountLocalError, setAmountLocalError] = useState<ErrorType>(INIT_NONE_ERROR);
-
-  const { navigateTo, onFinish } = useBaseContainer();
 
   const refreshList = useCallback(async () => {
     Loading.show();
@@ -205,6 +206,7 @@ export default function BuyForm() {
     let isBuySectionShow = false;
     try {
       const result = await refreshRampShow();
+      console.log(JSON.stringify(result));
       isBuySectionShow = result.isBuySectionShow;
     } catch (error) {
       console.log(error);

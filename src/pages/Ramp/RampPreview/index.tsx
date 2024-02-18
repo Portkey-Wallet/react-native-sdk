@@ -135,7 +135,7 @@ export default function RampPreview(props: RouterParams) {
     }
     setProviderKey(pre => {
       if (pre) {
-        const preProvider = providerPriceList.find(item => item.providerInfo.key === pre);
+        const preProvider = (providerPriceList as Array<any>).find(item => item.providerInfo.key === pre);
         if (preProvider) return pre;
       }
       return providerPriceList[0].providerInfo.key;
@@ -147,7 +147,7 @@ export default function RampPreview(props: RouterParams) {
   }, []);
 
   const currentProvider = useMemo(
-    () => providerPriceList.find(item => item.providerInfo.key === providerKey),
+    () => (providerPriceList as Array<any>).find(item => item.providerInfo.key === providerKey),
     [providerKey, providerPriceList],
   );
 
