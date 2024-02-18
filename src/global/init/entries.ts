@@ -39,6 +39,8 @@ import RampHome from 'pages/Ramp/RampHome';
 import ReduxProvider from './ReduxProvider';
 import React from 'react';
 import RampPreview from 'pages/Ramp/RampPreview';
+import ManageTokenList from 'pages/Token/ManageTokenList';
+import CustomToken from 'pages/Token/CustomToken';
 
 type AcceptableComponentType = ComponentProvider;
 
@@ -86,6 +88,8 @@ const initEntries = () => {
   entryConfig.set(PortkeyEntries.RECEIVE_TOKEN_ENTRY, () => ReceiveTokenPage);
   entryConfig.set(PortkeyEntries.ACTIVITY_LIST_ENTRY, () => ActivityListPage);
   entryConfig.set(PortkeyEntries.ACTIVITY_DETAIL_ENTRY, () => ActivityDetail);
+  entryConfig.set(PortkeyEntries.TOKEN_MANAGE_LIST_ENTRY, () => ManageTokenList);
+  entryConfig.set(PortkeyEntries.TOKEN_MANAGE_ADD_ENTRY, () => CustomToken);
 
   // send service
   entryConfig.set(PortkeyEntries.SEND_TOKEN_HOME_ENTRY, () => SendHome);
