@@ -219,6 +219,8 @@ export default function RampPreview(props: RouterParams) {
         amount: amount,
         withdrawUrl: type === RampType.BUY ? RAMP_BUY_URL : RAMP_SELL_URL,
       });
+      console.log('url', url);
+      console.log('orderId', orderId);
       navigateTo(PortkeyEntries.VIEW_ON_WEBVIEW, {
         params: {
           title: t('Ramp'),

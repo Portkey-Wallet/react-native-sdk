@@ -45,8 +45,10 @@ export const styles = StyleSheet.create({
     marginTop: pTd(24),
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    width: screenWidth,
+    paddingHorizontal: pTd(16),
   },
   spacerStyle: {
     width: pTd(32),

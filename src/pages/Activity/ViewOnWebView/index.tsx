@@ -56,6 +56,9 @@ const ViewOnWebView = ({
 
   const handleNavigationStateChange = useCallback(
     (navState: any) => {
+      console.log('webViewPageType', webViewPageType);
+      console.log('navState');
+      console.log(JSON.stringify(navState));
       if (webViewPageType === 'default') return;
       if (webViewPageType === 'ramp-buy') {
         if (navState.url.startsWith(RAMP_BUY_URL)) {

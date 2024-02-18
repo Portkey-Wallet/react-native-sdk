@@ -20,6 +20,7 @@ import { defaultColors } from 'assets/theme';
 import CommonSvg from 'components/Svg';
 import DepositButton from 'components/DepositButton';
 import { DepositItem, useDepositList } from 'hooks/deposit';
+import GStyles from 'assets/theme/GStyles';
 
 const style = StyleSheet.create({
   scanQrCode: {
@@ -63,6 +64,7 @@ const AssetsHome: React.FC = () => {
   if (!isMainnet) buttonCount++;
 
   const buttonWrapStyle = buttonCount < 5 ? (styles.buttonWrapStyle1 as StyleProp<ViewProps>) : undefined;
+  const buttonGroupWrapStyle = buttonCount < 5 ? (GStyles.flexCenter as StyleProp<ViewProps>) : undefined;
   return (
     <AssetsContext.Provider value={assetsContext}>
       <View style={[styles.cardWrap, styles.pagePaddingTop]}>
@@ -89,7 +91,7 @@ const AssetsHome: React.FC = () => {
         />
         <Text style={styles.usdtBalance}>{isMainnet ? `$${balanceUSD.toFixed(2)}` : 'Dev Mode'}</Text>
         <TextM style={styles.accountName}>{wallet?.name}</TextM>
-        <View style={styles.buttonGroupWrap}>
+        <View style={[styles.buttonGroupWrap, buttonGroupWrapStyle]}>
           {/* ramp is now available by now */}
           {/* {isBuyButtonShow && (
           <>
