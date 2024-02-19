@@ -46,8 +46,8 @@ import java.security.InvalidKeyException
 
 
 val environment = mapOf(
-    Pair("MAIN NET", "https://did-portkey.portkey.finance"),
-    Pair("TEST NET", "https://did-portkey-test.portkey.finance"),
+    Pair("MAIN NET-v2", "https://aa-portkey.portkey.finance"),
+    Pair("TEST NET-v2", "https://aa-portkey-test.portkey.finance"),
     Pair("Test1", "https://localtest-applesign.portkey.finance"),
     Pair("Test4-v2", "http://192.168.66.117:5577"),
 )
@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
                         if (url.isNullOrEmpty()) {
                             changeEndPointUrl("MAIN NET")
                         }
-                        environment.keys.find { environment[it] == url } ?: "MAIN NET"
+                        environment.keys.find { environment[it] == url } ?: "MAIN NET-v2"
                     }
                     Column(
                         modifier = Modifier.fillMaxSize(),
