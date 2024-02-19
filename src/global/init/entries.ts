@@ -88,8 +88,10 @@ const initEntries = () => {
   entryConfig.set(PortkeyEntries.RECEIVE_TOKEN_ENTRY, () => ReceiveTokenPage);
   entryConfig.set(PortkeyEntries.ACTIVITY_LIST_ENTRY, () => ActivityListPage);
   entryConfig.set(PortkeyEntries.ACTIVITY_DETAIL_ENTRY, () => ActivityDetail);
-  entryConfig.set(PortkeyEntries.TOKEN_MANAGE_LIST_ENTRY, () => ManageTokenList);
-  entryConfig.set(PortkeyEntries.TOKEN_MANAGE_ADD_ENTRY, () => CustomToken);
+  entryConfig.set(PortkeyEntries.TOKEN_MANAGE_LIST_ENTRY, () =>
+    ReduxProvider(ManageTokenList as React.ComponentType<any>),
+  );
+  entryConfig.set(PortkeyEntries.TOKEN_MANAGE_ADD_ENTRY, () => ReduxProvider(CustomToken as React.ComponentType<any>));
 
   // send service
   entryConfig.set(PortkeyEntries.SEND_TOKEN_HOME_ENTRY, () => SendHome);
