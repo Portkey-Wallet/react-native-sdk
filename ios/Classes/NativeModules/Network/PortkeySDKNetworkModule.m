@@ -23,8 +23,10 @@ RCT_EXPORT_METHOD(fetch:(NSString *)url
     if (url.length <= 0) {
         errorMsg = @"url can not be null";
     }
-    if (![method isEqualToString:@"GET"] && ![method isEqualToString:@"POST"]) {
-        errorMsg = @"methos must be GET or POST";
+    if (![method isEqualToString:@"GET"]
+        && ![method isEqualToString:@"POST"]
+        && ![method isEqualToString:@"PUT"]) {
+        errorMsg = @"methos must be GET/POST/PUT";
     }
     if (errorMsg.length > 0) {
         reject(@"-100", errorMsg, nil);
@@ -49,7 +51,7 @@ RCT_EXPORT_METHOD(fetch:(NSString *)url
     }
     
     // set body
-    if ([method isEqualToString:@"POST"] && params) {
+    if (([method isEqualToString:@"POST"] || [method isEqualToString:@"PUT"]) && params) {
         if ([contentType containsString:@"application/json"]) {
             NSData *jsonBodyData = [NSJSONSerialization dataWithJSONObject:params options:kNilOptions error:nil];
             request.HTTPBody = jsonBodyData;
