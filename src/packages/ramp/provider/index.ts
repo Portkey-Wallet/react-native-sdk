@@ -14,6 +14,9 @@ import {
 } from '../types';
 import { stringifyUrl } from 'query-string';
 import { validateError } from '../utils';
+import { PortkeyConfig as GlobalConfig } from 'global/config';
+import { selectCurrentBackendConfig } from 'utils/commonUtil';
+import { PortkeyConfig } from 'global/constants';
 
 export abstract class RampProvider implements IRampProvider {
   public providerInfo: IRampProviderInfo;
@@ -45,8 +48,22 @@ export class AlchemyPayProvider extends RampProvider implements IAlchemyPayProvi
 
   public async createOrder(params: IRampProviderCreateOrderParams): Promise<IRampProviderCreateOrderResult> {
     const { baseUrl, appId, key, callbackUrl } = this.providerInfo;
-    const { type, network, country, fiat, crypto, amount, address, email, withdrawUrl } = params;
-
+    const { type, network, country, fiat, crypto, amount, email, withdrawUrl } = params;
+    let address = params.address;
+    try {
+      const apiUrl = await PortkeyConfig.endPointUrl();
+      const { rampTestEoaAddress } = selectCurrentBackendConfig(apiUrl);
+      if (rampTestEoaAddress) {
+        address = rampTestEoaAddress;
+      } else {
+        const globalRampTestEoaAddress = GlobalConfig.config.networkConfig.rampTestEoaAddress;
+        if (globalRampTestEoaAddress) {
+          address = globalRampTestEoaAddress;
+        }
+      }
+    } catch (e) {
+      console.log('address cal failed');
+    }
     let handleOrderUrl = `${baseUrl}/?type=${type.toLocaleLowerCase()}&crypto=${crypto}&network=${network}&country=${country}&fiat=${fiat}&appId=${appId}&callbackUrl=${encodeURIComponent(
       `${callbackUrl}`,
     )}`;
@@ -70,6 +87,7 @@ export class AlchemyPayProvider extends RampProvider implements IAlchemyPayProvi
 
       const signature = await this.getSignature(address);
       handleOrderUrl += `&address=${address}&sign=${encodeURIComponent(signature)}`;
+      if (withdrawUrl) handleOrderUrl += `&withdrawUrl=${encodeURIComponent(withdrawUrl)}`;
     } else {
       const withdrawUrlTrans = encodeURIComponent(
         withdrawUrl + `&payload=${encodeURIComponent(JSON.stringify({ orderNo: orderId }))}`,
@@ -106,7 +124,7 @@ export class TransakProvider extends RampProvider implements IRampProvider {
 
   async createOrder(params: IRampProviderCreateOrderParams): Promise<IRampProviderCreateOrderResult> {
     const { baseUrl, appId, key } = this.providerInfo;
-    const { type, network, country, fiat, crypto, amount, address, email } = params;
+    const { type, network, country, fiat, crypto, amount, address, email, withdrawUrl } = params;
 
     const orderId = await this.getOrderId({
       transDirect: type === RampType.BUY ? ITransDirectEnum.TOKEN_BUY : ITransDirectEnum.TOKEN_SELL,
@@ -128,6 +146,7 @@ export class TransakProvider extends RampProvider implements IRampProvider {
             walletAddress: address,
             email: email,
             partnerOrderId: orderId,
+            redirectURL: withdrawUrl,
           },
         },
         { encode: true },
