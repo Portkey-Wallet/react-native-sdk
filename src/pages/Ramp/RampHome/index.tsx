@@ -17,6 +17,7 @@ import CommonToast from 'components/CommonToast';
 import useLockCallback from 'packages/hooks/useLockCallback';
 import CommonTouchableTabs from 'components/CommonTouchableTabs';
 import { getBottomSpace } from 'utils/screen';
+import { isIOS } from 'packages/utils/mobile/device';
 
 type TabItemType = {
   name: string;
@@ -126,6 +127,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: defaultColors.bg1,
     ...GStyles.paddingArg(16, 20),
-    paddingBottom: getBottomSpace(),
+    paddingBottom: isIOS ? getBottomSpace() : 20,
   },
 });
