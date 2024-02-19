@@ -23,6 +23,7 @@ import { useChainsNetworkInfo, useCurrentNetworkType } from 'model/hooks/network
 import useBaseContainer from 'model/container/UseBaseContainer';
 import { PortkeyEntries } from 'config/entries';
 import { NetworkController } from 'network/controller';
+import { getBottomSpace } from 'utils/screen';
 
 interface CustomTokenProps {
   route?: any;
@@ -200,6 +201,7 @@ export const pageStyles = StyleSheet.create({
     bottom: 0,
     width: screenWidth,
     ...GStyles.paddingArg(20, 16),
+    marginBottom: getBottomSpace(),
   },
   tokenDecimal: {
     lineHeight: pTd(56),

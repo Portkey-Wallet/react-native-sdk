@@ -175,7 +175,7 @@ export const BackEndNetWorkMap: {
   'back-end-mainnet': {
     name: 'aelf Mainnet',
     walletType: 'aelf',
-    networkType: 'MAINNET',
+    networkType: 'MAIN',
     isActive: true,
     apiUrl: 'https://did-portkey.portkey.finance',
     graphqlUrl: 'https://dapp-portkey.portkey.finance/Portkey_DID/PortKeyIndexerCASchema/graphql',
