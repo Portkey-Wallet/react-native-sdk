@@ -13,6 +13,7 @@ export type NetworkConfig = {
   connectUrl?: string;
   graphQLUrl?: string;
   isMainNet?: boolean;
+  rampTestEoaAddress?: string; // If you are using a testing environment to test ramp function, the value of rampTestEoaAddress must be set. Please set an EOA address that you can control
 };
 export type Theme = object;
 export type NavigationTheme = object;

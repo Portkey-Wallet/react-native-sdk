@@ -138,6 +138,7 @@ export const BackEndNetWorkMap: {
     imS3Bucket: 'portkey-im-dev',
     portkeyFinanceUrl: 'https://portkey-website-dev.vercel.app/',
     eBridgeUrl: 'http://192.168.67.235:3000',
+    rampTestEoaAddress: 'QjEtDUjMxubnCuQcPuwhNZt8offRqQAvsw722Gbp2cdUwmhsj',
   },
   'back-end-testnet-v2': {
     name: 'aelf Testnet',
