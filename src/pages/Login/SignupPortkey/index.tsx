@@ -40,7 +40,7 @@ export default function SignupPortkey({
   const [currentNetwork, setCurrentNetwork] = useState<NetworkItem | undefined>(undefined);
   const { t } = useLanguage();
   const isMainnet = useMemo(() => {
-    return currentNetwork?.networkType === 'MAINNET';
+    return currentNetwork?.networkType === 'MAIN';
   }, [currentNetwork?.networkType]);
   const { onFinish } = useBaseContainer({
     entryName: PortkeyEntries.SIGN_UP_ENTRY,

@@ -4,7 +4,7 @@ import { ChainItemType } from 'packages/types/chain';
 export const DefaultChain: ChainItemType = {
   chainId: 'AELF',
   networkName: 'MainChain AELF',
-  netWorkType: 'MAINNET',
+  netWorkType: 'MAIN',
   rpcUrl: 'https://explorer.aelf.io/chain',
   chainType: 'aelf',
   blockExplorerURL: 'https://explorer.aelf.io/',

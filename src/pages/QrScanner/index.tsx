@@ -127,7 +127,7 @@ const QrScanner: React.FC = ({ useScanQRPath = false }: ScanQRCodeProps) => {
       if (currentNetwork !== qrCodeData.netWorkType) {
         let invalidText = InvalidQRCodeText.INVALID_QR_CODE;
         switch (qrCodeData.netWorkType) {
-          case 'MAINNET':
+          case 'MAIN':
             invalidText = InvalidQRCodeText.SWITCH_TO_MAINNET;
             break;
           case 'TESTNET':

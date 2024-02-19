@@ -22,7 +22,7 @@ interface SendButtonType {
 
 const BuyButton = (props: SendButtonType) => {
   const { themeType = 'dashBoard', wrapStyle = {} } = props;
-  const isMainnet = useCurrentNetworkType() === 'MAINNET';
+  const isMainnet = useCurrentNetworkType() === 'MAIN';
   const { t } = useLanguage();
   const { navigateTo } = useBaseContainer({
     entryName: PortkeyEntries.TOKEN_DETAIL_ENTRY,

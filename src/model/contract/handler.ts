@@ -397,7 +397,7 @@ const findParticularNetworkByChainId = async (chainId: string): Promise<AElfChai
  */
 export const callFaucetMethod = async (amount = 100) => {
   const contractInstance = await getCAContractInstance();
-  if ((await getCurrentNetworkType()) === 'MAINNET') {
+  if ((await getCurrentNetworkType()) === 'MAIN') {
     throw new Error('faucet is not supported on mainnet');
   }
   const {

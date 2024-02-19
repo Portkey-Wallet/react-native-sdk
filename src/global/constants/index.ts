@@ -2,9 +2,9 @@ import { BackEndNetWorkMap } from 'packages/constants/constants-ca/backend-netwo
 import { ChainId } from 'packages/types';
 import { GlobalStorage } from 'service/storage';
 
-// Now using v2 on testnet/test4, v1/test1 on mainnet
+// Now using v2 on mainnet/testnet/test4, v1/test1 is deprecated
 export const EndPoints = {
-  MAIN_NET: BackEndNetWorkMap['back-end-mainnet'].apiUrl,
+  MAIN_NET: BackEndNetWorkMap['back-end-mainnet-v2'].apiUrl,
   TEST_NET: BackEndNetWorkMap['back-end-testnet-v2'].apiUrl,
   TEST1: BackEndNetWorkMap['back-end-test1'].apiUrl,
 };

@@ -7,7 +7,7 @@ import { addCustomChainItem, fetchChainListAsync, updateCustomChainItem } from '
 
 const initialState: ChainState = {
   currentChain: DefaultChain,
-  networkType: 'MAINNET',
+  networkType: 'MAIN',
   chainList: [],
   commonList: [],
   rmCommonList: [],

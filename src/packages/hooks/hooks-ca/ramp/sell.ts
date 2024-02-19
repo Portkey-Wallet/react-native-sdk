@@ -23,7 +23,7 @@ export const useSellCrypto = () => {
 
   const refreshSellCrypto = useCallback(async () => {
     const { cryptoList, defaultCrypto } = await getSellCrypto();
-    const { sellFiatList, sellDefaultFiat } = await getSellFiat({
+    const { sellFiatList, sellDefaultFiat: sell1 } = await getSellFiat({
       crypto: defaultCrypto.symbol,
       network: defaultCrypto.network,
     });
@@ -41,14 +41,14 @@ export const useSellCrypto = () => {
     );
     dispatch(
       setSellDefaultFiat({
-        value: sellDefaultFiat,
+        value: sell1,
       }),
     );
     return {
       sellCryptoList: cryptoList,
       sellDefaultCrypto: defaultCrypto,
       sellDefaultFiatList: sellFiatList,
-      sellDefaultFiat,
+      sellDefaultFiat: sell1,
     };
   }, [dispatch]);
 

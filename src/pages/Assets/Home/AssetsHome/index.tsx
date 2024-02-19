@@ -52,7 +52,7 @@ const AssetsHome = ({ containerId }: { containerId: any }) => {
     updateNftCollections,
   };
 
-  const isMainnet = networkType === 'MAINNET';
+  const isMainnet = networkType === 'MAIN';
 
   const { onFinish, navigateTo } = useBaseContainer({
     entryName: PortkeyEntries.ASSETS_HOME_ENTRY,
