@@ -13,6 +13,7 @@ import { RAMP_BUY_URL, RAMP_SELL_URL } from 'pages/Ramp/constants';
 import useBaseContainer from 'model/container/UseBaseContainer';
 import { PortkeyEntries } from 'config/entries';
 import { GuardiansApprovedType } from 'packages/types/types-ca/routeParams';
+import { useHandleRampSell } from './hooks/useHandleRampSell';
 
 const safeAreaColorMap = {
   white: defaultColors.bg1,
@@ -52,6 +53,7 @@ const ViewOnWebView = ({
   const webViewRef = React.useRef<WebView>(null);
   const progressBarRef = React.useRef<IProgressbar>(null);
 
+  const handleRampSell = useHandleRampSell();
   const isAchSellHandled = useRef(false);
 
   const handleNavigationStateChange = useCallback(
@@ -70,18 +72,16 @@ const ViewOnWebView = ({
         if (navState.url.startsWith(RAMP_SELL_URL) && !isAchSellHandled.current) {
           isAchSellHandled.current = true;
           navigateTo(PortkeyEntries.RAMP_HOME_ENTRY);
-          // const { orderId, guardiansApproved } = (params as RampSellParams) || {};
-          const { orderId } = (params as RampSellParams) || {};
+          const { orderId, guardiansApproved } = (params as RampSellParams) || {};
           if (!orderId) {
             CommonToast.failError('Transaction failed.');
             return;
           }
-          // todo @wade-portkey handle ramp sell
-          // handleRampSell(orderId, guardiansApproved);
+          handleRampSell(orderId, guardiansApproved);
         }
       }
     },
-    [navigateTo, params, webViewPageType],
+    [handleRampSell, navigateTo, params, webViewPageType],
   );
 
   return (
