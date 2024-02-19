@@ -4,7 +4,6 @@ import { PortkeyConfig } from 'global/constants';
 import useEffectOnce from 'hooks/useEffectOnce';
 import { useState } from 'react';
 import { AElfChainStatusItemDTO } from 'network/dto/wallet';
-import { NetworkController } from 'network/controller';
 import { getCachedAllChainInfo } from 'model/chain';
 
 export const getCurrentNetworkType = async (): Promise<NetworkType> => {
