@@ -40,7 +40,7 @@ export default function QRCode({ setLoginType }: { setLoginType: (type: PageLogi
   const [newWallet, setNewWallet] = useState<ManagerInfo>();
   const networkContext = useContext(NetworkContext);
   const currentNetwork = useMemo(() => {
-    return networkContext.currentNetwork?.networkType ?? 'MAIN';
+    return networkContext.currentNetwork?.networkType ?? 'MAINNET';
   }, [networkContext.currentNetwork?.networkType]);
   const { navigateForResult, onFinish } = useBaseContainer({});
   const caWalletInfo = useIntervalQueryCAInfoByAddress(currentNetwork, newWallet?.address);

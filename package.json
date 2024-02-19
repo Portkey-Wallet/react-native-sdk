@@ -130,7 +130,7 @@
     "ts-compile": "echo 'Compiling ts code...' && tsc",
     "build": "yarn clean && yarn build:index && yarn ts-compile && yarn build:src && yarn copy:assets && yarn transform:declaration",
     "postinstall": "node ./script/postinstall.js > postinstall.log",
-    "lint": "eslint . --ext .ts,.tsx",
+    "lint": "eslint . --ext .ts,.tsx  --config .eslintrc.json",
     "prepublishOnly": "yarn build",
     "build-bundle": "./script/build-android-bundle.sh"
   },
