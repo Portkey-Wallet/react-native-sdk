@@ -74,9 +74,15 @@ const ManageTokenList: React.FC<ManageTokenListProps> = ({ containerId }: Manage
     }
   }, [chainIdList, debounceWord]);
 
-  const onRefresh = useCallback(() => {
-    fetchSearchedTokenList();
-  }, [fetchSearchedTokenList]);
+  const onRefresh = useCallback(async () => {
+    Loading.show({ duration: 2500 });
+    if (debounceWord) {
+      await fetchSearchedTokenList();
+    } else {
+      await updateTokensList({ keyword: '', chainIdArray: chainIdList });
+    }
+    Loading.hide();
+  }, [chainIdList, debounceWord, fetchSearchedTokenList, updateTokensList]);
 
   const { navigateTo } = useBaseContainer({
     entryName: PortkeyEntries.TOKEN_MANAGE_LIST_ENTRY,
