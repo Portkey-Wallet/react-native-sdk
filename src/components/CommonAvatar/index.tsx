@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import CommonSvg, { IconName } from 'components/Svg';
+import Svg, { IconName } from 'components/Svg';
 import { pTd } from 'utils/unit';
 import { Text } from 'react-native';
 import { StyleSheet } from 'react-native';
@@ -39,7 +39,6 @@ export default function CommonAvatar(props: CommonAvatarProps) {
     height,
     preserveAspectRatio,
   } = props;
-
   const [loadError, setLoadError] = useState(false);
   const initialsTitle = String(title?.[0] || '').toUpperCase();
 
@@ -55,7 +54,7 @@ export default function CommonAvatar(props: CommonAvatarProps) {
 
   if (svgName)
     return (
-      <CommonSvg
+      <Svg
         oblongSize={[width || avatarSize, height || avatarSize]}
         icon={svgName}
         color={color}
