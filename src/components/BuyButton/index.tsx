@@ -6,7 +6,6 @@ import { TextM } from 'components/CommonText';
 import { useLanguage } from 'i18n/hooks';
 import { pTd } from 'utils/unit';
 import GStyles from 'assets/theme/GStyles';
-import { useCurrentNetworkType } from 'model/hooks/network';
 import { commonButtonStyle } from '../SendButton/style';
 import Touchable from 'components/Touchable';
 import { dashBoardBtnStyle } from '../SendButton/style';
@@ -22,7 +21,6 @@ interface SendButtonType {
 
 const BuyButton = (props: SendButtonType) => {
   const { themeType = 'dashBoard', wrapStyle = {} } = props;
-  const isMainnet = useCurrentNetworkType() === 'MAIN';
   const { t } = useLanguage();
   const { navigateTo } = useBaseContainer({
     entryName: PortkeyEntries.TOKEN_DETAIL_ENTRY,
@@ -43,7 +41,6 @@ const BuyButton = (props: SendButtonType) => {
       <Touchable
         style={[styles.iconWrapStyle, GStyles.alignCenter]}
         onPress={async () => {
-          if (!isMainnet) return;
           navigateTo(PortkeyEntries.RAMP_HOME_ENTRY, {
             params: {
               toTab: RampType.BUY,
