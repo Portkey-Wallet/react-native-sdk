@@ -31,7 +31,7 @@ interface CustomTokenProps {
 
 const CustomToken: React.FC<CustomTokenProps> = () => {
   const { t } = useLanguage();
-  const { navigateTo } = useBaseContainer({ entryName: PortkeyEntries.TOKEN_MANAGE_ADD_ENTRY });
+  const { onFinish } = useBaseContainer({ entryName: PortkeyEntries.TOKEN_MANAGE_ADD_ENTRY });
 
   const currentNetwork = useCurrentNetworkType();
   const { originChainId = 'AELF' } = useUnlockedWallet()?.wallet || {};
@@ -117,7 +117,7 @@ const CustomToken: React.FC<CustomTokenProps> = () => {
         });
         CommonToast.success('success');
         await sleep(500);
-        navigateTo(PortkeyEntries.TOKEN_MANAGE_LIST_ENTRY);
+        onFinish({ status: 'success' });
       } catch (err: any) {
         CommonToast.failError(err);
         console.log('add custom token error', err);
@@ -125,7 +125,7 @@ const CustomToken: React.FC<CustomTokenProps> = () => {
         Loading.hide();
       }
     }
-  }, [navigateTo, tokenItem?.id, tokenItem?.isDefault, tokenItem?.isDisplay]);
+  }, [onFinish, tokenItem?.id, tokenItem?.isDefault, tokenItem?.isDisplay]);
 
   return (
     <PageContainer

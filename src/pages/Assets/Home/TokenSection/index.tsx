@@ -50,7 +50,7 @@ export default function TokenSection() {
           sortWeight: item.sortWeight,
         };
       })
-      .filter(melted => melted.balance !== '0' || melted.isDefault)
+      .filter(melted => melted.isAdded || melted.isDefault)
       .sort((a, b) => {
         const { symbol: symbolA } = a;
         const { symbol: symbolB } = b;
