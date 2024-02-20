@@ -35,6 +35,12 @@ import TestEntry from 'apiTest/TestEntry';
 import { PortkeyTestEntries } from 'apiTest';
 import SendHome from 'pages/Send/SendHome';
 import SendPreview from 'pages/Send/SendPreview';
+import RampHome from 'pages/Ramp/RampHome';
+import ReduxProvider from './ReduxProvider';
+import React from 'react';
+import RampPreview from 'pages/Ramp/RampPreview';
+import ManageTokenList from 'pages/Token/ManageTokenList';
+import CustomToken from 'pages/Token/CustomToken';
 
 type AcceptableComponentType = ComponentProvider;
 
@@ -78,10 +84,14 @@ const initEntries = () => {
   entryConfig.set(PortkeyEntries.BIOMETRIC_SWITCH_ENTRY, () => Biometric);
 
   // assets module
-  entryConfig.set(PortkeyEntries.ASSETS_HOME_ENTRY, () => AssetsHome);
+  entryConfig.set(PortkeyEntries.ASSETS_HOME_ENTRY, () => ReduxProvider(AssetsHome as React.ComponentType<any>));
   entryConfig.set(PortkeyEntries.RECEIVE_TOKEN_ENTRY, () => ReceiveTokenPage);
   entryConfig.set(PortkeyEntries.ACTIVITY_LIST_ENTRY, () => ActivityListPage);
   entryConfig.set(PortkeyEntries.ACTIVITY_DETAIL_ENTRY, () => ActivityDetail);
+  entryConfig.set(PortkeyEntries.TOKEN_MANAGE_LIST_ENTRY, () =>
+    ReduxProvider(ManageTokenList as React.ComponentType<any>),
+  );
+  entryConfig.set(PortkeyEntries.TOKEN_MANAGE_ADD_ENTRY, () => ReduxProvider(CustomToken as React.ComponentType<any>));
 
   // send service
   entryConfig.set(PortkeyEntries.SEND_TOKEN_HOME_ENTRY, () => SendHome);
@@ -98,6 +108,9 @@ const initEntries = () => {
   entryConfig.set(PortkeyEntries.CONTACT_DETAIL_ENTRY, () => ContactDetail);
   entryConfig.set(PortkeyEntries.CONTACT_ACTIVITY_ENTRY, () => ContactActivity);
 
+  entryConfig.set(PortkeyEntries.RAMP_HOME_ENTRY, () => ReduxProvider(RampHome as React.ComponentType<any>));
+  entryConfig.set(PortkeyEntries.RAMP_PREVIEW_ENTRY, () => ReduxProvider(RampPreview as React.ComponentType<any>));
+
   for (const [key, value] of entryConfig) {
     AppRegistry.registerComponent(wrapEntry(key), value);
   }
@@ -113,5 +126,6 @@ const registerLaunchMode = () => {
   LaunchModeSet.set(PortkeyEntries.ACCOUNT_SETTING_ENTRY, LaunchMode.SINGLE_TASK);
   LaunchModeSet.set(PortkeyEntries.PAYMENT_SECURITY_HOME_ENTRY, LaunchMode.SINGLE_TASK);
   LaunchModeSet.set(PortkeyEntries.ASSETS_HOME_ENTRY, LaunchMode.SINGLE_TASK);
+  LaunchModeSet.set(PortkeyEntries.RAMP_HOME_ENTRY, LaunchMode.SINGLE_TASK);
 };
 export { initEntries };

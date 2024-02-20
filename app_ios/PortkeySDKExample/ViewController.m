@@ -204,10 +204,14 @@
     UIAlertAction *test1Network = [UIAlertAction actionWithTitle:@"TEST1 NET" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self switchEndPointUrl:@"https://localtest-applesign.portkey.finance"];
     }];
+    UIAlertAction *test4V2Network = [UIAlertAction actionWithTitle:@"TEST4-V2 NET" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self switchEndPointUrl:@"http://192.168.66.117:5577"];
+    }];
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
     [alert addAction:mainNetwork];
     [alert addAction:testNetwork];
     [alert addAction:test1Network];
+    [alert addAction:test4V2Network];
     [alert addAction:cancel];
     return alert;
 }
@@ -321,6 +325,9 @@
                                 launchMode:@"single_task"],
         [PortkeyPageConfig configWithTitle:@"PaymentSecurity"
                                  entryName:@"portkey_payment_security_home_entry"
+                                launchMode:@"single_task"],
+        [PortkeyPageConfig configWithTitle:@"RampHome"
+                                 entryName:@"portkey_ramp_home_entry"
                                 launchMode:@"single_task"],
         [PortkeyPageConfig configWithTitle:@"Api Test"
                                  entryName:@"portkey_test"

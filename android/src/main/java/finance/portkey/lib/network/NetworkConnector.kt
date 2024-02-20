@@ -185,6 +185,39 @@ internal object NetworkConnector {
         }
     }
 
+    fun putRequest(
+        url: String,
+        header: ReadableMap,
+        body: ReadableMap,
+        options: ReadableMap?
+    ): ResultWrapper {
+        return try {
+            val request = okhttp3.Request.Builder()
+                .url(url)
+                .headers(header.toHeaders())
+                .put(body.toRequestBody(header.getString("Content-Type") ?: "application/json"))
+                .tag(
+                    TimeOutConfig(
+                        options?.getDouble("maxWaitingTime")?.toInt() ?: 5000
+                    )
+                )
+                .build()
+            val response = okHttpClient
+                .newCall(request)
+                .execute()
+            if (!response.isSuccessful) {
+                Log.e(
+                    "NetworkConnector",
+                    "Network failed ! url:${url}, headers:${header.toHashMap()}, status:${response.code}"
+                )
+            }
+            dealWithResponse(response, printBody = response.code != 200)
+        } catch (e: Throwable) {
+            Log.e("NetworkConnector", "putRequest", e)
+            ResultWrapper(-1)
+        }
+    }
+
     private fun ReadableMap.toHeaders(): Headers {
         val headers = Headers.Builder()
         this.toHashMap().forEach lambda@{

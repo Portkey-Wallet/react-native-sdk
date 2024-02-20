@@ -10,8 +10,9 @@ import { IScanService } from './types/scan';
 import { IDataService } from './types/data';
 import { BaseMethodResult, CallCaMethodProps, IContractService } from './types/contract';
 import { myContainer } from './inversify.config';
-import { IConfig, ITheme, PortkeyConfig } from './config';
+import { IConfig, ITheme } from './config';
 import { GetAccountAssetsByKeywordsResult, IActivitiesApiResponse } from 'network/dto/query';
+import { PortkeyConfig } from '../global/config';
 export * from './types';
 class Portkey
   implements
@@ -36,9 +37,13 @@ class Portkey
     return this.services.dataService.getActivityInfoList({ offset, pageSize });
   }
 
-  init(config?: IConfig, theme?: ITheme) {
-    PortkeyConfig.config = config;
-    PortkeyConfig.theme = theme;
+  init({ config, theme }: { config?: IConfig; theme?: ITheme } = {}) {
+    if (config) {
+      PortkeyConfig.config = config;
+    }
+    if (theme) {
+      PortkeyConfig.theme = theme;
+    }
   }
 
   callCaContractMethod(props: CallCaMethodProps): Promise<BaseMethodResult> {

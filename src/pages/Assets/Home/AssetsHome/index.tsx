@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, StyleProp, ViewProps } from 'react-native';
 import { styles } from './style';
 import ReceiveButton from 'components/ReceiveButton';
 import { TextM } from 'components/CommonText';
@@ -18,6 +18,10 @@ import { PortkeyEntries } from 'config/entries';
 import ActivityButton from '../ActivityButton';
 import { defaultColors } from 'assets/theme';
 import CommonSvg from 'components/Svg';
+import DepositButton from 'components/DepositButton';
+import { DepositItem, useDepositList } from 'hooks/deposit';
+import GStyles from 'assets/theme/GStyles';
+import Loading from 'components/Loading';
 
 const style = StyleSheet.create({
   scanQrCode: {
@@ -25,7 +29,7 @@ const style = StyleSheet.create({
   },
 });
 
-const AssetsHome: React.FC = () => {
+const AssetsHome = ({ containerId }: { containerId: any }) => {
   const { wallet } = useUnlockedWallet();
   const networkType = useCurrentNetworkType();
   const { balanceList, updateBalanceList } = useAccountTokenBalanceList();
@@ -52,8 +56,24 @@ const AssetsHome: React.FC = () => {
 
   const { onFinish, navigateTo } = useBaseContainer({
     entryName: PortkeyEntries.ASSETS_HOME_ENTRY,
+    containerId,
+    onShow: async () => {
+      Loading.show({ duration: 3000 });
+      await updateBalanceList();
+      await updateTokensList();
+      await updateNftCollections();
+      Loading.hide();
+    },
   });
+  const depositList = useDepositList();
+  const isDepositShow = depositList && depositList.length > 0;
+  let buttonCount = 3;
+  if (isDepositShow) buttonCount++;
+  // FaucetButton
+  if (!isMainnet) buttonCount++;
 
+  const buttonWrapStyle = buttonCount < 5 ? (styles.buttonWrapStyle1 as StyleProp<ViewProps>) : undefined;
+  const buttonGroupWrapStyle = buttonCount < 5 ? (GStyles.flexCenter as StyleProp<ViewProps>) : undefined;
   return (
     <AssetsContext.Provider value={assetsContext}>
       <View style={[styles.cardWrap, styles.pagePaddingTop]}>
@@ -80,7 +100,7 @@ const AssetsHome: React.FC = () => {
         />
         <Text style={styles.usdtBalance}>{isMainnet ? `$${balanceUSD.toFixed(2)}` : 'Dev Mode'}</Text>
         <TextM style={styles.accountName}>{wallet?.name}</TextM>
-        <View style={styles.buttonGroupWrap}>
+        <View style={[styles.buttonGroupWrap, buttonGroupWrapStyle]}>
           {/* ramp is now available by now */}
           {/* {isBuyButtonShow && (
           <>
@@ -88,17 +108,22 @@ const AssetsHome: React.FC = () => {
             <View style={styles.spacerStyle} />
           </>
         )} */}
-          <SendButton themeType="dashBoard" />
-          <View style={styles.spacerStyle} />
-          <ReceiveButton themeType="dashBoard" />
+          {isDepositShow && <DepositButton wrapStyle={buttonWrapStyle} list={depositList as DepositItem[]} />}
+          <SendButton wrapStyle={buttonWrapStyle} themeType="dashBoard" />
+          {/* <View style={styles.spacerStyle} /> */}
+          <ReceiveButton wrapStyle={buttonWrapStyle} themeType="dashBoard" />
           {!isMainnet && (
             <>
-              <View style={styles.spacerStyle} />
-              <FaucetButton themeType="dashBoard" />
+              {/* <View style={styles.spacerStyle} /> */}
+              <FaucetButton wrapStyle={buttonWrapStyle} themeType="dashBoard" />
             </>
           )}
-          <View style={styles.spacerStyle} />
-          <ActivityButton themeType="dashBoard" entryName={PortkeyEntries.ASSETS_HOME_ENTRY} />
+          {/* <View style={styles.spacerStyle} /> */}
+          <ActivityButton
+            wrapStyle={buttonWrapStyle}
+            themeType="dashBoard"
+            entryName={PortkeyEntries.ASSETS_HOME_ENTRY}
+          />
         </View>
       </View>
       <DashBoardTab />
