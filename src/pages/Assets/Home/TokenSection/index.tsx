@@ -30,7 +30,7 @@ export default function TokenSection() {
 
   const itemData: Array<TokenItemShowType> = useMemo(() => {
     return allOfTokensList
-      .map<TokenItemShowType>(item => {
+      .map<TokenItemShowType & { isDisplay: boolean }>(item => {
         const { symbol, decimals, chainId, address } = item.token;
         const balanceItem = balanceList.find(it => it.symbol === symbol && it.chainId === item.token.chainId);
         const balanceInfo = balanceList.find(it => it.symbol === symbol && it.chainId === item.token.chainId);
@@ -50,7 +50,7 @@ export default function TokenSection() {
           sortWeight: item.sortWeight,
         };
       })
-      .filter(melted => melted.balance !== '0' || melted.isDefault)
+      .filter(melted => melted.isDisplay || melted.isDefault)
       .sort((a, b) => {
         const { symbol: symbolA } = a;
         const { symbol: symbolB } = b;

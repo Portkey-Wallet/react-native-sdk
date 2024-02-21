@@ -157,6 +157,7 @@ export const BackEndNetWorkMap: {
     portkeyFinanceUrl: 'https://portkey-website-dev.vercel.app/',
     eBridgeUrl: 'http://192.168.67.235:3000',
     portkeyOpenLoginUrl: 'https://openlogin-test.portkey.finance/',
+    rampTestEoaAddress: 'QjEtDUjMxubnCuQcPuwhNZt8offRqQAvsw722Gbp2cdUwmhsj',
   },
   'back-end-testnet-v2': {
     name: 'aelf Testnet',

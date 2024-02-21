@@ -16,6 +16,7 @@ import {
 } from './types';
 import { RampSignalr } from './signalr';
 import { randomId } from 'packages/utils';
+import { PortkeyConfig } from 'global/constants';
 
 export interface IBaseRamp {
   // config: IRampConfig;
@@ -71,9 +72,10 @@ export abstract class BaseRamp implements IBaseRamp {
 
   async transferCrypto(orderId: string, generateTransaction: IGenerateTransaction): Promise<IOrderInfo> {
     const clientId = randomId();
+    const baseUrl = await PortkeyConfig.endPointUrl();
     try {
       await this.rampSignalr.doOpen({
-        url: `${this.service.baseUrl}/ca`,
+        url: `${baseUrl}/ca`,
         clientId,
       });
     } catch (error) {
