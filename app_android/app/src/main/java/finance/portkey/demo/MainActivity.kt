@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
                     val cachedEndPointName = remember {
                         val url = PortkeyMMKVStorage.readString("endPointUrl")
                         if (url.isNullOrEmpty()) {
-                            changeEndPointUrl("MAIN NET")
+                            changeEndPointUrl("MAIN NET-v2")
                         }
                         environment.keys.find { environment[it] == url } ?: "MAIN NET-v2"
                     }
