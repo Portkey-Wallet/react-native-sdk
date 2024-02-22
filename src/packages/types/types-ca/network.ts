@@ -1,4 +1,5 @@
-import { ChainType, NetworkType } from '@portkey/provider-types';
+import { ChainType } from '@portkey/provider-types';
+import { NetworkType } from '..';
 
 export type NetworkItem = {
   name: string;

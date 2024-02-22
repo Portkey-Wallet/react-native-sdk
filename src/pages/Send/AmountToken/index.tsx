@@ -36,7 +36,7 @@ export default function AmountToken({
   const { t } = useLanguage();
   const { defaultToken } = useCommonNetworkInfo();
   const networkType = useCurrentNetworkType();
-  const isTestNet = useMemo(() => networkType !== 'MAIN', [networkType]);
+  const isTestNet = useMemo(() => networkType !== 'MAINNET', [networkType]);
   const { balanceList } = useAccountTokenBalanceList();
   const isTokenHasPrice = useMemo(
     () => balanceList.find(it => it.symbol === selectedToken.symbol),
