@@ -2699,12 +2699,12 @@
   resolved "https://registry.npmmirror.com/@portkey/mobile-provider/-/mobile-provider-1.0.1-alpha.0.tgz#b059d3bd317e010358f031e71f778a86c26f9d60"
   integrity sha512-4yYY+YS17vlKz1FsavusAI/NGbcvl6OQtR0GL9LzEhr2AvmQsLZjJd4nzwdx3cMZvBt4jAt9Hjq/hYF3678uhQ==
 
-"@portkey/provider-types@1.0.1-alpha.0":
-  version "1.0.1-alpha.0"
-  resolved "https://registry.npmmirror.com/@portkey/provider-types/-/provider-types-1.0.1-alpha.0.tgz#303b383ac7306d91923b6b88c6ec356935371b2e"
-  integrity sha512-4tgoL7wJwW3ksS579KvdFFfoQhItKuURf5oKla80dGN9pdxaJ5MfW5vj/SORUZEYObe7WLwwP07zuPPWbBMO+g==
+"@portkey/provider-types@2.0.0-alpha.5":
+  version "2.0.0-alpha.5"
+  resolved "https://registry.yarnpkg.com/@portkey/provider-types/-/provider-types-2.0.0-alpha.5.tgz#c00ca6ba467e193ce207955d787c562117e3538d"
+  integrity sha512-KaaiF4ZOzWTIShgn3KYXlYQBDkn7FhPoEJbtRtKQQMA+idxSusDC3X2ZNsX6fmcwK2eezP9UGUEqeTzwDQO+/g==
   dependencies:
-    "@portkey/types" "1.0.0-alpha.4"
+    "@portkey/types" "^2.0.0-alpha.0"
     "@types/readable-stream" "^2.3.15"
 
 "@portkey/provider-types@^1.0.1-alpha.0", "@portkey/provider-types@^1.1.0":
@@ -2781,6 +2781,11 @@
   integrity sha512-IYFe0l1Y3MH7fUJvSO/0OQ2bSZc0j1RCn2eASAoXSHWWtqESUKFn/lnDs9v7ha4S9kp/T1X7KUekNR+Ut9kYUA==
   dependencies:
     "@types/elliptic" "^6.4.14"
+
+"@portkey/types@^2.0.0-alpha.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@portkey/types/-/types-2.0.0.tgz#3bb48500ef698302b9e8ae6fede5ecd86f2e139b"
+  integrity sha512-U9j5PmnGec3jQuWbdxMwu5f+IKFnjqTyCsQqF4opfhxtO5mtc1hPRpvnYkmll1WWArL7rXdsTSWDWMFFLddB5Q==
 
 "@portkey/utils@^1.5.0-alpha.10":
   version "1.5.3"

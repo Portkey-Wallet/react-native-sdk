@@ -1,11 +1,15 @@
+import { BackEndNetWorkMap } from 'packages/constants/constants-ca/backend-network';
 import { ChainId } from 'packages/types';
 import { GlobalStorage } from 'service/storage';
 
-export enum EndPoints {
-  MAIN_NET = 'https://did-portkey.portkey.finance',
-  TEST_NET = 'https://did-portkey-test.portkey.finance',
-  TEST1 = 'https://localtest-applesign.portkey.finance',
-}
+// Now using v2 on mainnet/testnet/test4, v1/test1 is deprecated
+export const EndPoints = {
+  MAIN_NET: BackEndNetWorkMap['back-end-mainnet-v2'].apiUrl,
+  TEST_NET: BackEndNetWorkMap['back-end-testnet-v2'].apiUrl,
+  TEST1: BackEndNetWorkMap['back-end-test1'].apiUrl,
+};
+
+export type EndPoints = (typeof EndPoints)[keyof typeof EndPoints];
 
 enum ConfigIdentifier {
   END_POINT = 'endPointUrl',

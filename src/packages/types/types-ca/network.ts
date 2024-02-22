@@ -1,4 +1,5 @@
-import { ChainType, NetworkType } from '..';
+import { ChainType } from '@portkey/provider-types';
+import { NetworkType } from '..';
 
 export type NetworkItem = {
   name: string;
@@ -12,6 +13,7 @@ export type NetworkItem = {
   tokenClaimContractAddress?: string;
   cmsUrl?: string;
   s3Url?: string;
+  referralUrl?: string;
   portkeyFinanceUrl?: string; // portkey website url
   portkeyOpenLoginUrl?: string; // web page
   buyConfig?: {

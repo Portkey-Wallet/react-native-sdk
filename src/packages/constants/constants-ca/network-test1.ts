@@ -2,9 +2,9 @@ import { NetworkItem } from 'packages/types/types-ca/network';
 import { BackEndNetWorkMap } from './backend-network';
 
 export const NetworkList: NetworkItem[] = [
-  BackEndNetWorkMap['back-end-testnet'],
+  BackEndNetWorkMap['back-end-testnet-v2'],
   BackEndNetWorkMap['back-end-test1'],
-  BackEndNetWorkMap['back-end-mainnet'],
+  BackEndNetWorkMap['back-end-mainnet-v2'],
 ];
 
 export const DefaultChainId = 'AELF';

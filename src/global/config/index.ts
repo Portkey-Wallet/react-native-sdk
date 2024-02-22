@@ -13,9 +13,9 @@ export const defaultEntryConfig: IEntryConfig = {
 };
 
 export const defaultNetworkConfig: NetworkConfig = {
-  apiUrl: BackEndNetWorkMap['back-end-mainnet'].apiUrl,
-  graphQLUrl: BackEndNetWorkMap['back-end-mainnet'].graphqlUrl,
-  connectUrl: BackEndNetWorkMap['back-end-mainnet'].connectUrl,
+  apiUrl: BackEndNetWorkMap['back-end-mainnet-v2'].apiUrl,
+  graphQLUrl: BackEndNetWorkMap['back-end-mainnet-v2'].graphqlUrl,
+  connectUrl: BackEndNetWorkMap['back-end-mainnet-v2'].connectUrl,
   isMainNet: true,
 };
 export const defaultConfig: IConfig = {

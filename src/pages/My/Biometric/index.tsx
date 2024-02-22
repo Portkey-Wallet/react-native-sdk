@@ -14,7 +14,6 @@ import { checkPin, getUseBiometric, rememberUseBiometric } from 'model/verify/co
 import useBaseContainer from 'model/container/UseBaseContainer';
 import { PortkeyEntries } from 'config/entries';
 import BaseContainerContext from 'model/container/BaseContainerContext';
-// import { touchAuth } from 'pages/Pin/SetBiometrics';
 import { authenticationReady } from 'packages/utils/mobile/authentication';
 import { authenticateBioAsync, authenticateBioReady } from 'service/biometric';
 import { getUnlockedWallet } from 'model/wallet';
@@ -40,13 +39,13 @@ export default function Biometric() {
     if (pin === 'use-bio' || (await checkPin(pin))) {
       try {
         if (await authenticateBioReady()) {
-          console.log('authenticateBioReady');
           const enrolled = await authenticateBioAsync();
-          console.log('authenticateBioAsyncauthenticateBioAsyncauthenticateBioAsync', enrolled);
           if (enrolled.success) {
             setBiometricsSwitch(true);
             await rememberUseBiometric(true, walletConfig);
-          } else CommonToast.fail(enrolled.warning || enrolled.error);
+          } else {
+            CommonToast.fail(enrolled.warning || enrolled.error);
+          }
         } else {
           setBiometricsSwitch(true);
           await rememberUseBiometric(true, walletConfig);
@@ -96,7 +95,6 @@ export default function Biometric() {
     [navigateTo],
   );
   return (
-    // <SafeAreaProvider style={{ backgroundColor: 'white' }}>
     <BaseContainerContext.Provider value={{ entryName: PortkeyEntries.ACCOUNT_SETTING_ENTRY }}>
       <PageContainer
         containerStyles={styles.containerStyles}
@@ -117,7 +115,6 @@ export default function Biometric() {
         )}
       </PageContainer>
     </BaseContainerContext.Provider>
-    // </SafeAreaProvider>
   );
 }
 

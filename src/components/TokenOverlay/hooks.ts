@@ -28,7 +28,7 @@ export function useSymbolImages() {
 
 export function useCommonNetworkInfo(fromChain?: string) {
   const symbolImages = useSymbolImages();
-  const [currentNetwork, setCurrentNetwork] = useState<NetworkType>('MAIN');
+  const [currentNetwork, setCurrentNetwork] = useState<NetworkType>('MAINNET');
   const [defaultToken, setDefaultToken] = useState<Token>(DEFAULT_TOKEN);
   const [currentCaAddress, setCurrentCaAddress] = useState<string>();
   const [explorerUrl, setExplorerUrl] = useState<string>();

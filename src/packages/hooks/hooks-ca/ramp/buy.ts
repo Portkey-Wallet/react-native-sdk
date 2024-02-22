@@ -23,7 +23,7 @@ export const useBuyFiat = () => {
 
   const refreshBuyFiat = useCallback(async () => {
     const { fiatList, defaultFiat } = await getBuyFiat();
-    const { buyCryptoList, buyDefaultCrypto } = await getBuyCrypto({
+    const { buyCryptoList, buyDefaultCrypto: buy1 } = await getBuyCrypto({
       fiat: defaultFiat.symbol,
       country: defaultFiat.country,
     });
@@ -41,7 +41,7 @@ export const useBuyFiat = () => {
     );
     dispatch(
       setBuyDefaultCrypto({
-        value: buyDefaultCrypto,
+        value: buy1,
       }),
     );
 
@@ -49,7 +49,7 @@ export const useBuyFiat = () => {
       buyFiatList: fiatList,
       buyDefaultFiat: defaultFiat,
       buyDefaultCryptoList: buyCryptoList,
-      buyDefaultCrypto,
+      buyDefaultCrypto: buy1,
     };
   }, [dispatch]);
 
