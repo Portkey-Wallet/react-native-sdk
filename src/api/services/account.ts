@@ -9,6 +9,7 @@ import { callRemoveManagerMethod } from 'model/contract/handler';
 import { exitWallet as exitInternalWallet, lockWallet as lockInternalWallet } from 'model/verify/core';
 import { CheckPinResult } from 'pages/Pin/CheckPin';
 import { CheckWalletUnlocked, HANDLE_WAY } from 'api/decorate';
+import resetStore from 'store/resetStore';
 @injectable()
 export class AccountService extends BaseService implements IAccountService {
   login(): Promise<UnlockedWallet | null> {
@@ -29,6 +30,7 @@ export class AccountService extends BaseService implements IAccountService {
       const res = await callRemoveManagerMethod();
       if (!res.error) {
         exitInternalWallet();
+        resetStore();
       } else {
         console.warn('exitWallet', JSON.stringify(res.error));
         return false;
