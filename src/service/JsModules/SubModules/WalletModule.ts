@@ -4,6 +4,7 @@ import { BaseJSModule, BaseMethodParams, BaseMethodResult } from '../types';
 import { callRemoveManagerMethod, getCAContractInstance } from 'model/contract/handler';
 import { exitWallet, isWalletUnlocked, lockWallet } from 'model/verify/core';
 import { getUnlockedWallet } from 'model/wallet';
+import resetStore from 'store/resetStore';
 
 const WalletModule: BaseJSModule = {
   callCaContractMethod: async (props: CallCaMethodProps) => {
@@ -88,6 +89,7 @@ const WalletModule: BaseJSModule = {
     try {
       const res = await callRemoveManagerMethod();
       if (!res.error) {
+        resetStore();
         exitWallet();
       } else {
         throw res.error;
