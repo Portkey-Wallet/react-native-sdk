@@ -196,13 +196,10 @@
     NSString *message = [NSString stringWithFormat:@"Current endPointUrl is %@", currentUrl];
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Switch Network" message:message preferredStyle:UIAlertControllerStyleActionSheet];
     UIAlertAction *mainNetwork = [UIAlertAction actionWithTitle:@"MAIN NET" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self switchEndPointUrl:@"https://did-portkey.portkey.finance"];
+        [self switchEndPointUrl:@"https://aa-portkey.portkey.finance"];
     }];
     UIAlertAction *testNetwork = [UIAlertAction actionWithTitle:@"TEST NET" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self switchEndPointUrl:@"https://did-portkey-test.portkey.finance"];
-    }];
-    UIAlertAction *test1Network = [UIAlertAction actionWithTitle:@"TEST1 NET" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self switchEndPointUrl:@"https://localtest-applesign.portkey.finance"];
+        [self switchEndPointUrl:@"https://aa-portkey-test.portkey.finance"];
     }];
     UIAlertAction *test4V2Network = [UIAlertAction actionWithTitle:@"TEST4-V2 NET" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self switchEndPointUrl:@"http://192.168.66.117:5577"];
@@ -210,7 +207,6 @@
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
     [alert addAction:mainNetwork];
     [alert addAction:testNetwork];
-    [alert addAction:test1Network];
     [alert addAction:test4V2Network];
     [alert addAction:cancel];
     return alert;
