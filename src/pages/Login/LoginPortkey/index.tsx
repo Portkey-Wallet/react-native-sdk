@@ -9,7 +9,6 @@ import CommonSvg from 'components/Svg';
 import { BGStyles, FontStyles } from 'assets/theme/styles';
 import styles from '../styles';
 import Email from '../components/Email';
-import Phone from '../components/Phone';
 import QRCode from '../components/QRCode';
 import Referral from '../components/Referral';
 import { PageLoginType, PageType } from '../types';
@@ -24,18 +23,11 @@ import NetworkContext from '../context/NetworkContext';
 import { NetworkItem } from 'packages/types/types-ca/network';
 import { PortkeyConfig, setEndPointUrl } from 'global/constants';
 import { NetworkList } from 'packages/constants/constants-ca/network-mainnet';
-import { CountryCodeItem } from 'types/wallet';
 
 const scrollViewProps = { extraHeight: 120 };
 const safeAreaColor: SafeAreaColorMapKeyUnit[] = ['transparent', 'transparent'];
 
-export default function LogInPortKey({
-  selectedCountryCode,
-  updateCountryCode,
-}: {
-  selectedCountryCode: CountryCodeItem | null;
-  updateCountryCode: (item: CountryCodeItem) => void;
-}) {
+export default function LogInPortKey() {
   const [loginType, setLoginType] = useState<PageLoginType>(PageLoginType.referral);
   const [currentNetwork, setCurrentNetwork] = useState<NetworkItem | undefined>(undefined);
   const { t } = useLanguage();
@@ -49,16 +41,9 @@ export default function LogInPortKey({
     () => ({
       [PageLoginType.email]: <Email setLoginType={setLoginType} type={PageType.login} />,
       [PageLoginType.qrCode]: <QRCode setLoginType={setLoginType} />,
-      [PageLoginType.phone]: (
-        <Phone
-          setLoginType={setLoginType}
-          selectedCountryCode={selectedCountryCode}
-          updateCountryCode={updateCountryCode}
-        />
-      ),
       [PageLoginType.referral]: <Referral setLoginType={setLoginType} type={PageType.login} />,
     }),
-    [selectedCountryCode, updateCountryCode],
+    [],
   );
   useEffectOnce(() => {
     checkForCountryCodeCached();
