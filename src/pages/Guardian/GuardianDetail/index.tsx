@@ -322,9 +322,9 @@ export default function GuardianDetail(config: { info: string }) {
           />
         </View>
 
-        <TextM style={pageStyles.tips}>
+        {/* <TextM style={pageStyles.tips}>
           {t('The login account will be able to log in and control all your assets')}
-        </TextM>
+        </TextM> */}
       </View>
       {userGuardiansList && userGuardiansList.length > 1 && (
         <CommonButton
