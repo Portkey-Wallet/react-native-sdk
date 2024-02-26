@@ -141,7 +141,7 @@ export function useAppleAuthentication() {
     if (isIOS) return;
     appleAuthAndroid.configure({
       clientId: APPLE_CLIENT_ID,
-      redirectUri: currentNetwork?.networkType === 'MAINNET' ? APPLE_MAIN_REDIRECT_URI : APPLE_TESTNET_REDIRECT_URI,
+      redirectUri: currentNetwork?.networkType === 'MAIN' ? APPLE_MAIN_REDIRECT_URI : APPLE_TESTNET_REDIRECT_URI,
       scope: appleAuthAndroid.Scope.ALL,
       responseType: appleAuthAndroid.ResponseType.ALL,
     });

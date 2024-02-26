@@ -43,7 +43,7 @@ function Network({
       onPress={press}
       style={[styles.itemRow, !network.isActive ? styles.disableItem : undefined]}
       key={network.name}>
-      <CommonSvg size={32} icon={network.networkType === 'MAINNET' ? 'mainnet' : 'testnet'} />
+      <CommonSvg size={32} icon={network.networkType === 'MAIN' ? 'mainnet' : 'testnet'} />
       <View style={[styles.nameRow, BorderStyles.border4, !hideBorder ? styles.borderBottom1 : undefined]}>
         <TextL numberOfLines={1} style={styles.nameText}>
           {network.name}

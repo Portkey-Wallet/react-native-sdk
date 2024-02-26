@@ -23,7 +23,7 @@ const initialState: WalletState = {
   walletType: 'aelf',
   walletName: 'Wallet 01',
   userId: '',
-  currentNetwork: 'MAINNET',
+  currentNetwork: 'MAIN',
   chainList: [],
 };
 export const walletSlice = createSlice({

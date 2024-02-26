@@ -140,7 +140,7 @@ const CustomToken: React.FC<CustomTokenProps> = () => {
       </TextM>
       <FormItem title={'Network'} style={pageStyles.networkWrap}>
         <SelectChain
-          currentNetwork={currentNetwork === 'MAINNET' ? 'MAINNET' : 'TESTNET'}
+          currentNetwork={currentNetwork === 'MAIN' ? 'MAIN' : 'TESTNET'}
           chainId={tokenItem.chainId || originChainId}
           chainList={Object.entries(chainList).map(it => it[1])}
           onChainPress={onChainChange}

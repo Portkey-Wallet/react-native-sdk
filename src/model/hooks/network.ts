@@ -14,7 +14,7 @@ export const getCurrentNetworkType = async (): Promise<NetworkType> => {
     }
 
     case BackEndNetWorkMap['back-end-mainnet-v2'].apiUrl: {
-      return 'MAINNET';
+      return 'MAIN';
     }
 
     case BackEndNetWorkMap['back-end-testnet-v2'].apiUrl:
@@ -25,7 +25,7 @@ export const getCurrentNetworkType = async (): Promise<NetworkType> => {
 };
 
 export const useCurrentNetworkType = () => {
-  const [currentNetwork, setCurrentNetwork] = useState<NetworkType>('MAINNET');
+  const [currentNetwork, setCurrentNetwork] = useState<NetworkType>('MAIN');
   useEffectOnce(async () => {
     setCurrentNetwork(await getCurrentNetworkType());
   });

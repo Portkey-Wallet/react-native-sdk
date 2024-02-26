@@ -41,7 +41,7 @@ const SendPreview = (props: IToSendPreviewParamsType) => {
   const { navigateTo } = useBaseContainer({ entryName: PortkeyEntries.SEND_TOKEN_CONFIRM_ENTRY });
   const { t } = useLanguage();
   const networkType = useCurrentNetworkType();
-  const isTestnet = useMemo(() => networkType !== 'MAINNET', [networkType]);
+  const isTestnet = useMemo(() => networkType !== 'MAIN', [networkType]);
   const { sendType, assetInfo, toInfo, transactionFee, sendNumber, guardiansApproved, isAutoSend = false } = props;
 
   const fromChainId = useMemo(() => assetInfo?.chainId || 'AELF', [assetInfo]);

@@ -58,7 +58,7 @@ class ConfigModule {
 interface NetworkConfig {
     name: string;
     walletType: 'ethereum' | 'aelf';
-    networkType:'MAINNET' | 'TESTNET';
+    networkType:'MAIN' | 'TESTNET';
     apiUrl: string;
     graphqlUrl: string;
     networkIconUrl?: string;

@@ -39,7 +39,7 @@ export default function AccountCard({
       decimals: tokenInfo?.decimals || 0,
     },
   };
-
+  console.log('info value', JSON.stringify(info));
   return (
     <View style={[styles.container, style]}>
       <CommonQRCodeStyled qrData={JSON.stringify(shrinkSendQrData(info))} />

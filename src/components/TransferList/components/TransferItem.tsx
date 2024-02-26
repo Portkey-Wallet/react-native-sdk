@@ -25,7 +25,7 @@ interface ActivityItemPropsType {
 const ActivityItem: React.FC<ActivityItemPropsType> = ({ item, onPress }) => {
   const { t } = useLanguage();
   const { currentNetwork } = useCommonNetworkInfo();
-  const isMainnet = useMemo(() => currentNetwork === 'MAINNET', [currentNetwork]);
+  const isMainnet = useMemo(() => currentNetwork === 'MAIN', [currentNetwork]);
   const tokenList = useMemo(() => (item?.symbol ? [item.symbol] : []), [item?.symbol]);
   const { tokenPrices = [] } = useTokenPrices(tokenList);
   const isTokenHasPrice = useMemo(() => {
