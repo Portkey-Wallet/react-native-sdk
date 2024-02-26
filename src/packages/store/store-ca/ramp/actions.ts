@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
-import { IRampCryptoDefault, IRampCryptoItem, IRampFiatDefault, IRampFiatItem } from '@portkey-wallet/ramp';
+import { IRampCryptoDefault, IRampCryptoItem, IRampFiatDefault, IRampFiatItem } from 'packages/ramp';
 
 export const setRampEntry = createAction<{
   isRampShow: boolean;
