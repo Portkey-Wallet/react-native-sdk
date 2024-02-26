@@ -1,5 +1,5 @@
 export * from './require';
-export type NetworkType = 'MAINNET' | 'TESTNET' | 'TEST1' | 'UNKNOWN';
+export type NetworkType = 'MAIN' | 'TESTNET' | 'TEST1' | 'UNKNOWN';
 export type ChainType = 'ethereum' | 'aelf';
 export type UpdateType = 'update' | 'remove' | 'add';
 export type PlatformType = 'app' | 'extension';

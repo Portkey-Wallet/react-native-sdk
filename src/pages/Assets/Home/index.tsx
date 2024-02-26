@@ -4,10 +4,10 @@ import DashBoardTab from './DashBoardTab';
 import SafeAreaBox from 'components/SafeAreaBox';
 import { BGStyles } from 'assets/theme/styles';
 
-const DashBoard: React.FC = () => {
+const DashBoard: React.FC = ({ containerId }: { containerId?: any }) => {
   return (
     <SafeAreaBox edges={['top', 'right', 'left']} style={[BGStyles.bg5]}>
-      <AssetsHome />
+      <AssetsHome containerId={containerId} />
       <DashBoardTab />
     </SafeAreaBox>
   );

@@ -1,4 +1,4 @@
-import { IRampCryptoDefault, IRampCryptoItem, IRampFiatDefault, IRampFiatItem } from '@portkey-wallet/ramp';
+import { IRampCryptoDefault, IRampCryptoItem, IRampFiatDefault, IRampFiatItem } from 'packages/ramp';
 
 export interface IRampStateType {
   rampEntry: IRampEntry;

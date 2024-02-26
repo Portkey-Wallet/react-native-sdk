@@ -39,10 +39,7 @@ export default class SignInEntryPage extends BaseContainer<SignInPageProps, Sign
     return (
       <>
         <BaseContainerContext.Provider value={{ entryName: this.getEntryName() }}>
-          <SignInPortkey
-            selectedCountryCode={this.state.currentCountryCodeItem}
-            updateCountryCode={this.updateCountryCode}
-          />
+          <SignInPortkey />
         </BaseContainerContext.Provider>
       </>
     );
