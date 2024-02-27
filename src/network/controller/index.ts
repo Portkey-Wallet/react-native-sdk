@@ -134,6 +134,8 @@ export class NetworkControllerEntity {
         guardianIdentifier: accountIdentifier,
         loginGuardianIdentifier: accountIdentifier,
       },
+      {},
+      { maxWaitingTime: 10000 },
     );
     if (!res?.result) throw new Error('network failure');
     return res.result;
