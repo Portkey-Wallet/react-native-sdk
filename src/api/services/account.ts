@@ -8,7 +8,7 @@ import { AccountError } from 'api/error';
 import { callRemoveManagerMethod } from 'model/contract/handler';
 import { exitWallet as exitInternalWallet, lockWallet as lockInternalWallet } from 'model/verify/core';
 import { CheckPinResult } from 'pages/Pin/CheckPin';
-import { CheckWalletUnlocked, HANDLE_WAY } from 'api/decorate';
+import { CheckWalletLocked, CheckWalletUnlocked, HANDLE_WAY } from 'api/decorate';
 import resetStore from 'store/resetStore';
 @injectable()
 export class AccountService extends BaseService implements IAccountService {
@@ -47,7 +47,7 @@ export class AccountService extends BaseService implements IAccountService {
     return true;
   }
 
-  @CheckWalletUnlocked({ way: HANDLE_WAY.THROW_ERROR })
+  @CheckWalletLocked({ way: HANDLE_WAY.THROW_ERROR })
   async unlockWallet(): Promise<UnlockedWallet | null> {
     return new Promise((resolve, reject) => {
       this.openResultFromExternal<CheckPinResult>(PortkeyEntries.CHECK_PIN, res => {
