@@ -2,8 +2,13 @@ import { NFTCollectionItemShowType } from 'packages/types/types-ca/assets';
 import useEffectOnce from 'hooks/useEffectOnce';
 import { getUnlockedWallet } from 'model/wallet';
 import { NetworkController } from 'network/controller';
-import { FetchAccountNftCollectionItemListResult, ITokenItemResponse, IUserTokenItem } from 'network/dto/query';
-import { useCallback, useEffect, useState } from 'react';
+import {
+  FetchAccountNftCollectionItemListResult,
+  ITokenItemResponse,
+  IUserTokenItem,
+  SearchTokenListParams,
+} from 'network/dto/query';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { CheckTransactionFeeResult } from 'network/dto/transaction';
 
 // @deprecated - use useAccountTokenBalanceList instead
@@ -93,10 +98,12 @@ export const useSearchTokenList = () => {
   useEffectOnce(async () => {
     await updateTokensList();
   });
-  const updateTokensList = async () => {
-    const result = await NetworkController.searchTokenList();
+  const lastConfig = useRef<SearchTokenListParams>({});
+  const updateTokensList = useCallback(async (config?: SearchTokenListParams) => {
+    if (config && JSON.stringify(config) === JSON.stringify(lastConfig.current)) return;
+    const result = await NetworkController.searchTokenList(config);
     result && setTokenList(result.items);
-  };
+  }, []);
   return {
     tokenList,
     updateTokensList,

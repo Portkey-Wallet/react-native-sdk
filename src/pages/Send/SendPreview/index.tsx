@@ -41,7 +41,7 @@ const SendPreview = (props: IToSendPreviewParamsType) => {
   const { navigateTo } = useBaseContainer({ entryName: PortkeyEntries.SEND_TOKEN_CONFIRM_ENTRY });
   const { t } = useLanguage();
   const networkType = useCurrentNetworkType();
-  const isTestnet = useMemo(() => networkType !== 'MAIN', [networkType]);
+  const isTestnet = useMemo(() => networkType !== 'MAINNET', [networkType]);
   const { sendType, assetInfo, toInfo, transactionFee, sendNumber, guardiansApproved, isAutoSend = false } = props;
 
   const fromChainId = useMemo(() => assetInfo?.chainId || 'AELF', [assetInfo]);
@@ -79,7 +79,7 @@ const SendPreview = (props: IToSendPreviewParamsType) => {
     [tokenPriceList, assetInfo.symbol],
   );
 
-  const isCrossChainTransfer = isCrossChain(toInfo.address, fromChainId);
+  const isCrossChainTransfer = isCrossChain(toInfo?.address ?? '', fromChainId);
   const checkTransferLimitWithJump = useCheckTransferLimitWithJump();
 
   const showRetry = useCallback(
@@ -148,7 +148,7 @@ const SendPreview = (props: IToSendPreviewParamsType) => {
         caHash: caHash || '',
         amount,
         crossDefaultFee: typeof crossDefaultFee === 'string' ? Number(crossDefaultFee) : crossDefaultFee,
-        toAddress: toInfo.address,
+        toAddress: toInfo?.address ?? '',
         guardiansApproved,
       });
 
@@ -163,7 +163,7 @@ const SendPreview = (props: IToSendPreviewParamsType) => {
         } as unknown as BaseToken,
         caHash: caHash || '',
         amount,
-        toAddress: toInfo.address,
+        toAddress: toInfo?.address ?? '',
         guardiansApproved,
       });
 
@@ -187,7 +187,7 @@ const SendPreview = (props: IToSendPreviewParamsType) => {
     isCrossChainTransfer,
     navigateTo,
     sendNumber,
-    toInfo.address,
+    toInfo?.address,
     tokenContractAddress,
     wallet,
   ]);
@@ -320,7 +320,9 @@ const SendPreview = (props: IToSendPreviewParamsType) => {
             </View>
             <View style={[styles.flexSpaceBetween]}>
               <TextM style={styles.blackFontColor} />
-              <TextM style={[styles.blackFontColor, GStyles.alignEnd]}>{`→${networkInfoShow(toInfo?.address)}`}</TextM>
+              <TextM style={[styles.blackFontColor, GStyles.alignEnd]}>{`→${networkInfoShow(
+                toInfo?.address ?? '',
+              )}`}</TextM>
             </View>
           </View>
 

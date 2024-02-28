@@ -60,6 +60,7 @@ import {
   CheckTransactionFeeResult,
   CheckTransferSecurityParams,
 } from 'network/dto/transaction';
+import { TokenItemType } from 'packages/types/types-eoa/token';
 
 const DEFAULT_MAX_POLLING_TIMES = 50;
 const MAX_PAGE_LIMIT = 100;
@@ -86,25 +87,24 @@ const NETWORK_TOKEN_BLACKLIST = [
 ];
 
 export class NetworkControllerEntity {
-  private realExecute = async <T>(
+  public realExecute = async <T>(
     url: string,
-    method: 'GET' | 'POST',
+    method: 'GET' | 'POST' | 'PUT',
     params?: any,
     headers?: any,
     extraOptions?: NetworkOptions,
   ): Promise<ResultWrapper<T>> => {
     if (method === 'GET' && params) {
       url += '?';
-      Object.entries(params).forEach(([key, value]) => {
-        url = url + `&${key}=${encodeURIComponent((value ?? 'null') as string)}`;
+      Object.entries(params).forEach(([key, value], index) => {
+        url = url + `${index > 0 ? '&' : ''}${key}=${encodeURIComponent((value ?? 'null') as string)}`;
       });
     }
-    headers = Object.assign({}, headers ?? {}, { Version: 'v1.4.8' });
+    headers = Object.assign({}, headers ?? {}, { Version: 'v1.4.16' });
     if ((await isWalletUnlocked()) && !this.isUrlInBlackList(url)) {
       const access_token = await getCachedNetworkToken();
       headers = Object.assign({}, headers, { Authorization: `Bearer ${access_token}` });
     }
-
     const result = nativeFetch<T>(url, method, params, headers, extraOptions);
     return result;
   };
@@ -134,6 +134,8 @@ export class NetworkControllerEntity {
         guardianIdentifier: accountIdentifier,
         loginGuardianIdentifier: accountIdentifier,
       },
+      {},
+      { maxWaitingTime: 10000 },
     );
     if (!res?.result) throw new Error('network failure');
     return res.result;
@@ -516,7 +518,7 @@ export class NetworkControllerEntity {
     const res = await this.realExecute<ActivityItemType>(await this.parseUrl(APIPaths.GET_ACTIVITY_INFO), 'POST', {
       transactionId,
       blockHash,
-      caAddresses: caAddressInfos.map(item => item.caAddress),
+      caAddresses: caAddressInfos?.map(item => item.caAddress),
       caAddressInfos,
     });
     if (!res?.result) throw new Error('network failure');
@@ -576,7 +578,41 @@ export class NetworkControllerEntity {
     return res.result;
   };
 
-  parseUrl = async (url: string) => {
+  fetchUserTokenConfigList = async (config: { chainIds: string[]; symbol: string }): Promise<TokenItemType[]> => {
+    const { chainIds, symbol } = config;
+    const res = await this.realExecute<TokenItemType[]>(await this.parseUrl(APIPaths.GET_USER_TOKEN_CONFIG), 'GET', {
+      chainIds,
+      symbol,
+    });
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  setDisplayUserToken = async (config: { resourceUrl: string; isDisplay: boolean }): Promise<void> => {
+    const { resourceUrl, isDisplay } = config;
+    await this.realExecute<any>(await this.parseUrl(`${APIPaths.GET_USER_TOKEN_CONFIG}/${resourceUrl}`), 'PUT', {
+      isDisplay,
+    });
+  };
+
+  checkAvailableToken = async (config: {
+    chainId: string;
+    symbol: string;
+  }): Promise<{ symbol?: string; id?: string }> => {
+    const { chainId, symbol } = config;
+    const res = await this.realExecute<{ symbol: string; id: string }>(
+      await this.parseUrl(APIPaths.CHECK_AVAILABLE_TOKEN),
+      'GET',
+      {
+        chainId,
+        symbol,
+      },
+    );
+    if (!res?.result) return {};
+    return res.result;
+  };
+
+  public parseUrl = async (url: string) => {
     return `${await PortkeyConfig.endPointUrl()}${url}`;
   };
 }

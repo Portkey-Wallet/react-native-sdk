@@ -35,10 +35,7 @@ export default class SignUpEntryPage extends BaseContainer<BaseContainerProps, S
     return (
       <>
         <BaseContainerContext.Provider value={{ entryName: this.getEntryName() }}>
-          <SignupPortkey
-            selectedCountryCode={this.state.currentCountryCodeItem}
-            updateCountryCode={this.updateCountryCode}
-          />
+          <SignupPortkey />
         </BaseContainerContext.Provider>
       </>
     );

@@ -2699,12 +2699,12 @@
   resolved "https://registry.npmmirror.com/@portkey/mobile-provider/-/mobile-provider-1.0.1-alpha.0.tgz#b059d3bd317e010358f031e71f778a86c26f9d60"
   integrity sha512-4yYY+YS17vlKz1FsavusAI/NGbcvl6OQtR0GL9LzEhr2AvmQsLZjJd4nzwdx3cMZvBt4jAt9Hjq/hYF3678uhQ==
 
-"@portkey/provider-types@1.0.1-alpha.0":
-  version "1.0.1-alpha.0"
-  resolved "https://registry.npmmirror.com/@portkey/provider-types/-/provider-types-1.0.1-alpha.0.tgz#303b383ac7306d91923b6b88c6ec356935371b2e"
-  integrity sha512-4tgoL7wJwW3ksS579KvdFFfoQhItKuURf5oKla80dGN9pdxaJ5MfW5vj/SORUZEYObe7WLwwP07zuPPWbBMO+g==
+"@portkey/provider-types@2.0.0-alpha.5":
+  version "2.0.0-alpha.5"
+  resolved "https://registry.yarnpkg.com/@portkey/provider-types/-/provider-types-2.0.0-alpha.5.tgz#c00ca6ba467e193ce207955d787c562117e3538d"
+  integrity sha512-KaaiF4ZOzWTIShgn3KYXlYQBDkn7FhPoEJbtRtKQQMA+idxSusDC3X2ZNsX6fmcwK2eezP9UGUEqeTzwDQO+/g==
   dependencies:
-    "@portkey/types" "1.0.0-alpha.4"
+    "@portkey/types" "^2.0.0-alpha.0"
     "@types/readable-stream" "^2.3.15"
 
 "@portkey/provider-types@^1.0.1-alpha.0", "@portkey/provider-types@^1.1.0":
@@ -2760,13 +2760,13 @@
     aelf-sdk "3.2.45-beta.0"
     query-string "^7.1.1"
 
-"@portkey/socket@1.0.0-alpha.2":
-  version "1.0.0-alpha.2"
-  resolved "https://registry.npmmirror.com/@portkey/socket/-/socket-1.0.0-alpha.2.tgz#fc243b61c03d2d5c0856190478af566841c00c0e"
-  integrity sha512-B2qr5wIYMS1A0d7UtnfhRJtOPJ+S51tf8Vyp3UdND5BT4d9b63XdeSjSnaBmzLuxXwT9zVP4kRJNkhLPaMpGQA==
+"@portkey/socket@1.5.0-alpha.10":
+  version "1.5.0-alpha.10"
+  resolved "https://registry.yarnpkg.com/@portkey/socket/-/socket-1.5.0-alpha.10.tgz#ac39b9177add112a5a9b930a4d694991a0bd17d1"
+  integrity sha512-MNVL076Z4sJAYKIYW3C8YnoX4dkN68KX8RZs1apvSihxzjejdinYSVb8Ous9KQ7Et6Xv2/n3OC+poW8E+lIasg==
   dependencies:
     "@abp/signalr" "^7.0.0"
-    "@portkey/utils" "^1.0.0-alpha.2"
+    "@portkey/utils" "^1.5.0-alpha.10"
 
 "@portkey/types@1.0.0-alpha.4":
   version "1.0.0-alpha.4"
@@ -2782,7 +2782,17 @@
   dependencies:
     "@types/elliptic" "^6.4.14"
 
-"@portkey/utils@^1.0.0-alpha.2", "@portkey/utils@^1.5.1":
+"@portkey/types@^2.0.0-alpha.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@portkey/types/-/types-2.0.0.tgz#3bb48500ef698302b9e8ae6fede5ecd86f2e139b"
+  integrity sha512-U9j5PmnGec3jQuWbdxMwu5f+IKFnjqTyCsQqF4opfhxtO5mtc1hPRpvnYkmll1WWArL7rXdsTSWDWMFFLddB5Q==
+
+"@portkey/utils@^1.5.0-alpha.10":
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/@portkey/utils/-/utils-1.5.3.tgz#1b24363e245f733f577b1040859b014af9650f0f"
+  integrity sha512-A41Z7U42GOZALAlDzxfKmxzYWTS7Lp3bJAuwvt0xk4k+ENVLMXLWI6RrGxrEn0BNBVgEJcR5IC/Dm8Qa6fAvng==
+
+"@portkey/utils@^1.5.1":
   version "1.5.1"
   resolved "https://registry.npmmirror.com/@portkey/utils/-/utils-1.5.1.tgz#195e7cb0b14a960fa94ef59ddb59d9dcde2f2934"
   integrity sha512-lWow+ECykQhEH4KVFzYG4+CKrCTK8pal8bwQygjkgYxBB1aZvhWaJKtgHJWinZdAZKQO+E/PG4wko8eNm61xmA==
@@ -3490,6 +3500,11 @@
   version "7.5.6"
   resolved "https://registry.npmmirror.com/@types/semver/-/semver-7.5.6.tgz#c65b2bfce1bec346582c07724e3f8c1017a20339"
   integrity sha512-dn1l8LaMea/IjDoHNd9J52uBbInB796CDffS6VdIxvqYCPSG0V0DzHp76GpaWnlhg88uYyPbXCDIowa86ybd5A==
+
+"@types/spark-md5@^3.0.2":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@types/spark-md5/-/spark-md5-3.0.4.tgz#c1221d63c069d95aba0c06a765b80661cacc12bf"
+  integrity sha512-qtOaDz+IXiNndPgYb6t1YoutnGvFRtWSNzpVjkAPCfB2UzTyybuD4Tjgs7VgRawum3JnJNRwNQd4N//SvrHg1Q==
 
 "@types/stack-utils@^2.0.0":
   version "2.0.3"
@@ -11435,6 +11450,11 @@ source-map@^0.7.3:
   version "0.7.4"
   resolved "https://registry.npmmirror.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
+
+spark-md5@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/spark-md5/-/spark-md5-3.0.2.tgz#7952c4a30784347abcee73268e473b9c0167e3fc"
+  integrity sha512-wcFzz9cDfbuqe0FZzfi2or1sgyIrsDwmPwfZC4hiNidPdPINjeUwNfv5kldczoEAcjl9Y1L3SM7Uz2PUEQzxQw==
 
 split-on-first@^1.0.0:
   version "1.1.0"

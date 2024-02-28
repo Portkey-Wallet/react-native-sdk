@@ -25,7 +25,7 @@ export type IToSendAssetParamsType = IToSendTokenParamsType | IToSendNftParamsTy
 
 export interface IToSendHomeParamsType {
   sendType: SendType;
-  toInfo: {
+  toInfo?: {
     address: string;
     name: string;
     chainId?: ChainId;

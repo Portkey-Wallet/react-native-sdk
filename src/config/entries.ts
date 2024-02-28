@@ -41,6 +41,10 @@ export enum PortkeyEntries {
   TOKEN_DETAIL_ENTRY = 'token_detail_entry',
   NFT_DETAIL_ENTRY = 'nft_detail_entry',
 
+  // assets module ③ : add token
+  TOKEN_MANAGE_LIST_ENTRY = 'token_manage_list_entry',
+  TOKEN_MANAGE_ADD_ENTRY = 'token_manage_add_entry',
+
   // send token service
   SEND_TOKEN_HOME_ENTRY = 'send_token_home_entry',
   SEND_TOKEN_CONFIRM_ENTRY = 'send_token_confirm_entry',
@@ -53,6 +57,10 @@ export enum PortkeyEntries {
   // contact
   CONTACT_DETAIL_ENTRY = 'contact_detail_entry',
   CONTACT_ACTIVITY_ENTRY = 'contact_activity_entry',
+
+  // ramp
+  RAMP_HOME_ENTRY = 'ramp_home_entry',
+  RAMP_PREVIEW_ENTRY = 'ramp_preview_entry',
 }
 
 export function isPortkeyEntries(variable: any): boolean {

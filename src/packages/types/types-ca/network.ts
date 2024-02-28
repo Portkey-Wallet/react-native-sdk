@@ -1,4 +1,6 @@
-import { ChainType, NetworkType } from 'packages/types';
+import { ChainType } from '@portkey/provider-types';
+import { NetworkType } from '..';
+
 export type NetworkItem = {
   name: string;
   walletType: ChainType;
@@ -11,7 +13,9 @@ export type NetworkItem = {
   tokenClaimContractAddress?: string;
   cmsUrl?: string;
   s3Url?: string;
+  referralUrl?: string;
   portkeyFinanceUrl?: string; // portkey website url
+  portkeyOpenLoginUrl?: string; // web page
   buyConfig?: {
     ach?: {
       appId?: string;
@@ -21,4 +25,7 @@ export type NetworkItem = {
   imApiUrl?: string;
   imWsUrl?: string;
   imS3Bucket?: string;
+  eBridgeUrl?: string;
+  eTransferUrl?: string;
+  rampTestEoaAddress?: string;
 };

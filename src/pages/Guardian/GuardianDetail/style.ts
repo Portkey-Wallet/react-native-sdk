@@ -45,6 +45,7 @@ export const pageStyles = StyleSheet.create({
     height: pTd(56),
     alignItems: 'center',
     borderRadius: pTd(6),
+    display: 'none',
   },
   tips: {
     color: font3,

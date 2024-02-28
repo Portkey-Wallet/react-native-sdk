@@ -39,6 +39,10 @@ internal class NetworkModule(context: ReactApplicationContext) :
                     NetworkConnector.headRequest(url, headers, options)
                 }
 
+                "PUT" -> {
+                    NetworkConnector.putRequest(url, headers, params, options)
+                }
+
                 else -> {
                     ResultWrapper(-1)
                 }

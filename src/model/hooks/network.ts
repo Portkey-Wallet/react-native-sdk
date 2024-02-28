@@ -4,7 +4,7 @@ import { PortkeyConfig } from 'global/constants';
 import useEffectOnce from 'hooks/useEffectOnce';
 import { useState } from 'react';
 import { AElfChainStatusItemDTO } from 'network/dto/wallet';
-import { NetworkController } from 'network/controller';
+import { getCachedAllChainInfo } from 'model/chain';
 
 export const getCurrentNetworkType = async (): Promise<NetworkType> => {
   const endPointUrl = await PortkeyConfig.endPointUrl();
@@ -13,11 +13,11 @@ export const getCurrentNetworkType = async (): Promise<NetworkType> => {
       return 'TEST1';
     }
 
-    case BackEndNetWorkMap['back-end-mainnet'].apiUrl: {
-      return 'MAIN';
+    case BackEndNetWorkMap['back-end-mainnet-v2'].apiUrl: {
+      return 'MAINNET';
     }
 
-    case BackEndNetWorkMap['back-end-testnet'].apiUrl:
+    case BackEndNetWorkMap['back-end-testnet-v2'].apiUrl:
     default: {
       return 'TESTNET';
     }
@@ -25,7 +25,7 @@ export const getCurrentNetworkType = async (): Promise<NetworkType> => {
 };
 
 export const useCurrentNetworkType = () => {
-  const [currentNetwork, setCurrentNetwork] = useState<NetworkType>('MAIN');
+  const [currentNetwork, setCurrentNetwork] = useState<NetworkType>('MAINNET');
   useEffectOnce(async () => {
     setCurrentNetwork(await getCurrentNetworkType());
   });
@@ -35,8 +35,8 @@ export const useCurrentNetworkType = () => {
 export const useChainsNetworkInfo = () => {
   const [chainsNetworkInfo, setChainsNetworkInfo] = useState<Record<string, AElfChainStatusItemDTO>>({});
   useEffectOnce(async () => {
-    const networkInfo = await NetworkController.getNetworkInfo();
-    const info = networkInfo.items.reduce((acc, cur) => {
+    const networkInfoItems = await getCachedAllChainInfo();
+    const info = networkInfoItems.reduce((acc, cur) => {
       acc[cur.chainId] = cur;
       return acc;
     }, {} as Record<string, AElfChainStatusItemDTO>);

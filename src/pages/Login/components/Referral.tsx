@@ -27,12 +27,12 @@ const TitleMap = {
   [PageType.login]: {
     apple: 'Login with Apple',
     google: 'Login with Google',
-    button: 'Login with Phone / Email',
+    button: 'Login with Email',
   },
   [PageType.signup]: {
     apple: 'Signup with Apple',
     google: 'Signup with Google',
-    button: 'Signup with Phone / Email',
+    button: 'Signup with Email',
   },
 };
 
@@ -153,7 +153,7 @@ export default function Referral({
         />
 
         <Divider title="OR" inset={true} style={pageStyles.dividerStyle} />
-        <CommonButton type="primary" onPress={() => setLoginType(PageLoginType.phone)} title={TitleMap[type].button} />
+        <CommonButton type="primary" onPress={() => setLoginType(PageLoginType.email)} title={TitleMap[type].button} />
       </View>
       {type === PageType.login && (
         <Touchable style={[GStyles.flexRowWrap, GStyles.itemCenter, styles.signUpTip]} onPress={pushToSignUp}>
