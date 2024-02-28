@@ -20,6 +20,7 @@
     "android/src/main/AndroidManifest.xml",
     "android/build.gradle",
     "ios/Classes",
+    "ios/Assets/assets",
     "native-dependencies.js",
     "tsconfig.json",
     "PortkeySDK.podspec"
