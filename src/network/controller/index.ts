@@ -31,7 +31,6 @@ import { getCachedNetworkToken } from 'network/token';
 import { isWalletUnlocked } from 'model/verify/core';
 import { SymbolImages } from 'model/symbolImage';
 import {
-  FetchTokenPriceResult,
   SearchTokenListParams,
   GetUserTokenListResult,
   FetchBalanceConfig,
@@ -40,11 +39,32 @@ import {
   FetchAccountNftCollectionListResult,
   FetchAccountNftCollectionItemListParams,
   FetchAccountNftCollectionItemListResult,
+  GetAccountAssetsByKeywordsParams,
+  GetAccountAssetsByKeywordsResult,
+  GetRecentTransactionParams,
+  RecentTransactionResponse,
+  GetContractAddressesParams,
+  GetContractListApiType,
+  IActivitiesApiResponse,
+  IActivitiesApiParams,
+  IActivityApiParams,
+  ActivityItemType,
 } from 'network/dto/query';
 import { selectCurrentBackendConfig } from 'utils/commonUtil';
 import { CheckPaymentSecurityRuleParams, CheckPaymentSecurityRuleResult } from 'network/dto/security';
+import { TokenPriceResult } from 'network/dto/token';
+import { TransactionTypes } from 'packages/constants/constants-ca/activity';
+import {
+  CheckSecurityResult,
+  CheckTransactionFeeParams,
+  CheckTransactionFeeResult,
+  CheckTransferSecurityParams,
+} from 'network/dto/transaction';
+import { TokenItemType } from 'packages/types/types-eoa/token';
 
 const DEFAULT_MAX_POLLING_TIMES = 50;
+const MAX_PAGE_LIMIT = 100;
+const DEFAULT_IMAGE_SIZE = 294;
 
 const {
   CHECK_REGISTER_STATUS,
@@ -67,25 +87,24 @@ const NETWORK_TOKEN_BLACKLIST = [
 ];
 
 export class NetworkControllerEntity {
-  private realExecute = async <T>(
+  public realExecute = async <T>(
     url: string,
-    method: 'GET' | 'POST',
+    method: 'GET' | 'POST' | 'PUT',
     params?: any,
     headers?: any,
     extraOptions?: NetworkOptions,
   ): Promise<ResultWrapper<T>> => {
     if (method === 'GET' && params) {
       url += '?';
-      Object.entries(params).forEach(([key, value]) => {
-        url = url + `&${key}=${encodeURIComponent((value ?? 'null') as string)}`;
+      Object.entries(params).forEach(([key, value], index) => {
+        url = url + `${index > 0 ? '&' : ''}${key}=${encodeURIComponent((value ?? 'null') as string)}`;
       });
     }
-    headers = Object.assign({}, headers ?? {}, { Version: 'v1.4.8' });
+    headers = Object.assign({}, headers ?? {}, { Version: 'v1.4.16' });
     if ((await isWalletUnlocked()) && !this.isUrlInBlackList(url)) {
       const access_token = await getCachedNetworkToken();
       headers = Object.assign({}, headers, { Authorization: `Bearer ${access_token}` });
     }
-
     const result = nativeFetch<T>(url, method, params, headers, extraOptions);
     return result;
   };
@@ -115,6 +134,8 @@ export class NetworkControllerEntity {
         guardianIdentifier: accountIdentifier,
         loginGuardianIdentifier: accountIdentifier,
       },
+      {},
+      { maxWaitingTime: 10000 },
     );
     if (!res?.result) throw new Error('network failure');
     return res.result;
@@ -289,32 +310,25 @@ export class NetworkControllerEntity {
       filter: `${filterKeywords} AND (${chainIdSearchLanguage})`,
       sort: 'sortWeight desc,isDisplay  desc,token.symbol  acs,token.chainId acs',
       skipCount: 0,
-      maxResultCount: 1000,
+      maxResultCount: MAX_PAGE_LIMIT,
     });
     if (!res?.result) throw new Error('network failure');
     return res.result;
   };
 
   fetchUserTokenBalance = async (config: FetchBalanceConfig): Promise<FetchBalanceResult> => {
-    const { caAddressInfos, skipCount = 0, maxResultCount = 100 } = config;
+    const { caAddressInfos, skipCount = 0, maxResultCount = MAX_PAGE_LIMIT } = config;
     const res = await this.realExecute<FetchBalanceResult>(
       await this.parseUrl(APIPaths.GET_USER_TOKEN_STATUS),
       'POST',
       {
-        caAddresses: caAddressInfos.map(({ caAddress }) => caAddress),
+        caAddresses: caAddressInfos.map(item => item.caAddress),
+        caAddressInfos,
         skipCount,
         maxResultCount,
       },
     );
     if (!res?.result) throw new Error('network failure');
-    return res.result;
-  };
-
-  // at current version, only ELF tokens have price
-  checkELFTokenPrice = async (): Promise<FetchTokenPriceResult | null | undefined> => {
-    const res = await this.realExecute<FetchTokenPriceResult>(await this.parseUrl(APIPaths.GET_TOKEN_PRICES), 'GET', {
-      symbols: ['ELF'],
-    });
     return res.result;
   };
 
@@ -347,13 +361,55 @@ export class NetworkControllerEntity {
   };
 
   fetchNetCollections = async (config: FetchAccountNftCollectionListParams) => {
-    const { caAddressInfos, skipCount = 0, maxResultCount = 100 } = config;
+    const { caAddressInfos, skipCount = 0, maxResultCount = MAX_PAGE_LIMIT } = config;
     const res = await this.realExecute<FetchAccountNftCollectionListResult>(
       await this.parseUrl(APIPaths.FETCH_NFT_COLLECTIONS),
       'POST',
       {
         caAddressInfos,
+        caAddresses: caAddressInfos.map(item => item.caAddress),
         skipCount,
+        maxResultCount,
+        width: DEFAULT_IMAGE_SIZE,
+        height: DEFAULT_IMAGE_SIZE,
+      },
+    );
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  fetchParticularNftItemList = async (config: FetchAccountNftCollectionItemListParams) => {
+    const { caAddressInfos, skipCount = 0, maxResultCount = MAX_PAGE_LIMIT, symbol } = config;
+    const res = await this.realExecute<FetchAccountNftCollectionItemListResult>(
+      await this.parseUrl(APIPaths.FETCH_NFT_COLLECTIONS_ITEM),
+      'POST',
+      {
+        caAddressInfos,
+        caAddresses: caAddressInfos.map(item => item.caAddress),
+        skipCount,
+        symbol,
+        maxResultCount,
+        width: DEFAULT_IMAGE_SIZE,
+        height: DEFAULT_IMAGE_SIZE,
+      },
+    );
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  /**
+   * Fetch all the user assets including NFTs and tokens.
+   */
+  searchUserAssets = async (config: GetAccountAssetsByKeywordsParams) => {
+    const { caAddressInfos, skipCount = 0, maxResultCount = MAX_PAGE_LIMIT, keyword } = config;
+    const res = await this.realExecute<GetAccountAssetsByKeywordsResult>(
+      await this.parseUrl(APIPaths.SEARCH_USER_ASSETS),
+      'POST',
+      {
+        caAddressInfos,
+        caAddresses: caAddressInfos.map(item => item.caAddress),
+        skipCount,
+        keyword,
         maxResultCount,
         width: 16,
         height: 16,
@@ -363,18 +419,136 @@ export class NetworkControllerEntity {
     return res.result;
   };
 
-  fetchParticularNftItemList = async (config: FetchAccountNftCollectionItemListParams) => {
-    const { caAddressInfos, skipCount = 0, maxResultCount = 100, symbol } = config;
-    const res = await this.realExecute<FetchAccountNftCollectionItemListResult>(
-      await this.parseUrl(APIPaths.FETCH_NFT_COLLECTIONS_ITEM),
+  /**
+   * Get the addresses from recent transactions.
+   */
+  getRecentTransactionInfo = async (config: GetRecentTransactionParams) => {
+    const { caAddressInfos, skipCount = 0, maxResultCount = MAX_PAGE_LIMIT } = config;
+    const res = await this.realExecute<RecentTransactionResponse>(
+      await this.parseUrl(APIPaths.GET_RECENT_ADDRESS),
       'POST',
       {
         caAddressInfos,
+        caAddresses: caAddressInfos.map(item => item.caAddress),
         skipCount,
-        symbol,
         maxResultCount,
-        width: 16,
-        height: 16,
+      },
+    );
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  /**
+   * Read addresses from user's contract info.
+   */
+  getContractInfo = async (config: GetContractAddressesParams = {}) => {
+    // TODO: fix filter options issue
+    const { keyword, page = 1, size = MAX_PAGE_LIMIT } = config || {};
+    const res = await this.realExecute<GetContractListApiType>(
+      await this.parseUrl(APIPaths.READ_CONTRACTS_ADDRESS),
+      'GET',
+      {
+        filter: '*',
+        sort: 'modificationTime',
+        sortType: 0,
+        skipCount: (page - 1) * size,
+        maxResultCount: size,
+        keyword,
+      },
+    );
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  /**
+   * get account's recent action info
+   */
+  getRecentActivities = async (config: IActivitiesApiParams): Promise<IActivitiesApiResponse> => {
+    const {
+      maxResultCount = MAX_PAGE_LIMIT,
+      skipCount = 0,
+      caAddressInfos,
+      managerAddresses,
+      transactionTypes = [
+        TransactionTypes.TRANSFER,
+        TransactionTypes.CROSS_CHAIN_TRANSFER,
+        TransactionTypes.CLAIM_TOKEN,
+        TransactionTypes.TRANSFER_RED_PACKET,
+      ],
+      chainId,
+      symbol,
+      width = DEFAULT_IMAGE_SIZE,
+      height = -1,
+    } = config;
+    const res = await this.realExecute<IActivitiesApiResponse>(
+      await this.parseUrl(APIPaths.GET_RECENT_ACTIVITIES),
+      'POST',
+      {
+        maxResultCount,
+        skipCount,
+        caAddressInfos,
+        caAddresses: caAddressInfos.map(item => item.caAddress),
+        managerAddresses,
+        transactionTypes,
+        chainId,
+        symbol,
+        width,
+        height,
+      },
+    );
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  getActivityListWithAddress = async (params: any): Promise<any> => {
+    const res = await this.realExecute<IActivitiesApiResponse>(
+      await this.parseUrl(APIPaths.GET_ACTIVITY_LIST_WITH_ADDRESS),
+      'POST',
+      params,
+    );
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  /**
+   * check one particular activity item info
+   */
+  getActivityInfo = async (config: IActivityApiParams) => {
+    const { transactionId, blockHash, caAddressInfos } = config;
+    const res = await this.realExecute<ActivityItemType>(await this.parseUrl(APIPaths.GET_ACTIVITY_INFO), 'POST', {
+      transactionId,
+      blockHash,
+      caAddresses: caAddressInfos?.map(item => item.caAddress),
+      caAddressInfos,
+    });
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  /**
+   * get transaction fee on chains
+   */
+  getTransactionFee = async (config: CheckTransactionFeeParams) => {
+    const { chainIds } = config;
+    const res = await this.realExecute<CheckTransactionFeeResult>(
+      await this.parseUrl(APIPaths.CHECK_TRANSACTION_FEE),
+      'GET',
+      {
+        chainIds,
+      },
+    );
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  checkTransferSecurity = async (config: CheckTransferSecurityParams) => {
+    const { caHash, targetChainId } = config;
+    const res = await this.realExecute<CheckSecurityResult>(
+      await this.parseUrl(APIPaths.CHECK_TRANSFER_SECURITY),
+      'GET',
+      {
+        caHash,
+        checkTransferSafeChainId: targetChainId,
       },
     );
     if (!res?.result) throw new Error('network failure');
@@ -396,7 +570,49 @@ export class NetworkControllerEntity {
     return res.result;
   };
 
-  parseUrl = async (url: string) => {
+  fetchTokenPrices = async (symbols: string[]) => {
+    const res = await this.realExecute<TokenPriceResult>(await this.parseUrl(APIPaths.GET_TOKEN_PRICES), 'GET', {
+      symbols,
+    });
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  fetchUserTokenConfigList = async (config: { chainIds: string[]; symbol: string }): Promise<TokenItemType[]> => {
+    const { chainIds, symbol } = config;
+    const res = await this.realExecute<TokenItemType[]>(await this.parseUrl(APIPaths.GET_USER_TOKEN_CONFIG), 'GET', {
+      chainIds,
+      symbol,
+    });
+    if (!res?.result) throw new Error('network failure');
+    return res.result;
+  };
+
+  setDisplayUserToken = async (config: { resourceUrl: string; isDisplay: boolean }): Promise<void> => {
+    const { resourceUrl, isDisplay } = config;
+    await this.realExecute<any>(await this.parseUrl(`${APIPaths.GET_USER_TOKEN_CONFIG}/${resourceUrl}`), 'PUT', {
+      isDisplay,
+    });
+  };
+
+  checkAvailableToken = async (config: {
+    chainId: string;
+    symbol: string;
+  }): Promise<{ symbol?: string; id?: string }> => {
+    const { chainId, symbol } = config;
+    const res = await this.realExecute<{ symbol: string; id: string }>(
+      await this.parseUrl(APIPaths.CHECK_AVAILABLE_TOKEN),
+      'GET',
+      {
+        chainId,
+        symbol,
+      },
+    );
+    if (!res?.result) return {};
+    return res.result;
+  };
+
+  public parseUrl = async (url: string) => {
     return `${await PortkeyConfig.endPointUrl()}${url}`;
   };
 }

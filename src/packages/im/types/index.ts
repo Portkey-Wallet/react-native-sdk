@@ -107,14 +107,14 @@ export interface AddressItem {
 }
 
 export interface CaHolderInfo {
-  userId: string;
-  caHash: string;
-  walletName: string;
+  userId?: string;
+  caHash?: string;
+  walletName?: string;
 }
 
 export interface IImInfo {
-  relationId: string;
-  portkeyId: string;
+  relationId?: string;
+  portkeyId?: string;
   name?: string;
 }
 
@@ -129,5 +129,5 @@ export type ContactItemType = {
   userId: string;
   caHolderInfo?: CaHolderInfo;
   imInfo?: IImInfo;
-  isImputation: boolean;
+  isImputation?: boolean;
 };

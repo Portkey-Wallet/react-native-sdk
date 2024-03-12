@@ -7,7 +7,7 @@ export function useDefaultChainType() {
   return 'aelf' as ChainType;
 }
 export function useCurrentNetworkInfo() {
-  const [currentNetwork, setCurrentNetwork] = useState<NetworkType>('MAIN');
+  const [currentNetwork, setCurrentNetwork] = useState<NetworkType>('MAINNET');
   useEffectOnce(async () => {
     setCurrentNetwork(await getCurrentNetworkType());
   });

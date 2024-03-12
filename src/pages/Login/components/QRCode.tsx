@@ -26,7 +26,7 @@ const DEFAULT_WALLET: LoginQRData = {
   chainType: 'aelf',
   type: 'login',
   address: '2Aj8aTMsmgp1YyrVeCvB2dp9DbrLz5zgmAVmKNXsLnxhqzA69L',
-  netWorkType: 'TESTNET',
+  networkType: 'TESTNET',
   extraData: {
     deviceInfo: {
       deviceType: 2,
@@ -40,7 +40,7 @@ export default function QRCode({ setLoginType }: { setLoginType: (type: PageLogi
   const [newWallet, setNewWallet] = useState<ManagerInfo>();
   const networkContext = useContext(NetworkContext);
   const currentNetwork = useMemo(() => {
-    return networkContext.currentNetwork?.networkType ?? 'MAIN';
+    return networkContext.currentNetwork?.networkType ?? 'MAINNET';
   }, [networkContext.currentNetwork?.networkType]);
   const { navigateForResult, onFinish } = useBaseContainer({});
   const caWalletInfo = useIntervalQueryCAInfoByAddress(currentNetwork, newWallet?.address);
@@ -135,7 +135,7 @@ export default function QRCode({ setLoginType }: { setLoginType: (type: PageLogi
             chainType: 'aelf',
             type: 'login',
             address: newWallet.address,
-            netWorkType: currentNetwork,
+            networkType: currentNetwork,
             id: Math.floor(Date.now() / 1000),
             extraData: {
               deviceInfo: getDeviceInfo(),

@@ -2,18 +2,26 @@ import { NFTCollectionItemShowType } from 'packages/types/types-ca/assets';
 import useEffectOnce from 'hooks/useEffectOnce';
 import { getUnlockedWallet } from 'model/wallet';
 import { NetworkController } from 'network/controller';
-import { FetchAccountNftCollectionItemListResult, ITokenItemResponse, IUserTokenItem } from 'network/dto/query';
-import { useState } from 'react';
+import {
+  FetchAccountNftCollectionItemListResult,
+  ITokenItemResponse,
+  IUserTokenItem,
+  SearchTokenListParams,
+} from 'network/dto/query';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { CheckTransactionFeeResult } from 'network/dto/transaction';
 
-export const useTokenPrices = () => {
+// @deprecated - use useAccountTokenBalanceList instead
+export const useTokenPrices = (tokenList: string[] = []) => {
   const [tokenPrices, setTokenPrices] = useState<Array<{ symbol: string; priceInUsd: number }>>([]);
-  useEffectOnce(async () => {
-    await updateTokenPrices();
-  });
-  const updateTokenPrices = async () => {
-    const result = await NetworkController.checkELFTokenPrice();
+  const updateTokenPrices = useCallback(async () => {
+    if (tokenList.length === 0) return;
+    const result = await NetworkController.fetchTokenPrices(tokenList);
     result && setTokenPrices(result.items);
-  };
+  }, [tokenList]);
+  useEffect(() => {
+    updateTokenPrices();
+  }, [updateTokenPrices]);
   return {
     tokenPrices,
     updateTokenPrices,
@@ -90,12 +98,37 @@ export const useSearchTokenList = () => {
   useEffectOnce(async () => {
     await updateTokensList();
   });
-  const updateTokensList = async () => {
-    const result = await NetworkController.searchTokenList();
+  const lastConfig = useRef<SearchTokenListParams>({});
+  const updateTokensList = useCallback(async (config?: SearchTokenListParams) => {
+    if (config && JSON.stringify(config) === JSON.stringify(lastConfig.current)) return;
+    const result = await NetworkController.searchTokenList(config);
     result && setTokenList(result.items);
-  };
+  }, []);
   return {
     tokenList,
     updateTokensList,
+  };
+};
+
+export const useGetTxFee = (targetChainId?: string) => {
+  const [txFee, setTxFee] = useState<CheckTransactionFeeResult>();
+  useEffectOnce(async () => {
+    await updateTxFee();
+  });
+  const updateTxFee = async () => {
+    const {
+      caInfo: { caHash },
+      originChainId,
+    } = await getUnlockedWallet();
+    const chainId = targetChainId || originChainId;
+    if (!caHash) return;
+    const result = await NetworkController.getTransactionFee({
+      chainIds: [chainId],
+    });
+    result && setTxFee(result);
+  };
+  return {
+    txFee,
+    updateTxFee,
   };
 };

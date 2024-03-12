@@ -8,16 +8,22 @@ export interface BaseToken {
   address: string; // "ArPnUb5FtxG2oXTaWX2DxNZowDEruJLs2TEkhRCzDdrRDfg8B",        token address  contract address
   symbol: string; // "ELF"   the name showed
   name: string;
+  tokenContractAddress?: string; // used for cross chain transfer
 }
 
 export interface TokenItemType extends BaseToken {
-  isDefault: boolean; // boolean,
-  tokenName: string; //  "ELF"
+  isDefault?: boolean; // boolean,
+  tokenName?: string; //  "ELF"
   chainId: ChainId; // string "AELF"
 }
 export interface TokenItemShowType extends TokenItemType {
   isAdded?: boolean; // boolean
+  tokenContractAddress?: string;
+  imageUrl?: string;
   balance?: string;
+  balanceInUsd?: string;
+  price?: string | number;
+  userTokenId?: string;
 }
 
 //  all Added TokenInfo（all chain all account tokenList）

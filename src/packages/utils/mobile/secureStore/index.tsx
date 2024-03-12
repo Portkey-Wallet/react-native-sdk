@@ -43,7 +43,7 @@ export default {
   getInstance() {
     return instance;
   },
-  async getItemAsync(key: typeof SecureKeys[number]) {
+  async getItemAsync(key: (typeof SecureKeys)[number]) {
     if (instance) {
       instance.isAuthenticating = true;
       const item = await SecureStore.getItemAsync(key, secureOptions);
@@ -54,7 +54,7 @@ export default {
     }
     return null;
   },
-  async setItemAsync(key: typeof SecureKeys[number], value: string) {
+  async setItemAsync(key: (typeof SecureKeys)[number], value: string) {
     if (instance) {
       // https://github.com/alephium/mobile-wallet/issues/33
       // fix Could not decrypt the item in SecureStore

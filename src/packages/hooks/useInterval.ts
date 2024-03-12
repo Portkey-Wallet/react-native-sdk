@@ -1,6 +1,25 @@
-import { DependencyList, useRef, useCallback, useMemo } from 'react';
-import { useDeepCompareEffect } from 'react-use';
+import { DependencyList, EffectCallback, useRef, useCallback, useMemo } from 'react';
 import { useLatestRef } from './';
+import useCustomCompareEffect from './useCustomCompareEffect';
+import isDeepEqual from 'fast-deep-equal/react';
+
+const isPrimitive = (val: any) => val !== Object(val);
+
+const useDeepCompareEffect = (effect: EffectCallback, deps: DependencyList) => {
+  if (process.env.NODE_ENV !== 'production') {
+    if (!(deps instanceof Array) || !deps.length) {
+      console.warn('`useDeepCompareEffect` should not be used with no dependencies. Use React.useEffect instead.');
+    }
+
+    if (deps.every(isPrimitive)) {
+      console.warn(
+        '`useDeepCompareEffect` should not be used with dependencies that are all primitive values. Use React.useEffect instead.',
+      );
+    }
+  }
+
+  useCustomCompareEffect(effect, deps, isDeepEqual);
+};
 
 const useInterval = (callback: () => void, delay?: number | null, deps?: DependencyList) => {
   const intervalRef = useRef<NodeJS.Timer | number>();

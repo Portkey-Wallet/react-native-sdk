@@ -98,6 +98,7 @@ export default function AccountSettings() {
 const styles = StyleSheet.create({
   containerStyles: {
     backgroundColor: defaultColors.bg4,
+    paddingHorizontal: pTd(20),
   },
   itemWrap: {
     marginTop: pTd(24),

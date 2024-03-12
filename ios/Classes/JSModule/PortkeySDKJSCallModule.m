@@ -9,6 +9,13 @@
 #import <React/RCTBridge.h>
 #import <PortkeySDK/PortkeySDKBundleUtil.h>
 
+#if __has_include(<React-RCTAppDelegate/RCTAppDelegate.h>)
+#import <React-RCTAppDelegate/RCTAppDelegate.h>
+#elif __has_include(<React_RCTAppDelegate/RCTAppDelegate.h>)
+// for importing the header from framework, the dash will be transformed to underscore
+#import <React_RCTAppDelegate/RCTAppDelegate.h>
+#endif
+
 @interface PortkeySDKJSCallModule () <RCTBridgeDelegate>
 
 @property (nonatomic, strong, readwrite) RCTBridge *bridge;
@@ -23,7 +30,6 @@
     static dispatch_once_t token;
     dispatch_once(&token, ^{
         instance = [PortkeySDKJSCallModule new];
-        instance.bridge = [[RCTBridge alloc] initWithDelegate:instance launchOptions:nil];
     });
     return instance;
 }
@@ -91,5 +97,38 @@
     return _methodEventDict;
 }
 
+- (RCTBridge *)bridge {
+    if (!_bridge) {
+        _bridge = [self createBridge];
+    }
+    return _bridge;
+}
+
+- (RCTBridge *)createBridge {
+    __block RCTBridge *bridge;
+    if ([[NSThread currentThread] isMainThread]) {
+        id<UIApplicationDelegate> appDelagete = [UIApplication sharedApplication].delegate;
+        if ([appDelagete isKindOfClass:RCTAppDelegate.class]
+            && ((RCTAppDelegate *)appDelagete).bridge != NULL) {
+            bridge = ((RCTAppDelegate *)appDelagete).bridge;
+        } else {
+            bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:nil];
+        }
+    } else {
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            id<UIApplicationDelegate> appDelagete = [UIApplication sharedApplication].delegate;
+            if ([appDelagete isKindOfClass:RCTAppDelegate.class]
+                && ((RCTAppDelegate *)appDelagete).bridge != NULL) {
+                bridge = ((RCTAppDelegate *)appDelagete).bridge;
+            } else {
+                bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:nil];
+            }
+            dispatch_semaphore_signal(semaphore);
+        });
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    }
+    return bridge;
+}
 
 @end

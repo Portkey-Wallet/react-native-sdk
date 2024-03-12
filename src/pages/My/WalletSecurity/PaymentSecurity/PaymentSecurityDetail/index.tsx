@@ -17,6 +17,7 @@ import { PortkeyEntries } from 'config/entries';
 import { PaymentSecurityEditProps } from '../PaymentSecurityEdit';
 import { GuardiansApprovalIntent } from 'pages/GuardianManage/GuardianHome';
 import CommonToast from 'components/CommonToast';
+import { getBottomSpace } from 'utils/screen';
 
 export interface PaymentSecurityDetailProps {
   transferLimitDetail?: ITransferLimitItem;
@@ -107,6 +108,7 @@ const PaymentSecurityDetail: React.FC = (props: PaymentSecurityDetailProps) => {
         )}
       </View>
       <CommonButton
+        style={pageStyles.editButton}
         type="solid"
         onPress={() => {
           navigateForResult<GuardiansApprovalIntent, PaymentSecurityEditProps>(
@@ -120,8 +122,6 @@ const PaymentSecurityDetail: React.FC = (props: PaymentSecurityDetailProps) => {
               const { status } = intent;
               if (status === 'success') {
                 CommonToast.success('edit success');
-              } else {
-                CommonToast.fail('edit failed');
               }
             },
           );
@@ -137,7 +137,8 @@ const pageStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: defaultColors.bg4,
     justifyContent: 'space-between',
-    ...GStyles.paddingArg(24, 20, 18),
+    ...GStyles.paddingArg(24, 20, 22),
+    display: 'flex',
   },
   labelWrap: {
     flexDirection: 'row',
@@ -148,6 +149,9 @@ const pageStyles = StyleSheet.create({
     height: pTd(56),
     alignItems: 'center',
     borderRadius: pTd(6),
+  },
+  editButton: {
+    marginBottom: getBottomSpace(),
   },
 });
 

@@ -38,9 +38,7 @@ export const attemptAccountCheck = async (accountIdentifier: string): Promise<Ac
         hasRegistered: guardianResultDTO?.guardianList?.guardians?.length > 0,
       };
     } catch (e) {
-      return {
-        hasRegistered: false,
-      };
+      throw new Error('network failure');
     }
   } else if (registerResultDTO?.errCode === '3002') {
     return {
@@ -72,7 +70,7 @@ export const getCachedCountryCodeData = async (): Promise<CountryCodeDataDTO> =>
   }
 };
 
-export const isReacptchaOpen = async (scene: OperationTypeEnum): Promise<boolean> => {
+export const isRecaptchaOpen = async (scene: OperationTypeEnum): Promise<boolean> => {
   const result = await NetworkController.isGoogleRecaptchaOpen(scene);
   return result ?? false;
 };

@@ -8,6 +8,7 @@ export const networkClientMap: Record<string, ApolloClient<NormalizedCacheObject
 export const getApolloClient = (networkType: NetworkType) => {
   if (!networkClientMap[networkType]) {
     const graphqlUrl = NetworkList.find(item => item.networkType === networkType)?.graphqlUrl || '';
+    console.log('graphqlUrl', graphqlUrl);
     networkClientMap[networkType] = graphQLClientProvider(graphqlUrl);
   }
   return networkClientMap[networkType];

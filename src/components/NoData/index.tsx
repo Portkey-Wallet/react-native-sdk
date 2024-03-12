@@ -3,7 +3,7 @@ import { StyleSheet, View, ViewStyle } from 'react-native';
 import { pTd } from 'utils/unit';
 import { TextL } from 'components/CommonText';
 import { defaultColors } from 'assets/theme';
-import Svg, { IconName } from 'components/Svg';
+import CommonSvg, { IconName } from 'components/Svg';
 
 export type NoDataPropsType = {
   noPic?: boolean;
@@ -35,7 +35,7 @@ const NoData: React.FC<NoDataPropsType> = props => {
 
   return (
     <View style={[styles.wrap, topStyle, style]}>
-      {!noPic && <Svg icon={icon} oblongSize={[pTd(160), pTd(140)]} iconStyle={styles.img} />}
+      {!noPic && <CommonSvg icon={icon} oblongSize={[pTd(160), pTd(140)]} iconStyle={styles.img} />}
       <TextL style={styles.message}>{message}</TextL>
     </View>
   );

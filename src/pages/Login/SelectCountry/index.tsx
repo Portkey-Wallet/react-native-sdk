@@ -21,7 +21,7 @@ import { GlobalStorage } from 'service/storage';
 import { CURRENT_USING_COUNTRY_CODE } from 'model/global';
 
 const IndexHeight = 56,
-  SectionHeight = 20;
+  SectionHeight = 40;
 
 export default function SelectCountry({
   selectCountry,
@@ -31,7 +31,7 @@ export default function SelectCountry({
   navigateBack: (item: CountryItem | null | undefined) => void;
 }) {
   const [phoneCountryCodeList, setPhoneCountryCodeList] = useState<CountryItem[]>([]);
-  const [List, setList] = useState<{ index: string; items: CountryItem[] }[]>();
+  const [List, setList] = useState<{ index: string; items: CountryItem[] }[]>([]);
   const [searchList, setSearchList] = useState<CountryItem[]>();
   useEffectOnce(() => {
     checkMMKVStorage();
@@ -76,9 +76,6 @@ export default function SelectCountry({
       </View>
     );
   };
-  if (!data) {
-    return <View />;
-  }
   return (
     <PageContainer
       titleDom="Country/Region"
@@ -95,21 +92,23 @@ export default function SelectCountry({
           onChangeText={s => setSearchList(!s ? undefined : countryCodeFilter(s, phoneCountryCodeList))}
         />
       </View>
-      <View style={styles.indexBarRow}>
-        <IndexBarLargeList
-          data={data}
-          renderItem={_renderItem}
-          indexHeight={IndexHeight}
-          indexBarBoxStyle={styles.indexBarBoxStyle}
-          sectionHeight={searchList ? 0 : SectionHeight}
-          extraHeight={headerHeight + bottomBarHeight + 120}
-          renderSection={searchList ? undefined : _renderSection}
-          indexArray={
-            searchList ? undefined : data.map(item => (item as { index: string; items: CountryItem[] }).index)
-          }
-          renderEmpty={() => <NoData topDistance={64} noPic message={'There is no search result.'} />}
-        />
-      </View>
+      {Boolean(data) && (
+        <View style={styles.indexBarRow}>
+          <IndexBarLargeList
+            data={data}
+            renderItem={_renderItem}
+            indexHeight={IndexHeight}
+            indexBarBoxStyle={styles.indexBarBoxStyle}
+            sectionHeight={searchList ? 0 : SectionHeight}
+            extraHeight={headerHeight + bottomBarHeight + 120}
+            renderSection={searchList ? undefined : _renderSection}
+            indexArray={
+              searchList ? undefined : data.map(item => (item as { index: string; items: CountryItem[] }).index)
+            }
+            renderEmpty={() => <NoData topDistance={64} noPic message={'There is no search result.'} />}
+          />
+        </View>
+      )}
     </PageContainer>
   );
 }
@@ -126,6 +125,7 @@ const styles = StyleSheet.create({
     paddingRight: pTd(40),
   },
   sectionRow: {
+    paddingTop: pTd(20),
     paddingHorizontal: pTd(20),
     height: SectionHeight,
     backgroundColor: defaultColors.bg1,

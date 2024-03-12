@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)termsOfServicePrefix;
 - (NSString *)termsOfServiceTitle;
 
+- (void)setUseInNativeApp:(BOOL)isUseInNativeApp;
+- (BOOL)isUseInNativeApp;
 - (void)setNetwork:(PortkeySDKNetworkConfigItem *)network;
 
 @end

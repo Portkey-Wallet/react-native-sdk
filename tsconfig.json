@@ -2,9 +2,7 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "commonjs",
-    "lib": [
-      "es2021"
-    ],
+    "lib": ["es2021"],
     "allowJs": true,
     "jsx": "react-native",
     "isolatedModules": true,
@@ -12,9 +10,7 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "*": [
-        "./src/*"
-      ]
+      "*": ["./src/*"]
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -22,25 +18,14 @@
     "resolveJsonModule": true,
     "outDir": "./dist",
     "declaration": true,
-    "noEmit": true,
-    "types": [
-      "reflect-metadata"
-    ],
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "types": ["reflect-metadata"],
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false
   },
-  "exclude": [
-    "android",
-    "ios",
-    "node_modules",
-    "babel.config.js",
-    "metro.config.js",
-    "jest.config.js"
-  ],
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "index.js"
-  ],
+  "exclude": ["android", "ios", "node_modules", "babel.config.js", "metro.config.js", "jest.config.js"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "extends": "expo/tsconfig.base"
 }

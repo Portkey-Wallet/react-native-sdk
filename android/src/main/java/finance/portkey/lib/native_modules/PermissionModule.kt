@@ -3,6 +3,7 @@ package finance.portkey.lib.native_modules
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.facebook.react.bridge.Promise
@@ -21,6 +22,11 @@ class PermissionModule(private val reactApplicationContext: ReactApplicationCont
 
     @ReactMethod
     fun isPermissionGranted(name: String, promise: Promise) {
+        if(name == "photo") {
+            Log.w("PermissionModule", "You don't need to grant photo permission, since we use chooseImage() that uses Intent now.")
+            promise.resolve(true)
+            return
+        }
         val permission = getPermissionType(name)
         if (permission != null) {
             val isGranted = ContextCompat.checkSelfPermission(
@@ -78,7 +84,7 @@ class PermissionModule(private val reactApplicationContext: ReactApplicationCont
     private fun getPermissionType(name: String): String? {
         return when (name) {
             "camera" -> Manifest.permission.CAMERA
-            "photo" -> Manifest.permission.READ_MEDIA_IMAGES
+//            "photo" -> Manifest.permission.READ_EXTERNAL_STORAGE
             "location" -> Manifest.permission.ACCESS_FINE_LOCATION
             "microphone" -> Manifest.permission.RECORD_AUDIO
             "storage" -> Manifest.permission.WRITE_EXTERNAL_STORAGE

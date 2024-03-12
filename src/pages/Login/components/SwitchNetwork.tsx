@@ -3,7 +3,7 @@ import GStyles from 'assets/theme/GStyles';
 import { FontStyles } from 'assets/theme/styles';
 import { TextM } from 'components/CommonText';
 import NetworkOverlay from 'components/NetworkOverlay';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import Touchable from 'components/Touchable';
 import React from 'react';
 import { pTd } from 'utils/unit';
@@ -22,7 +22,7 @@ export default function SwitchNetwork() {
       }
       style={[GStyles.flexRowWrap, GStyles.itemCenter, styles.networkRow]}>
       <TextM style={[FontStyles.font11, styles.networkTip]}>{networkContext.currentNetwork?.name}</TextM>
-      <Svg size={pTd(16)} icon="down-arrow" color={FontStyles.font11.color} />
+      <CommonSvg size={pTd(16)} icon="down-arrow" color={FontStyles.font11.color} />
     </Touchable>
   );
 }

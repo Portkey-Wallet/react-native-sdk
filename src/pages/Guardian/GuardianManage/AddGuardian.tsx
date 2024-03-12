@@ -1,6 +1,6 @@
 import GStyles from 'assets/theme/GStyles';
 import { TextL, TextM, TextS } from 'components/CommonText';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 import { pTd } from 'utils/unit';
@@ -56,6 +56,8 @@ import { AccountOriginalType } from 'model/verify/core';
 import { GuardianVerifyType, VerifiedGuardianInfo } from 'model/verify/social-recovery';
 import { Buffer } from 'buffer';
 import { sleep } from 'packages/utils';
+import { TargetScene } from './type';
+import { ChainId } from 'packages/types';
 
 if (!global.Buffer) {
   global.Buffer = Buffer;
@@ -68,7 +70,8 @@ type thirdPartyInfoType = {
 
 type TypeItemType = (typeof LOGIN_TYPE_LIST)[number];
 
-const AddGuardian: React.FC = () => {
+const AddGuardian = (props: { targetScene?: string; accelerateChainId: ChainId }) => {
+  const { targetScene = TargetScene.NORMAL, accelerateChainId } = props;
   const { t } = useLanguage();
   const [userGuardiansList, setUserGuardiansList] = useState<Array<GuardianConfig>>([]);
   const [verifierMap, setVerifierMap] = useState<{
@@ -221,14 +224,18 @@ const AddGuardian: React.FC = () => {
         },
       };
       handleGuardiansApproval({
-        guardianVerifyType: GuardianVerifyType.ADD_GUARDIAN,
+        accelerateChainId,
+        guardianVerifyType:
+          targetScene === TargetScene.NORMAL
+            ? GuardianVerifyType.ADD_GUARDIAN
+            : GuardianVerifyType.ADD_GUARDIAN_ACCELERATE,
         accountIdentifier: '',
         accountOriginalType: AccountOriginalType.Email,
         guardians: userGuardiansList,
         particularGuardian: thisGuardian,
       });
     },
-    [selectedVerifier, userGuardiansList, verifyToken],
+    [accelerateChainId, selectedVerifier, targetScene, userGuardiansList, verifyToken],
   );
 
   const onConfirm = useCallback(async () => {
@@ -339,7 +346,11 @@ const AddGuardian: React.FC = () => {
                   Loading.hide();
                   await sleep(200);
                   handleGuardiansApproval({
-                    guardianVerifyType: GuardianVerifyType.ADD_GUARDIAN,
+                    accelerateChainId,
+                    guardianVerifyType:
+                      targetScene === TargetScene.NORMAL
+                        ? GuardianVerifyType.ADD_GUARDIAN
+                        : GuardianVerifyType.ADD_GUARDIAN_ACCELERATE,
                     accountIdentifier,
                     accountOriginalType,
                     guardians: userGuardiansList.map(it => {
@@ -372,6 +383,8 @@ const AddGuardian: React.FC = () => {
     t,
     country?.code,
     thirdPartyConfirm,
+    accelerateChainId,
+    targetScene,
     userGuardiansList,
   ]);
 
@@ -567,10 +580,12 @@ const AddGuardian: React.FC = () => {
             titleTextStyle={[pageStyles.titleTextStyle, !selectedType && FontStyles.font7]}
             style={pageStyles.typeWrap}
             titleLeftElement={
-              selectedType?.icon && <Svg icon={selectedType.icon} size={pTd(28)} iconStyle={pageStyles.typeIcon} />
+              selectedType?.icon && (
+                <CommonSvg icon={selectedType.icon} size={pTd(28)} iconStyle={pageStyles.typeIcon} />
+              )
             }
             title={selectedType?.name || t('Select guardian types')}
-            rightElement={<Svg size={pTd(20)} icon="down-arrow" />}
+            rightElement={<CommonSvg size={pTd(20)} icon="down-arrow" />}
           />
         </>
 
@@ -600,11 +615,11 @@ const AddGuardian: React.FC = () => {
           titleTextStyle={[pageStyles.titleTextStyle, !selectedVerifier && FontStyles.font7]}
           style={pageStyles.verifierWrap}
           title={selectedVerifier?.name || t('Select guardian verifiers')}
-          rightElement={<Svg size={pTd(20)} icon="down-arrow" />}
+          rightElement={<CommonSvg size={pTd(20)} icon="down-arrow" />}
         />
         {guardianError.isError && <TextS style={pageStyles.errorTips}>{guardianError.errorMsg || ''}</TextS>}
       </View>
-      <View>
+      <View style={pageStyles.confirmBtn}>
         <CommonButton disabled={isConfirmDisable} type="primary" onPress={onConfirm}>
           {t('Confirm')}
         </CommonButton>

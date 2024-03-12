@@ -3,12 +3,14 @@
 app_android/
 app_ios/
 app_react_native/
+app_expo/
 backup/
 js/
 node_modules/
 output/
 tools/
 uml/
+tests/
 .env
 .eslintignore
 .eslintrc.json
@@ -18,3 +20,4 @@ metro.config.js
 react-native.config.js
 android/upload.gradle
 android/src/main/assets/js
+.expo/

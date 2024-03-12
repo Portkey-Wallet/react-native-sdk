@@ -2,6 +2,7 @@
 const protocolAndDomainRE = /^(?:\w+:)?\/\/(\S+)$/;
 const localhostDomainRE = /^localhost[\:?\d]*(?:[^\:?\d]\S*)?$/;
 const nonLocalhostDomainRE = /^[^\s\.]+\.\S{2,}$/;
+const avatarTypeReg = /\s*(\.jpg|\.png|\.jpeg)$/;
 
 export function isUrl(string: string) {
   if (typeof string !== 'string') {
@@ -96,4 +97,13 @@ export const isValidUrl = (url: string) => {
 
 export const isValidBase58 = (str: string) => {
   return !/[\u4e00-\u9fa5\u3000-\u303f\uff01-\uff5e]/.test(str);
+};
+
+export const POTENTIAL_NUMBER = /^(0|[1-9]\d*)(\.\d*)?$/;
+export const isPotentialNumber = (str: string) => {
+  return POTENTIAL_NUMBER.test(str);
+};
+
+export const isValidAvatarFile = (fileName: string) => {
+  return avatarTypeReg.test(fileName);
 };

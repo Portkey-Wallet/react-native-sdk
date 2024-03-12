@@ -5,11 +5,10 @@ import { pTd } from 'utils/unit';
 import { ImageBackground, View } from 'react-native';
 import { isIOS } from 'packages/utils/mobile/device';
 import { useLanguage } from 'i18n/hooks';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { BGStyles, FontStyles } from 'assets/theme/styles';
 import styles from '../styles';
 import Email from '../components/Email';
-import Phone from '../components/Phone';
 import QRCode from '../components/QRCode';
 import Referral from '../components/Referral';
 import { PageLoginType, PageType } from '../types';
@@ -24,23 +23,16 @@ import NetworkContext from '../context/NetworkContext';
 import { NetworkItem } from 'packages/types/types-ca/network';
 import { PortkeyConfig, setEndPointUrl } from 'global/constants';
 import { NetworkList } from 'packages/constants/constants-ca/network-mainnet';
-import { CountryCodeItem } from 'types/wallet';
 
 const scrollViewProps = { extraHeight: 120 };
 const safeAreaColor: SafeAreaColorMapKeyUnit[] = ['transparent', 'transparent'];
 
-export default function SignupPortkey({
-  selectedCountryCode,
-  updateCountryCode,
-}: {
-  selectedCountryCode: CountryCodeItem | null;
-  updateCountryCode: (item: CountryCodeItem) => void;
-}) {
+export default function SignupPortkey() {
   const [loginType, setLoginType] = useState<PageLoginType>(PageLoginType.referral);
   const [currentNetwork, setCurrentNetwork] = useState<NetworkItem | undefined>(undefined);
   const { t } = useLanguage();
   const isMainnet = useMemo(() => {
-    return currentNetwork?.networkType === 'MAIN';
+    return currentNetwork?.networkType === 'MAINNET';
   }, [currentNetwork?.networkType]);
   const { onFinish } = useBaseContainer({
     entryName: PortkeyEntries.SIGN_UP_ENTRY,
@@ -49,17 +41,9 @@ export default function SignupPortkey({
     () => ({
       [PageLoginType.email]: <Email setLoginType={setLoginType} type={PageType.signup} />,
       [PageLoginType.qrCode]: <QRCode setLoginType={setLoginType} />,
-      [PageLoginType.phone]: (
-        <Phone
-          setLoginType={setLoginType}
-          type={PageType.signup}
-          selectedCountryCode={selectedCountryCode}
-          updateCountryCode={updateCountryCode}
-        />
-      ),
       [PageLoginType.referral]: <Referral setLoginType={setLoginType} type={PageType.signup} />,
     }),
-    [selectedCountryCode, updateCountryCode],
+    [],
   );
   useEffectOnce(() => {
     checkForCountryCodeCached();
@@ -114,7 +98,7 @@ export default function SignupPortkey({
           safeAreaColor={safeAreaColor}
           scrollViewProps={scrollViewProps}
           leftCallback={onBack}>
-          <Svg icon="logo-icon" size={pTd(60)} iconStyle={styles.logoIconStyle} color={defaultColors.bg1} />
+          <CommonSvg icon="logo-icon" size={pTd(60)} iconStyle={styles.logoIconStyle} color={defaultColors.bg1} />
           <View style={GStyles.center}>
             {!isMainnet && (
               <View style={styles.labelBox}>

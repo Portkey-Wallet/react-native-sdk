@@ -7,10 +7,12 @@ const plugins = [
     },
   ],
   ['@babel/plugin-proposal-decorators', { legacy: true }],
+  ['@babel/plugin-proposal-class-properties', { loose: true }],
   ['./plugins/babel-plugin-replace-import.js', { from: './src/', to: './' }],
+  ['./plugins/babel-plugin-remove-dev.js', { filter: ['apiTest', 'tests'] }],
 ];
 module.exports = {
-  presets: ['module:metro-react-native-babel-preset', '@babel/preset-typescript'],
+  presets: ['@babel/preset-typescript', '@babel/preset-react'],
   plugins: [...plugins],
   ignore: ['.babelignore'],
 };

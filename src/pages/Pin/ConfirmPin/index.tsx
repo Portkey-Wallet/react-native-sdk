@@ -60,6 +60,7 @@ export default function ConfirmPin({ oldPin, pin, deliveredSetPinInfo }: Confirm
           async result => {
             if (result?.status === 'success') {
               onFinish({
+                animated: false,
                 status: 'success',
                 data: {
                   finished: true,

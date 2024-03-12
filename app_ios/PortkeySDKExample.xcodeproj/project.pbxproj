@@ -426,6 +426,13 @@
 				"${PODS_ROOT}/../../ios/Assets/assets/node_modules/rn-teaset/icons/success.png",
 				"${PODS_ROOT}/../../ios/Assets/assets/node_modules/rn-teaset/icons/success@2x.png",
 				"${PODS_ROOT}/../../ios/Assets/assets/node_modules/rn-teaset/icons/success@3x.png",
+				"${PODS_ROOT}/../../ios/Assets/assets/src/assets/image/pngs/biometric.png",
+				"${PODS_ROOT}/../../ios/Assets/assets/src/assets/image/pngs/phone.png",
+				"${PODS_ROOT}/../../ios/Assets/assets/src/assets/image/pngs/portkeyBlackBorderRadius.png",
+				"${PODS_ROOT}/../../ios/Assets/assets/src/assets/image/pngs/portkeyBlueBackground.png",
+				"${PODS_ROOT}/../../ios/Assets/assets/src/assets/image/pngs/QR-code.png",
+				"${PODS_ROOT}/../../ios/Assets/assets/src/assets/image/pngs/securityWarning.png",
+				"${PODS_ROOT}/../../ios/Assets/assets/src/pages/Login/img/background.png",
 				"${PODS_CONFIGURATION_BUILD_DIR}/PortkeySDK/JSBundle.bundle",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
@@ -444,6 +451,7 @@
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
+				"${PODS_ROOT}/SVProgressHUD/SVProgressHUD/SVProgressHUD.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -482,6 +490,7 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/success.png",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/success@2x.png",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/success@3x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/securityWarning.png",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/JSBundle.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
@@ -500,6 +509,7 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SVProgressHUD.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -690,7 +700,8 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					" ",
+					"-Wl",
+					"-ld_classic",
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
@@ -748,7 +759,8 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					" ",
+					"-Wl",
+					"-ld_classic",
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
@@ -769,7 +781,7 @@
 				GCC_PREFIX_HEADER = "PortkeySDKExample/PortkeySDKExample-Prefix.pch";
 				INFOPLIST_FILE = "PortkeySDKExample/PortkeySDKExample-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = PortkeySDK;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(LD_RUNPATH_SEARCH_PATHS_$(IS_MACCATALYST))",
 					/usr/lib/swift,
@@ -796,7 +808,7 @@
 				GCC_PREFIX_HEADER = "PortkeySDKExample/PortkeySDKExample-Prefix.pch";
 				INFOPLIST_FILE = "PortkeySDKExample/PortkeySDKExample-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = PortkeySDK;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(LD_RUNPATH_SEARCH_PATHS_$(IS_MACCATALYST))",
 					/usr/lib/swift,

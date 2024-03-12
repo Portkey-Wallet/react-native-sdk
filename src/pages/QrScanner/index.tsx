@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Platform } from 'react-native';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { pTd } from 'utils/unit';
 import { defaultColors } from 'assets/theme';
 import { useLanguage } from 'i18n/hooks';
@@ -17,7 +17,7 @@ import { checkIsUrl } from 'packages/utils/dapp/browser';
 import Loading from 'components/Loading';
 import CommonToast from 'components/CommonToast';
 import { QRData, isLoginQRData } from 'packages/types/types-ca/qrcode';
-import { isAddress } from 'packages/utils';
+import { isAelfAddress } from 'packages/utils/aelf';
 import useBaseContainer, { VoidResult } from 'model/container/UseBaseContainer';
 import { PortkeyEntries, isPortkeyEntries } from 'config/entries';
 import { EntryResult, PermissionType, chooseImageAndroid, PortkeyModulesEntity } from 'service/native-modules';
@@ -28,7 +28,14 @@ import { checkIsPortKeyUrl, isEntryScheme } from 'utils/scheme';
 import { myThrottle } from 'utils/commonUtil';
 import { getCurrentNetworkType } from 'model/hooks/network';
 
-const QrScanner: React.FC = () => {
+export interface ScanQRCodeProps {
+  useScanQRPath?: boolean;
+}
+export interface ScanQRCodeResult {
+  uri?: string;
+}
+
+const QrScanner: React.FC = ({ useScanQRPath = false }: ScanQRCodeProps) => {
   const { t } = useLanguage();
   const canScan = useRef<boolean>(true);
   // const jumpToWebview = useDiscoverJumpWithNetWork();
@@ -60,8 +67,8 @@ const QrScanner: React.FC = () => {
   };
 
   const handleQRCodeData = async (data: QRData) => {
-    const { address, chainType } = data;
-    if (!isAddress(address, chainType)) return invalidQRCode(InvalidQRCodeText.INVALID_QR_CODE);
+    const { address } = data;
+    if (!isAelfAddress(address)) return invalidQRCode(InvalidQRCodeText.INVALID_QR_CODE);
     if (isLoginQRData(data)) {
       if (!(await isWalletUnlocked())) return invalidQRCode(InvalidQRCodeText.DID_NOT_UNLOCK);
       navigateForResult<VoidResult, ScanToLoginProps>(
@@ -102,6 +109,7 @@ const QrScanner: React.FC = () => {
     }
     canScan.current = false;
     if (typeof data !== 'string') return invalidQRCode(InvalidQRCodeText.INVALID_QR_CODE);
+    if (useScanQRPath) return navigateBack({ status: 'success', data: { uri: data } });
     const currentNetwork = await getCurrentNetworkType();
     try {
       const str = data.replace(/("|'|\s)/g, '');
@@ -116,10 +124,10 @@ const QrScanner: React.FC = () => {
       }
       const qrCodeData = expandQrData(JSON.parse(data));
       // if not currentNetwork
-      if (currentNetwork !== qrCodeData.netWorkType) {
+      if (currentNetwork !== qrCodeData.networkType) {
         let invalidText = InvalidQRCodeText.INVALID_QR_CODE;
-        switch (qrCodeData.netWorkType) {
-          case 'MAIN':
+        switch (qrCodeData.networkType) {
+          case 'MAINNET':
             invalidText = InvalidQRCodeText.SWITCH_TO_MAINNET;
             break;
           case 'TESTNET':
@@ -184,14 +192,14 @@ const QrScanner: React.FC = () => {
               onPress={() => {
                 navigateBack({ status: 'cancel', data: {} });
               }}>
-              <Svg icon="close1" size={pTd(14)} iconStyle={PageStyle.icon} />
+              <CommonSvg icon="close1" size={pTd(14)} iconStyle={PageStyle.icon} />
             </TouchableOpacity>
           </View>
-          <Svg icon="scan-square" size={pTd(240)} iconStyle={PageStyle.scan} />
+          <CommonSvg icon="scan-square" size={pTd(240)} iconStyle={PageStyle.scan} />
           <TextM style={PageStyle.tips}>{t('only support Login code by now')}</TextM>
 
           <TouchableOpacity style={[PageStyle.albumWrap, GStyles.alignCenter]} onPress={selectImage}>
-            <Svg icon="album" size={pTd(48)} />
+            <CommonSvg icon="album" size={pTd(48)} />
             <TextM style={[FontStyles.font2, PageStyle.albumText]}>{t('Album')}</TextM>
           </TouchableOpacity>
         </SafeAreaView>
@@ -209,14 +217,14 @@ const QrScanner: React.FC = () => {
             onPress={() => {
               navigateBack({ status: 'cancel', data: {} });
             }}>
-            <Svg icon="close1" size={pTd(14)} iconStyle={PageStyle.icon} />
+            <CommonSvg icon="close1" size={pTd(14)} iconStyle={PageStyle.icon} />
           </TouchableOpacity>
         </View>
-        <Svg icon="scan-square" size={pTd(240)} iconStyle={PageStyle.scan} />
+        <CommonSvg icon="scan-square" size={pTd(240)} iconStyle={PageStyle.scan} />
         <TextM style={PageStyle.tips}>{t('only support Login code by now')}</TextM>
 
         <TouchableOpacity style={[PageStyle.albumWrap, GStyles.alignCenter]} onPress={selectImage}>
-          <Svg icon="album" size={pTd(48)} />
+          <CommonSvg icon="album" size={pTd(48)} />
           <TextM style={[FontStyles.font2, PageStyle.albumText]}>{t('Album')}</TextM>
         </TouchableOpacity>
       </SafeAreaView>
@@ -315,8 +323,6 @@ export enum InvalidQRCodeText {
   INVALID_QR_CODE = 'The QR code is invalid',
   DID_NOT_UNLOCK = 'Please unlock your wallet first',
 }
-
-export interface ScanQRCodeResult {}
 
 const ensurePermission = async (
   permission: PermissionType,

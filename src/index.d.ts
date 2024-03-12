@@ -1,2 +1,2 @@
 import 'reflect-metadata';
-export * from './service/core';
+export * from './api';

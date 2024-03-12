@@ -1,4 +1,4 @@
-import TestPage from 'components/TestPage';
+import 'react-native-get-random-values'; // if delete this import, it will cause a big bug,
 import GuardianApprovalEntryPage from 'pages/Entries/GuardianApproval';
 import SignInEntryPage from 'pages/Entries/SignIn';
 import SelectCountryPage from 'pages/Entries/SelectCountry';
@@ -24,13 +24,32 @@ import AssetsHome from 'pages/Assets/Home/AssetsHome';
 import PaymentSecurityList from 'pages/My/WalletSecurity/PaymentSecurity/PaymentSecurityHome';
 import PaymentSecurityDetail from 'pages/My/WalletSecurity/PaymentSecurity/PaymentSecurityDetail';
 import PaymentSecurityEdit from 'pages/My/WalletSecurity/PaymentSecurity/PaymentSecurityEdit';
+import TokenDetail from 'pages/Token/TokenDetail';
+import NFTDetail from 'pages/NFT/NFTDetail';
 import { wrapEntry } from 'utils/commonUtil';
+import ActivityListPage from 'pages/Activity/ActivityListPage';
+import ActivityDetail from 'pages/Activity/ActivityDetail';
+import ContactDetail from 'pages/My/Contacts/ContactDetail';
+import ContactActivity from 'pages/My/Contacts/ContactActivity';
+import TestEntry from 'apiTest/TestEntry';
+import { PortkeyTestEntries } from 'apiTest';
+import SendHome from 'pages/Send/SendHome';
+import SendPreview from 'pages/Send/SendPreview';
+import RampHome from 'pages/Ramp/RampHome';
+import ReduxProvider from './ReduxProvider';
+import React from 'react';
+import RampPreview from 'pages/Ramp/RampPreview';
+import ManageTokenList from 'pages/Token/ManageTokenList';
+import CustomToken from 'pages/Token/CustomToken';
 
 type AcceptableComponentType = ComponentProvider;
 
 const initEntries = () => {
   const entryConfig = new Map<string, AcceptableComponentType>();
-  entryConfig.set(PortkeyEntries.TEST, () => TestPage);
+  if (__DEV__) {
+    // test only
+    entryConfig.set(PortkeyTestEntries.TEST, () => TestEntry);
+  }
 
   // entry stage
   entryConfig.set(PortkeyEntries.SIGN_IN_ENTRY, () => SignInEntryPage);
@@ -65,12 +84,32 @@ const initEntries = () => {
   entryConfig.set(PortkeyEntries.BIOMETRIC_SWITCH_ENTRY, () => Biometric);
 
   // assets module
-  entryConfig.set(PortkeyEntries.ASSETS_HOME_ENTRY, () => AssetsHome);
+  entryConfig.set(PortkeyEntries.ASSETS_HOME_ENTRY, () => ReduxProvider(AssetsHome as React.ComponentType<any>));
   entryConfig.set(PortkeyEntries.RECEIVE_TOKEN_ENTRY, () => ReceiveTokenPage);
+  entryConfig.set(PortkeyEntries.ACTIVITY_LIST_ENTRY, () => ActivityListPage);
+  entryConfig.set(PortkeyEntries.ACTIVITY_DETAIL_ENTRY, () => ActivityDetail);
+  entryConfig.set(PortkeyEntries.TOKEN_MANAGE_LIST_ENTRY, () =>
+    ReduxProvider(ManageTokenList as React.ComponentType<any>),
+  );
+  entryConfig.set(PortkeyEntries.TOKEN_MANAGE_ADD_ENTRY, () => ReduxProvider(CustomToken as React.ComponentType<any>));
 
+  // send service
+  entryConfig.set(PortkeyEntries.SEND_TOKEN_HOME_ENTRY, () => SendHome);
+  entryConfig.set(PortkeyEntries.SEND_TOKEN_CONFIRM_ENTRY, () => SendPreview);
+
+  // payment security module
   entryConfig.set(PortkeyEntries.PAYMENT_SECURITY_HOME_ENTRY, () => PaymentSecurityList);
   entryConfig.set(PortkeyEntries.PAYMENT_SECURITY_DETAIL_ENTRY, () => PaymentSecurityDetail);
   entryConfig.set(PortkeyEntries.PAYMENT_SECURITY_EDIT_ENTRY, () => PaymentSecurityEdit);
+
+  entryConfig.set(PortkeyEntries.TOKEN_DETAIL_ENTRY, () => TokenDetail);
+  entryConfig.set(PortkeyEntries.NFT_DETAIL_ENTRY, () => NFTDetail);
+
+  entryConfig.set(PortkeyEntries.CONTACT_DETAIL_ENTRY, () => ContactDetail);
+  entryConfig.set(PortkeyEntries.CONTACT_ACTIVITY_ENTRY, () => ContactActivity);
+
+  entryConfig.set(PortkeyEntries.RAMP_HOME_ENTRY, () => ReduxProvider(RampHome as React.ComponentType<any>));
+  entryConfig.set(PortkeyEntries.RAMP_PREVIEW_ENTRY, () => ReduxProvider(RampPreview as React.ComponentType<any>));
 
   for (const [key, value] of entryConfig) {
     AppRegistry.registerComponent(wrapEntry(key), value);
@@ -86,5 +125,7 @@ export const LaunchModeSet = new Map<string, string>();
 const registerLaunchMode = () => {
   LaunchModeSet.set(PortkeyEntries.ACCOUNT_SETTING_ENTRY, LaunchMode.SINGLE_TASK);
   LaunchModeSet.set(PortkeyEntries.PAYMENT_SECURITY_HOME_ENTRY, LaunchMode.SINGLE_TASK);
+  LaunchModeSet.set(PortkeyEntries.ASSETS_HOME_ENTRY, LaunchMode.SINGLE_TASK);
+  LaunchModeSet.set(PortkeyEntries.RAMP_HOME_ENTRY, LaunchMode.SINGLE_TASK);
 };
 export { initEntries };

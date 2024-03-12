@@ -6,8 +6,9 @@ enum class PortkeyEntries {
     ACCOUNT_SETTING_ENTRY,
     GUARDIAN_HOME_ENTRY,
     ASSETS_HOME_ENTRY,
-    PAYMENT_SECURITY_HOME_ENTRY;
+    PAYMENT_SECURITY_HOME_ENTRY,
+    TEST;
 
     val entryName: String
-        get() = name.lowercase()
+        get() = "portkey_"+name.lowercase()
 }

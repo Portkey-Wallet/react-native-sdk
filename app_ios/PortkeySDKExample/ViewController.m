@@ -18,6 +18,33 @@
 #import <PortkeySDK/PortkeySDKContractModule.h>
 #import <PortkeySDK/NSDictionary+PortkeySDK.h>
 #import <PortkeySDK/PortkeySDKPortkey.h>
+#import <SVProgressHUD/SVProgressHUD.h>
+
+@interface PortkeyPageConfig : NSObject
+
+@property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSString *entryName;
+@property (nonatomic, copy) NSString *launchMode;
+
++ (instancetype)configWithTitle:(NSString *)title
+                      entryName:(NSString *)entryName
+                     launchMode:(NSString *)launchMode;
+
+@end
+
+@implementation PortkeyPageConfig
+
++ (instancetype)configWithTitle:(NSString *)title
+                      entryName:(NSString *)entryName
+                     launchMode:(NSString *)launchMode {
+    PortkeyPageConfig *config = [PortkeyPageConfig new];
+    config.title = title;
+    config.entryName = entryName;
+    config.launchMode = launchMode;
+    return config;
+}
+
+@end
 
 @interface ViewController ()
 
@@ -169,45 +196,31 @@
     NSString *message = [NSString stringWithFormat:@"Current endPointUrl is %@", currentUrl];
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Switch Network" message:message preferredStyle:UIAlertControllerStyleActionSheet];
     UIAlertAction *mainNetwork = [UIAlertAction actionWithTitle:@"MAIN NET" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self switchEndPointUrl:@"https://did-portkey.portkey.finance"];
+        [self switchEndPointUrl:@"https://aa-portkey.portkey.finance"];
     }];
     UIAlertAction *testNetwork = [UIAlertAction actionWithTitle:@"TEST NET" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self switchEndPointUrl:@"https://did-portkey-test.portkey.finance"];
+        [self switchEndPointUrl:@"https://aa-portkey-test.portkey.finance"];
     }];
-    UIAlertAction *test1Network = [UIAlertAction actionWithTitle:@"TEST1 NET" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self switchEndPointUrl:@"https://localtest-applesign.portkey.finance"];
+    UIAlertAction *test4V2Network = [UIAlertAction actionWithTitle:@"TEST4-V2 NET" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self switchEndPointUrl:@"http://192.168.66.117:5577"];
     }];
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
     [alert addAction:mainNetwork];
     [alert addAction:testNetwork];
-    [alert addAction:test1Network];
+    [alert addAction:test4V2Network];
     [alert addAction:cancel];
     return alert;
 }
 
 - (UIAlertController *)createOpenPageAlertController {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Open Portkey Page" message:@"" preferredStyle:UIAlertControllerStyleActionSheet];
-    UIAlertAction *scanQrcode = [UIAlertAction actionWithTitle:@"Scan QRCode" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [[PortkeySDKRouterModule sharedInstance] navigateTo:@"portkey_scan_qr_code_entry" launchMode:@"" from:@"" targetScene:@"" closeCurrentScreen:NO params:@{}];
-    }];
-    UIAlertAction *guardianHome = [UIAlertAction actionWithTitle:@"Guardian Home" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [[PortkeySDKRouterModule sharedInstance] navigateTo:@"portkey_guardian_home_entry" launchMode:@"" from:@"" targetScene:@"" closeCurrentScreen:NO params:@{}];
-    }];
-    UIAlertAction *accountSetting = [UIAlertAction actionWithTitle:@"Account Setting" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [[PortkeySDKRouterModule sharedInstance] navigateTo:@"portkey_account_setting_entry" launchMode:@"single_task" from:@"" targetScene:@"" closeCurrentScreen:NO params:@{}];
-    }];
-    UIAlertAction *assetsHome = [UIAlertAction actionWithTitle:@"Assets Home" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [[PortkeySDKRouterModule sharedInstance] navigateTo:@"portkey_assets_home_entry" launchMode:@"single_task" from:@"" targetScene:@"" closeCurrentScreen:NO params:@{}];
-    }];
-    UIAlertAction *paymentSecurity = [UIAlertAction actionWithTitle:@"PaymentSecurity" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [[PortkeySDKRouterModule sharedInstance] navigateTo:@"portkey_payment_security_home_entry" launchMode:@"single_task" from:@"" targetScene:@"" closeCurrentScreen:NO params:@{}];
-    }];
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
-    [alert addAction:scanQrcode];
-    [alert addAction:guardianHome];
-    [alert addAction:accountSetting];
-    [alert addAction:assetsHome];
-    [alert addAction:paymentSecurity];
+    [[self portkeyPageConfigs] enumerateObjectsUsingBlock:^(PortkeyPageConfig * _Nonnull config, NSUInteger idx, BOOL * _Nonnull stop) {
+        UIAlertAction *action = [UIAlertAction actionWithTitle:config.title style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [[PortkeySDKRouterModule sharedInstance] navigateTo:config.entryName launchMode:config.launchMode from:@"" targetScene:@"" closeCurrentScreen:NO params:@{}];
+        }];
+        [alert addAction:action];
+    }];
     [alert addAction:cancel];
     return alert;
 }
@@ -237,7 +250,9 @@
 - (void)exitWallet {
     NSString *walletConfig = [PortkeySDKMMKVStorage readTempString:@"walletConfig"];
     if ([walletConfig isKindOfClass:NSString.class] && walletConfig.length) {
+        [SVProgressHUD show];
         [[PortkeySDKPortkey portkey].wallet exitWallet:^(BOOL success, NSString * _Nullable errorMsg) {
+            [SVProgressHUD dismiss];
             if (success) {
                 [PortkeySDKMMKVStorage clear];
                 [self.view makeToast:@"Exit Wallet Successfully"];
@@ -288,6 +303,32 @@
         _contractModule = [PortkeySDKContractModule new];
     }
     return _contractModule;
+}
+
+- (NSArray<PortkeyPageConfig *> *)portkeyPageConfigs {
+    return @[
+        [PortkeyPageConfig configWithTitle:@"Scan QRCode"
+                                 entryName:@"portkey_scan_qr_code_entry"
+                                launchMode:@""],
+        [PortkeyPageConfig configWithTitle:@"Guardian Home"
+                                 entryName:@"portkey_guardian_home_entry"
+                                launchMode:@"single_task"],
+        [PortkeyPageConfig configWithTitle:@"Account Setting"
+                                 entryName:@"portkey_account_setting_entry"
+                                launchMode:@"single_task"],
+        [PortkeyPageConfig configWithTitle:@"Assets Home"
+                                 entryName:@"portkey_assets_home_entry"
+                                launchMode:@"single_task"],
+        [PortkeyPageConfig configWithTitle:@"PaymentSecurity"
+                                 entryName:@"portkey_payment_security_home_entry"
+                                launchMode:@"single_task"],
+        [PortkeyPageConfig configWithTitle:@"RampHome"
+                                 entryName:@"portkey_ramp_home_entry"
+                                launchMode:@"single_task"],
+        [PortkeyPageConfig configWithTitle:@"Api Test"
+                                 entryName:@"portkey_test"
+                                launchMode:@""]
+    ];
 }
 
 @end

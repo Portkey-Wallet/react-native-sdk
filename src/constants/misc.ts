@@ -20,11 +20,6 @@ export const LOGIN_TYPE_LIST = [
     icon: LoginGuardianTypeIcon[LoginType.Email],
   },
   {
-    value: LoginType.Phone,
-    name: LOGIN_TYPE_LABEL_MAP[LoginType.Phone],
-    icon: LoginGuardianTypeIcon[LoginType.Phone],
-  },
-  {
     value: LoginType.Google,
     name: LOGIN_TYPE_LABEL_MAP[LoginType.Google],
     icon: LoginGuardianTypeIcon[LoginType.Google],

@@ -5,7 +5,7 @@ import styles from '../styles';
 import Touchable from 'components/Touchable';
 import GStyles from 'assets/theme/GStyles';
 import { TextL } from 'components/CommonText';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { pTd } from 'utils/unit';
 import CommonButton from 'components/CommonButton';
 import { PortkeyEntries } from 'config/entries';
@@ -27,12 +27,12 @@ const TitleMap = {
   [PageType.login]: {
     apple: 'Login with Apple',
     google: 'Login with Google',
-    button: 'Login with Phone / Email',
+    button: 'Login with Email',
   },
   [PageType.signup]: {
     apple: 'Signup with Apple',
     google: 'Signup with Google',
-    button: 'Signup with Phone / Email',
+    button: 'Signup with Email',
   },
 };
 
@@ -136,7 +136,8 @@ export default function Referral({
           type="outline"
           onPress={onGoogleSign}
           title={TitleMap[type].google}
-          icon={<Svg icon="google" size={24} />}
+          icon={<CommonSvg icon="google" size={24} />}
+          buttonStyle={pageStyles.buttonStyle}
           containerStyle={pageStyles.outlineContainerStyle}
           titleStyle={[FontStyles.font3, pageStyles.outlineTitleStyle]}
         />
@@ -145,20 +146,21 @@ export default function Referral({
           type="outline"
           onPress={onAppleSign}
           title={TitleMap[type].apple}
-          icon={<Svg icon="apple" size={24} />}
+          icon={<CommonSvg icon="apple" size={24} />}
+          buttonStyle={pageStyles.buttonStyle}
           containerStyle={pageStyles.outlineContainerStyle}
           titleStyle={[FontStyles.font3, pageStyles.outlineTitleStyle]}
         />
 
         <Divider title="OR" inset={true} style={pageStyles.dividerStyle} />
-        <CommonButton type="primary" onPress={() => setLoginType(PageLoginType.phone)} title={TitleMap[type].button} />
+        <CommonButton type="primary" onPress={() => setLoginType(PageLoginType.email)} title={TitleMap[type].button} />
       </View>
       {type === PageType.login && (
         <Touchable style={[GStyles.flexRowWrap, GStyles.itemCenter, styles.signUpTip]} onPress={pushToSignUp}>
           <TextL style={FontStyles.font3}>
             No account? <Text style={FontStyles.font4}>Sign up </Text>
           </TextL>
-          <Svg size={pTd(20)} color={FontStyles.font4.color} icon="right-arrow2" />
+          <CommonSvg size={pTd(20)} color={FontStyles.font4.color} icon="right-arrow2" />
         </Touchable>
       )}
       <TermsServiceButton />
@@ -169,11 +171,13 @@ export default function Referral({
 const pageStyles = StyleSheet.create({
   outlineContainerStyle: {
     marginTop: 20,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: defaultColors.border1,
   },
   outlineTitleStyle: {
     marginLeft: 12,
+  },
+  buttonStyle: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: defaultColors.border1,
   },
   dividerStyle: {
     marginVertical: 16,

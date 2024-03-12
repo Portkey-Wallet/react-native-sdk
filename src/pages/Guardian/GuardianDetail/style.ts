@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native';
 import { defaultColors } from 'assets/theme';
 import { pTd } from 'utils/unit';
 import GStyles from 'assets/theme/GStyles';
+import { getBottomSpace } from 'utils/screen';
 
 const { font3, bg1, bg4, border6 } = defaultColors;
 
@@ -44,6 +45,7 @@ export const pageStyles = StyleSheet.create({
     height: pTd(56),
     alignItems: 'center',
     borderRadius: pTd(6),
+    display: 'none',
   },
   tips: {
     color: font3,
@@ -55,5 +57,8 @@ export const pageStyles = StyleSheet.create({
   },
   verifierImageStyle: {
     marginRight: pTd(12),
+  },
+  bottomButton: {
+    marginBottom: getBottomSpace(),
   },
 });

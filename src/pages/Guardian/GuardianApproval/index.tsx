@@ -7,7 +7,7 @@ import { ScrollView, StyleSheet, View, Text } from 'react-native';
 import GStyles from 'assets/theme/GStyles';
 import CommonButton from 'components/CommonButton';
 import { BorderStyles, FontStyles } from 'assets/theme/styles';
-import Svg from 'components/Svg';
+import CommonSvg from 'components/Svg';
 import { pTd } from 'utils/unit';
 import { getApprovalCount } from 'packages/utils/guardian';
 import { ApprovalType, OperationTypeEnum, VerifyStatus } from 'packages/types/verifier';
@@ -22,7 +22,7 @@ import { UserGuardianItem } from 'packages/store/store-ca/guardians/type';
 import { GuardianApprovalPageResult } from 'pages/Entries/GuardianApproval';
 import Loading from 'components/Loading';
 import { verifyHumanMachine } from 'components/VerifyHumanMachine';
-import { guardianTypeStrToEnum, isReacptchaOpen } from 'model/global';
+import { guardianTypeStrToEnum, isRecaptchaOpen } from 'model/global';
 import { NetworkController } from 'network/controller';
 import { VerifierDetailsPageProps } from 'pages/Entries/VerifierDetails';
 import { PortkeyEntries } from 'config/entries';
@@ -44,15 +44,19 @@ import {
   callRemoveGuardianMethod,
   getVerifierData,
 } from 'model/contract/handler';
-
+import { ChainId } from 'packages/types';
+import { getUnlockedWallet } from 'model/wallet';
+import { ITransferLimitItem } from '@portkey/services';
 export default function GuardianApproval({
   guardianVerifyConfig: guardianListConfig,
   verifiedTime,
   onPageFinish,
+  accelerateChainId,
 }: {
   guardianVerifyConfig: GuardianVerifyConfig;
   verifiedTime: number;
   onPageFinish: (result: GuardianApprovalPageResult) => void;
+  accelerateChainId?: ChainId;
 }) {
   const {
     guardians: originalGuardians,
@@ -69,33 +73,30 @@ export default function GuardianApproval({
 
   const { t } = useLanguage();
 
-  let operationType = OperationTypeEnum.communityRecovery;
-  switch (guardianVerifyType) {
-    case GuardianVerifyType.ADD_GUARDIAN: {
-      operationType = OperationTypeEnum.addGuardian;
-      break;
+  const operationType = useMemo(() => {
+    switch (guardianVerifyType) {
+      case GuardianVerifyType.ADD_GUARDIAN:
+      case GuardianVerifyType.ADD_GUARDIAN_ACCELERATE: {
+        return OperationTypeEnum.addGuardian;
+      }
+      case GuardianVerifyType.REMOVE_GUARDIAN: {
+        return OperationTypeEnum.deleteGuardian;
+      }
+      case GuardianVerifyType.CHANGE_LOGIN_GUARDIAN: {
+        return OperationTypeEnum.setLoginAccount;
+      }
+      case GuardianVerifyType.MODIFY_GUARDIAN: {
+        return OperationTypeEnum.editGuardian;
+      }
+      case GuardianVerifyType.EDIT_PAYMENT_SECURITY: {
+        return OperationTypeEnum.modifyTransferLimit;
+      }
+      case GuardianVerifyType.CREATE_WALLET:
+      default: {
+        return OperationTypeEnum.communityRecovery;
+      }
     }
-    case GuardianVerifyType.REMOVE_GUARDIAN: {
-      operationType = OperationTypeEnum.deleteGuardian;
-      break;
-    }
-    case GuardianVerifyType.CHANGE_LOGIN_GUARDIAN: {
-      operationType = OperationTypeEnum.setLoginAccount;
-      break;
-    }
-    case GuardianVerifyType.MODIFY_GUARDIAN: {
-      operationType = OperationTypeEnum.editGuardian;
-      break;
-    }
-    case GuardianVerifyType.EDIT_PAYMENT_SECURITY: {
-      operationType = OperationTypeEnum.modifyTransferLimit;
-      break;
-    }
-    case GuardianVerifyType.CREATE_WALLET:
-    default: {
-      operationType = OperationTypeEnum.communityRecovery;
-    }
-  }
+  }, [guardianVerifyType]);
 
   const guardians = useMemo(() => {
     return originalGuardians?.map(item => {
@@ -228,7 +229,30 @@ export default function GuardianApproval({
         });
         break;
       }
-
+      case GuardianVerifyType.ADD_GUARDIAN_ACCELERATE: {
+        if (!particularGuardian) throw new Error('guardian info is null!');
+        Loading.show();
+        const { originChainId } = await getUnlockedWallet();
+        const result = await callAddGuardianMethod(particularGuardian, getVerifiedGuardianInfo());
+        if (accelerateChainId && accelerateChainId !== originChainId) {
+          try {
+            const accelerateReq = await callAddGuardianMethod(
+              particularGuardian,
+              getVerifiedGuardianInfo(),
+              accelerateChainId,
+            );
+            console.log('accelerateReq', accelerateReq);
+          } catch (error) {
+            console.log('accelerateReq error', error);
+          }
+          await callAddGuardianMethod(particularGuardian, getVerifiedGuardianInfo(), accelerateChainId);
+        }
+        Loading.hide();
+        onPageFinish({
+          isVerified: !result?.error,
+        });
+        break;
+      }
       case GuardianVerifyType.REMOVE_GUARDIAN: {
         if (!particularGuardian) throw new Error('guardian info is null!');
         Loading.show();
@@ -248,6 +272,7 @@ export default function GuardianApproval({
         console.log('MODIFY_GUARDIAN result', result);
         onPageFinish({
           isVerified: !result.error,
+          errorMessage: handlePaymentSecurityRuleSpecial(result?.error),
         });
         break;
       }
@@ -260,6 +285,7 @@ export default function GuardianApproval({
         console.log('EDIT_PAYMENT_SECURITY result', result);
         onPageFinish({
           isVerified: !result.error,
+          errorMessage: handlePaymentSecurityRuleSpecial(result?.error),
         });
         break;
       }
@@ -327,18 +353,19 @@ export default function GuardianApproval({
       Loading.hide();
       if (thirdPartyAccount) {
         Loading.show();
+        const chainId = await getTargetChainId(guardianVerifyType, paymentSecurityConfig);
         const verifyResult = isAppleLogin(thirdPartyAccount)
           ? await NetworkController.verifyAppleGuardianInfo({
               id: thirdPartyAccount.accountIdentifier,
               verifierId: guardian.sendVerifyCodeParams.verifierId,
               accessToken: thirdPartyAccount.identityToken,
-              chainId: await PortkeyConfig.currChainId(),
+              chainId,
               operationType,
             })
           : await NetworkController.verifyGoogleGuardianInfo({
               verifierId: guardian.sendVerifyCodeParams.verifierId,
               accessToken: thirdPartyAccount.accessToken,
-              chainId: await PortkeyConfig.currChainId(),
+              chainId,
               operationType,
             });
         Loading.hide();
@@ -383,6 +410,7 @@ export default function GuardianApproval({
   };
 
   const dealWithParticularGuardian = async (guardian: GuardianConfig, key: string) => {
+    const targetChainId = await getTargetChainId(guardianVerifyType, paymentSecurityConfig);
     if (sentGuardianKeys.has(key)) {
       const verifierSessionId = sentGuardianKeys.get(key);
       const guardianResult = await handleGuardianVerifyPage(
@@ -390,6 +418,7 @@ export default function GuardianApproval({
           verifierSessionId,
         } as Partial<GuardianConfig>),
         true,
+        targetChainId,
       );
       if (guardianResult) {
         CommonToast.success('Verified Successfully');
@@ -412,7 +441,7 @@ export default function GuardianApproval({
             onPress: async () => {
               try {
                 Loading.show();
-                const needRecaptcha = await isReacptchaOpen(operationType);
+                const needRecaptcha = await isRecaptchaOpen(operationType);
                 let token: string | undefined;
                 if (needRecaptcha) {
                   token = (await verifyHumanMachine('en')) as string;
@@ -437,6 +466,7 @@ export default function GuardianApproval({
                       verifySessionId: sendResult.verifierSessionId,
                     } as Partial<GuardianConfig>),
                     true,
+                    targetChainId,
                   );
                   if (guardianResult) {
                     CommonToast.success('Verified Successfully');
@@ -461,6 +491,7 @@ export default function GuardianApproval({
   const handleGuardianVerifyPage = async (
     guardianConfig?: GuardianConfig,
     alreadySent?: boolean,
+    chainId?: string,
   ): Promise<VerifiedGuardianDoc | null> => {
     const guardian = guardianConfig;
     if (!guardian) {
@@ -469,7 +500,7 @@ export default function GuardianApproval({
     }
     return new Promise(resolve => {
       navigateToGuardianPage(
-        Object.assign({}, guardian, { alreadySent: alreadySent ?? false, operationType }),
+        Object.assign({}, guardian, { alreadySent: alreadySent ?? false, operationType, chainId }),
         result => {
           resolve(result);
         },
@@ -520,7 +551,7 @@ export default function GuardianApproval({
                     buttons: [{ title: 'OK' }],
                   })
                 }>
-                <Svg color={FontStyles.font3.color} size={pTd(16)} icon="question-mark" />
+                <CommonSvg color={FontStyles.font3.color} size={pTd(16)} icon="question-mark" />
               </Touchable>
             </View>
             <TextM>
@@ -568,7 +599,41 @@ export default function GuardianApproval({
   );
 }
 
+const handlePaymentSecurityRuleSpecial = (error?: { message?: string }) => {
+  const chainProcessingErrorMsg = 'Processing on the chain';
+  const validateFailedErrorMsg = 'JudgementStrategy validate failed';
+  const { message } = error || {};
+  if (message?.indexOf(chainProcessingErrorMsg) !== -1) {
+    return 'This operation cannot be done before guardian info syncing is completed. Please try again later.';
+  } else if (message?.indexOf(validateFailedErrorMsg) !== -1) {
+    return 'The allowance should exceed the combined total of the transfer amount and transaction fee. Please set a higher value.';
+  } else {
+    return message;
+  }
+};
+
 const { primaryColor } = defaultColors;
+
+const getTargetChainId = async (
+  guardianVerifyType: GuardianVerifyType,
+  paymentSecurityConfig?: ITransferLimitItem,
+): Promise<string> => {
+  switch (guardianVerifyType) {
+    case GuardianVerifyType.EDIT_PAYMENT_SECURITY: {
+      // we may have to use the chainId of the paymentSecurityConfig
+      return paymentSecurityConfig?.chainId ?? (await PortkeyConfig.currChainId());
+    }
+    case GuardianVerifyType.CREATE_WALLET: {
+      // no wallet yet, use current chainId instead
+      return await PortkeyConfig.currChainId();
+    }
+    default: {
+      // other cases, use origin chainId
+      const { originChainId } = await getUnlockedWallet();
+      return originChainId;
+    }
+  }
+};
 
 const styles = StyleSheet.create({
   containerStyle: {
@@ -598,8 +663,9 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   confirmedButtonText: {
-    color: '#20CD85',
+    color: '#34C759',
     fontSize: 12,
+    fontWeight: '500',
     lineHeight: 16,
     backgroundColor: '#fff',
   },
