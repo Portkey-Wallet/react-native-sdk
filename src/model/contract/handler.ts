@@ -21,7 +21,7 @@ import { useCurrentWalletInfo } from 'components/WalletSecurityAccelerate/hook';
 import { request } from 'packages/api/api-did';
 import { useCallback } from 'react';
 import AElf from 'aelf-sdk';
-import { defaultViewPrivateKey } from 'packages/constants/wallet';
+import { DEFAULT_VIEW_PRIVATE_KEY } from 'packages/constants/wallet';
 export interface Verifier {
   id: string;
   name: string;
@@ -97,7 +97,7 @@ export const getCAContractInstance = async (allowTemplateWallet = false): Promis
   try {
     let tempPrivateKey = '';
     if (allowTemplateWallet && !(await isWalletUnlocked())) {
-      tempPrivateKey = defaultViewPrivateKey;
+      tempPrivateKey = DEFAULT_VIEW_PRIVATE_KEY;
     } else {
       const { privateKey } = (await getUnlockedWallet()) || {};
       tempPrivateKey = privateKey;
