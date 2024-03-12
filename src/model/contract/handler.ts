@@ -21,7 +21,7 @@ import { useCurrentWalletInfo } from 'components/WalletSecurityAccelerate/hook';
 import { request } from 'packages/api/api-did';
 import { useCallback } from 'react';
 import AElf from 'aelf-sdk';
-
+const defaultViewPrivateKey = '6167c717e781099c8ee77cbf0c3f6e7c8315fc581eb7daa891c872c026359c84';
 export interface Verifier {
   id: string;
   name: string;
@@ -95,18 +95,18 @@ export const getTokenContract = async (targetChainId?: string, tokenAddress?: st
  */
 export const getCAContractInstance = async (allowTemplateWallet = false): Promise<ContractBasic> => {
   try {
-    let privateKey = '';
+    let tempPrivateKey = '';
     if (allowTemplateWallet && !(await isWalletUnlocked())) {
-      privateKey = '6167c717e781099c8ee77cbf0c3f6e7c8315fc581eb7daa891c872c026359c84';
+      tempPrivateKey = defaultViewPrivateKey;
     } else {
-      const { privateKey: pk } = (await getUnlockedWallet()) || {};
-      privateKey = pk;
+      const { privateKey } = (await getUnlockedWallet()) || {};
+      tempPrivateKey = privateKey;
     }
     const { caContractAddress, peerUrl } = (await getCachedNetworkConfig()) || {};
     return await getContractBasic({
       contractAddress: caContractAddress,
       rpcUrl: peerUrl,
-      account: AElfWeb3SDK.getWalletByPrivateKey(privateKey),
+      account: AElfWeb3SDK.getWalletByPrivateKey(tempPrivateKey),
     });
   } catch (e: any) {
     console.error(e);
