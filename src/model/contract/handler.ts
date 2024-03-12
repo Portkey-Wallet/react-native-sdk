@@ -21,7 +21,7 @@ import { useCurrentWalletInfo } from 'components/WalletSecurityAccelerate/hook';
 import { request } from 'packages/api/api-did';
 import { useCallback } from 'react';
 import AElf from 'aelf-sdk';
-const defaultViewPrivateKey = '6167c717e781099c8ee77cbf0c3f6e7c8315fc581eb7daa891c872c026359c84';
+import { defaultViewPrivateKey } from 'packages/constants/wallet';
 export interface Verifier {
   id: string;
   name: string;
