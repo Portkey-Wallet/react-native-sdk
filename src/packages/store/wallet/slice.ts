@@ -18,7 +18,7 @@ import {
   getAccountByPrivateKey,
   getNextBIP44Path,
 } from 'packages/utils/wallet';
-import { DefaultBIP44Path } from 'packages/constants/wallet';
+import { DEFAULT_BIP44PATH } from 'packages/constants/wallet';
 import { WalletError, WalletState } from './type';
 import {
   changeEncryptStr,
@@ -33,7 +33,7 @@ import {
 import { isEqAddress } from 'packages/utils/aelf';
 import { isPrivateKey } from 'packages/utils';
 const initialState: WalletState = {
-  nextBIP44Path: DefaultBIP44Path,
+  nextBIP44Path: DEFAULT_BIP44PATH,
   walletType: 'aelf',
 };
 export const walletSlice = createSlice({
