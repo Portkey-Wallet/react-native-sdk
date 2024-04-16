@@ -32,20 +32,20 @@ GOOGLE_ANDROID_CLIENT_ID = "xxxxxxxxxxxxxxxxxx.apps.googleusercontent.com"
 
 ### 4.  run iOS project
 
-switch to the `app_ios` directory:
+Switch to the `app_ios` directory:
 
 ```shell
 cd app_ios
 ```
 
-then, run `pod install` to add iOS native dependencies:
+Then, run `pod install` to add iOS native dependencies:
 
 ```shell
 rm -rf build/
 pod install
 ```
 
-when `pod install` completed, open the iOS project and run this protject.
+When `pod install` completed, open the iOS project and run this protject.
 
 ## Android
 
