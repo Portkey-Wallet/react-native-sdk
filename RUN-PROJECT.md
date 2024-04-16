@@ -4,11 +4,7 @@
 
 ### 1. select branch
 
-The current main branch is release/v1.4.0, please switch to this branch to proceed.
-
-```
-git checkout release/v1.4.0
-```
+The current main branch is `master`, please switch to this branch to proceed.
 
 ### 2. `yarn` and `yarn start` in the root directory
 
