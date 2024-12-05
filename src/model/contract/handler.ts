@@ -21,7 +21,6 @@ import { useCurrentWalletInfo } from 'components/WalletSecurityAccelerate/hook';
 import { request } from 'packages/api/api-did';
 import { useCallback } from 'react';
 import AElf from 'aelf-sdk';
-import { DEFAULT_VIEW_PRIVATE_KEY } from 'packages/constants/wallet';
 export interface Verifier {
   id: string;
   name: string;
@@ -96,12 +95,9 @@ export const getTokenContract = async (targetChainId?: string, tokenAddress?: st
 export const getCAContractInstance = async (allowTemplateWallet = false): Promise<ContractBasic> => {
   try {
     let tempPrivateKey = '';
-    if (allowTemplateWallet && !(await isWalletUnlocked())) {
-      tempPrivateKey = DEFAULT_VIEW_PRIVATE_KEY;
-    } else {
-      const { privateKey } = (await getUnlockedWallet()) || {};
-      tempPrivateKey = privateKey;
-    }
+    const { privateKey } = (await getUnlockedWallet()) || {};
+    tempPrivateKey = privateKey;
+
     const { caContractAddress, peerUrl } = (await getCachedNetworkConfig()) || {};
     return await getContractBasic({
       contractAddress: caContractAddress,

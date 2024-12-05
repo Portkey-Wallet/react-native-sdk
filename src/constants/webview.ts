@@ -47,14 +47,5 @@ export const MOCK_ACCOUNT_RES1 = {
 //   ],
 // };
 
-// export const MOCK_WALLET1 = AElf.wallet.getWalletByPrivateKey(
-//   '96ab8ea91edbd17f80049daaa92949c1ef2356f1215fbc252e044c7b0b5a3e13',
-// );
-
-// export const MOCK_WALLET2 = AElf.wallet.getWalletByPrivateKey(
-//   'b7ad1f71d2853adc040cfe4bc6ebdd1aad6967e2e81f8c21f8b0d1eda8d08750',
-// );
-
-// export const app2dAppPrivateKey = ""
 export const app2dAppPublicKey =
   '045647c4e11f98c413eabdcf0c605e91816fde96e9d63fb0c810f146951e12f35839d6cee8ad619d9679a8f331759d693f9c5e26bd5a64fb471fc6569e8b675f5e';
